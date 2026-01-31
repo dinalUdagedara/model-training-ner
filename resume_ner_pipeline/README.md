@@ -1,21 +1,52 @@
 # Resume NER Pipeline (merged data)
 
-This folder contains the **merged pipeline**: your existing 220 resumes + Dotin 545 resumes, for better BERT-BiLSTM-CRF training.
+This folder contains the **merged pipeline**: your existing 220 resumes + Dotin 545 + optional **vrundag91** and **minhquan** datasets for more training data.
 
-## 1. Get the Dotin dataset
+## 1. Get the datasets
+
+### Dotin (required or use existing)
 
 1. Go to: https://github.com/dotin-inc/resume-dataset-NER-annotations  
 2. Download **545_cvs_train_v2.zip** (and optionally **set_aside_test_v2_50cvs.zip**)  
-3. Unzip into a folder, e.g. `dotin_data/`.  
-   - If the zip contains a single JSON file (one JSON object per line), note its path.  
-   - If it contains many JSON files, use the folder path.
+3. Unzip into a folder (e.g. `545_cvs_train_v2/`, `set_aside_test_v2_50cvs/`).
+
+### vrundag91 / Resume-Corpus-Dataset (optional, more resumes)
+
+1. Clone or download: https://github.com/vrundag91/Resume-Corpus-Dataset  
+2. Use the **data-files/** folder path (contains `*.json` Label Studio exports).
+
+### minhquan / RESUME_NER_DATASET (optional, 120 CVs, spaCy format)
+
+1. Clone or download: https://github.com/minhquan23102000/RESUME_NER_DATASET  
+2. Use the **data/** folder path (contains spaCy-style JSON files).
 
 ## 2. Merge data (run once)
 
 From this folder (`resume_ner_pipeline`), run:
 
 ```bash
-# Merge existing 220 + Dotin train (545 XMLs) + Dotin test (50 XMLs) into merged_resume_ner.json
+# Merge existing + Dotin + vrundag91 + minhquan into merged_resume_ner.json
+python prepare_data.py \
+  --existing "../entity_recognition_in_resumes.json" \
+  --dotin "545_cvs_train_v2" \
+  --dotin-test "set_aside_test_v2_50cvs" \
+  --vrundag "/path/to/Resume-Corpus-Dataset/data-files" \
+  --minhquan "/path/to/RESUME_NER_DATASET/data" \
+  --output merged_resume_ner.json
+```
+
+- **`--existing`**: Path to your current `entity_recognition_in_resumes.json` (220 resumes).  
+- **`--dotin`**: Path to **Dotin train** XML folder (e.g. `545_cvs_train_v2/`).  
+- **`--dotin-test`**: (Optional) Path to **Dotin test set** XML folder.  
+- **`--vrundag`**: (Optional) Path to **vrundag91** `data-files/` folder.  
+- **`--minhquan`**: (Optional) Path to **minhquan** `data/` folder.  
+- **`--output`**: Output file (default: `merged_resume_ner.json`).
+
+You must provide **at least one** of `--existing`, `--dotin`, `--vrundag`, or `--minhquan`.
+
+**Example without extra datasets** (existing + Dotin only):
+
+```bash
 python prepare_data.py \
   --existing "../entity_recognition_in_resumes.json" \
   --dotin "545_cvs_train_v2" \
@@ -23,24 +54,13 @@ python prepare_data.py \
   --output merged_resume_ner.json
 ```
 
-- **`--existing`**: Path to your current `entity_recognition_in_resumes.json` (220 resumes).  
-- **`--dotin`**: Path to **Dotin train** XML folder (e.g. `545_cvs_train_v2/` from the zip).  
-- **`--dotin-test`**: (Optional) Path to **Dotin test set** XML folder (e.g. `set_aside_test_v2_50cvs/`).  
-- **`--output`**: Output file (default: `merged_resume_ner.json`).
-
-**Dotin-only** (if you don’t have the 220 file in this repo):
+**Dotin-only**:
 
 ```bash
-python prepare_data.py --dotin /path/to/dotin_extracted --output merged_resume_ner.json
+python prepare_data.py --dotin 545_cvs_train_v2 --output merged_resume_ner.json
 ```
 
-**Existing-only** (copy and normalize only):
-
-```bash
-python prepare_data.py --existing ../entity_recognition_in_resumes.json --output merged_resume_ner.json
-```
-
-After this, `merged_resume_ner.json` should be in this folder.
+After this, `merged_resume_ner.json` will be in this folder.
 
 ## 3. Run the notebook
 
