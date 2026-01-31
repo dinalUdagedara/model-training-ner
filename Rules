@@ -1,0 +1,52 @@
+## Supervisor's Rules / Guidelines for Resume NER Project
+
+### 1. Model Constraints
+
+* **Do not replace the planned model architecture.**
+
+  * Use BiLSTM-CRF as the core sequence labeling model.
+  * Do not switch to unrelated models or pipelines.
+* **Feature representation upgrades are allowed** if they enhance performance without changing the model structure.
+
+  * Example: Using BERT embeddings as input is acceptable.
+  * Example: Adding dropout or adjusting hidden sizes in BiLSTM is acceptable.
+
+### 2. Data and Preprocessing Rules
+
+* **Use the provided dataset** and maintain the existing BIO labeling scheme.
+* **Do not artificially augment data** beyond preprocessing steps.
+* **Text preprocessing steps allowed:**
+
+  * Remove special characters and unprintable symbols.
+  * Standardize punctuation.
+  * Convert resumes to plain text (TXT) from original formats (PDF, DOC, DOCX).
+
+### 3. Training Guidelines
+
+* Follow the current pipeline: **Tokenization → Embeddings → BiLSTM → CRF → Prediction**.
+* Batch sizes, learning rates, and epoch numbers can be tuned for performance.
+* Ensure labels align correctly with tokenized inputs, especially if using sub-word tokenizers.
+
+### 4. Evaluation Rules
+
+* Use `seqeval` or other sequence-labeling metrics to compute:
+
+  * Precision
+  * Recall
+  * F1-score
+* Input to evaluation functions **must be lists of lists** (one list per resume / sample).
+* Report metrics for each entity type as well as overall micro/macro averages.
+
+### 5. Compliance and Reporting
+
+* **Any model enhancement must be incremental and rule-compliant.**
+* Avoid introducing unrelated pre-trained models or architectures outside the scope.
+* Always maintain supervisor-informed checkpoints before moving to next enhancements.
+* Document each enhancement clearly, including rationale, expected benefit, and observed results.
+
+### 6. Summary
+
+* **Stay in outline:** BiLSTM-CRF model core.
+* **Improvements allowed:** Feature representation (BERT embeddings), preprocessing, hyperparameter tuning.
+* **No shortcuts:** Do not switch to unrelated end-to-end pre-trained NER systems.
+* **Metrics:** Evaluate carefully and report per rules.

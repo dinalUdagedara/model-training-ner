@@ -1,0 +1,105 @@
+Absolutely! Let’s do a high-level outline of everything we’ve done so far, and what’s next, all while staying within the rules your supervisor set. I’ll make it clear and structured.
+
+1️⃣ What we have done so far
+
+Goal: Build a resume information extraction model using NER, originally BERT-BiLSTM-CRF, while respecting supervisor’s instructions (no large pre-trained model experiments outside the outline).
+
+Steps completed:
+
+Dataset preparation
+
+Converted resumes to plain text (TXT files).
+
+Preprocessed the text (removed special characters, unified punctuation).
+
+Converted labels into BIO format for NER (e.g., B-NAME, I-NAME, O).
+
+Tensor dataset creation
+
+Converted inputs and labels into PyTorch tensors.
+
+Split dataset into training (80%) and validation (20%) sets.
+
+Created DataLoaders for batch training.
+
+Initial model training
+
+Ran our BiLSTM-CRF model (without BERT) to get a baseline.
+
+Loss decreased steadily during training.
+
+Evaluated using seqeval → F1 score was very low (~0.11).
+
+This indicated the model cannot learn meaningful features from scratch given the dataset size.
+
+2️⃣ Problem we encountered
+
+The current BiLSTM-CRF model alone is not sufficient for accurate NER on resumes.
+
+Small dataset + complex entities → model struggles.
+
+Evaluations show very poor precision and recall for all entity types.
+
+3️⃣ Supervisor rules / constraints
+
+Do not jump to fully pre-trained models that were not in the original plan.
+
+Stick to our outline:
+
+Use NER-based sequence labeling.
+
+Improve the existing pipeline, not replace it with something entirely different.
+
+Any enhancement should be incremental:
+
+Feature representation improvements.
+
+Model stability improvements.
+
+Better preprocessing/alignment of labels.
+
+4️⃣ Plan to fix and improve while following rules
+
+We can stay within the outline while improving performance by:
+
+Use BERT for token embeddings (dynamic word representations), but keep BiLSTM-CRF as planned.
+
+This is allowed because: we are enhancing feature representation, not changing the model structure.
+
+BERT acts as a better input representation layer.
+
+Align labels correctly with BERT tokenization
+
+Handle sub-word splitting properly.
+
+Avoid label misalignment which causes evaluation issues.
+
+Train the BERT-BiLSTM-CRF
+
+Use the same BiLSTM-CRF architecture.
+
+Benefit from better contextual embeddings from BERT.
+
+Evaluate properly
+
+Ensure true_labels and pred_labels are lists of lists.
+
+Compute precision, recall, F1 using seqeval.
+
+Optional incremental tweaks
+
+Add dropout in BiLSTM.
+
+Experiment with batch size or learning rate.
+
+Possibly add masking for padding tokens.
+
+✅ Summary
+
+Done: Dataset prep, baseline BiLSTM-CRF, low F1 results.
+
+Problem: Baseline model too weak to extract resume entities.
+
+Next step (rule-compliant): Replace word embeddings with BERT embeddings, feed into BiLSTM-CRF, keep model structure intact.
+
+Goal: Stay within supervisor’s outline, but fix the model so it actually works.
