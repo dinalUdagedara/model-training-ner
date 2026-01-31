@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cv>
+<label type="Name">Clyde Hermann</label>
+<label type="Designation">Data Analyst Intern</label> - <label type="Companies worked at">Oracle Retail
+</label>
+<label type="Location">Bengaluru, Karnataka</label> - Email me on Indeed: <label type="Email Address">Brandie79@bdam.name</label>
+
+Willing to relocate to: <label type="Location">Delhi - Bangalore, Karnataka</label> - <label type="Location">Gurgaon, Haryana</label>
+
+WORK EXPERIENCE
+
+<label type="Designation">Data Analyst Intern</label>
+
+<label type="Companies worked at">Oracle Retail</label> -  <label type="Location">Bengaluru, Karnataka</label> -
+
+<label type="Years of Experience">June 2017 to Present</label>
+
+Job Responsibilities:
+o As an <label type="Designation">intern</label> part of the Global Retail Insights team at <label type="Companies worked at">Oracle Retail</label>,
+work involved creating a data oriented buisness case based using high
+level trends for various retailers using <label type="Tech Tools">Excel</label> and <label type="Tech Tools">SQL</label>.
+o <label type="Job Specific Skills">Forecasting Sales</label> with use of various <label type="Job Specific Skills">statistical Modelling</label> Methods
+using <label type="Tech Tools">SQL</label> and <label type="Tech Tools">R</label>
+o <label type="Job Specific Skills">Market Basket Analysis</label> using transactional data of retailers using <label type="Tech Tools">SQL</label> and <label type="Tech Tools">R</label>
+
+EDUCATION
+<label type="Degree">
+Statistics and Probability</label>
+
+<label type="College Name">Manipal University
+</label>
+<label type="Graduation Year">May 2018</label>
+
+<label type="Degree">B. Tech in Electrical and Electronics in Embedded Systems</label>
+
+MIT, <label type="College Name">Manipal University
+</label>
+<label type="Graduation Year">May 2016</label>
+
+SKILLS
+
+<label type="Tech Tools">Python</label> (2 years), <label type="Tech Tools">SQL</label>. (1 year), <label type="Tech Tools">NOSQL</label> (1 year), <label type="Tech Tools">R</label> (2 years), <label type="Job Specific Skills">Machine Learning</label> (2 years)
+
+PUBLICATIONS
+
+Post-operative life expectancy in lung cancer patients
+
+The objective of the project was to build an efficient predictive model based
+on a predefined dataset to predict whether the patient survives or dies within one year of the
+operation. The dataset given has 17 variables: 12 nominal, 2 ordinal and 3 numerical. The target
+variable has value true if the patient dies within one year of the operation else false if he survives.
+Tool used: <label type="Tech Tools">R</label>
+
+https://www.indeed.com/r/clyde-hermann
+
+
+Predict the Happiness (<label type="Job Specific Skills">Sentimental Analysis</label>)
+
+The objective of this project was to build a binary classifcation model for the data provided by
+TripAdvisor consisiting of a sample of hotel reviews provided by customers.The model built can
+be used by them to understand the hotels
+listed by them.Tool Used: <label type="Tech Tools">R</label>
+
+Predict Network attacks
+
+The objective of this project was to build a multi-class classification model to predict the type of
+attack for an internet network company in <label type="Location">Japan</label> which has
+been facing huge losses due to malicious server attacks.The train dataset has
+18 numerical features and 23 categorical features.The target variable has
+three classes.Tool Used: <label type="Tech Tools">Python</label>
+
+ADDITIONAL INFORMATION
+
+TECHNICAL SKILLSET
+
+• Languages &amp; Technologies: <label type="Tech Tools">Python</label>, <label type="Tech Tools">R</label>, <label type="Tech Tools">SQL</label>, <label type="Tech Tools">NoSQL</label>, <label type="Job Specific Skills">Predictive Modelling</label>,
+<label type="Job Specific Skills">Market Basket Analysis</label>, <label type="Job Specific Skills">Sentimental Analysis</label>, <label type="Job Specific Skills">Clustering</label>, <label type="Tech Tools">Bash
+Scripting</label> (Preliminary), <label type="Job Specific Skills">Socket Programming</label>, <label type="Tech Tools">Java</label> (Preliminary)
+
+• Tools: <label type="Tech Tools">R Studio</label>, <label type="Tech Tools">Jupyter</label>, <label type="Tech Tools">GIT</label>, <label type="Tech Tools">Sublime</label>, <label type="Tech Tools">MATLAB</label>, <label type="Tech Tools">Linux</label>, <label type="Tech Tools">KVM</label>, <label type="Tech Tools">Virtual Box</label>,
+<label type="Tech Tools">Open VZ</label>, <label type="Tech Tools">Oracle SQL</label> Developer, <label type="Tech Tools">MySQL</label>, <label type="Tech Tools">MongoDB</label>, <label type="Tech Tools">Excel</label>
+</cv>
