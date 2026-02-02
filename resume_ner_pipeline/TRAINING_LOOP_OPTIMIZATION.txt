@@ -1,0 +1,35 @@
+# Paste this into notebook cell 6 (training) — replace the for-loop body and add restore
+
+# 1) In cell 6, change this line:
+#    PATIENCE = 5
+# to:
+PATIENCE = 7
+
+# 2) Replace the for-loop so it looks like this (keep EPOCHS, best_f1, best_state, scheduler as-is):
+
+for epoch in range(EPOCHS):
+    model.train()
+    total = 0
+    for inp, mask, lab in train_loader:
+        inp, mask, lab = inp.to(device), mask.to(device), lab.to(device)
+        optimizer.zero_grad()
+        loss = model(inp, mask, lab)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        optimizer.step()
+        total += loss.item()
+    scheduler.step()
+    val_f1, _, _ = run_validation(model, val_loader, device, ID2LABEL, NUM_LABELS)
+    if val_f1 > best_f1:
+        best_f1 = val_f1
+        best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+        epochs_no_improve = 0
+    else:
+        epochs_no_improve += 1
+    print(f"Epoch {epoch+1}/{EPOCHS} Loss: {total/len(train_loader):.4f} Val F1: {val_f1:.4f} Best: {best_f1:.4f}")
+    if epochs_no_improve >= PATIENCE:
+        print(f"Early stopping (no improvement for {PATIENCE} epochs).")
+        break
+if best_state is not None:
+    model.load_state_dict(best_state)
+    print("Restored best checkpoint (by val F1).")
