@@ -82,3 +82,37 @@ Differentiated learning rates are kept: BERT lower (fine-tune gently), head high
 - **Why these learning rates?** BERT is fine-tuned gently (2e-5); the NER head learns faster (1e-4). This is a common pattern for BERT-based NER.
 - **Why 60 epochs and patience 12?** Initial run showed F1 still improving after 27 epochs; we allow more training and avoid stopping too early.
 - **Why lower dropout (0.3)?** To reduce underfitting when aiming for higher entity F1; 0.4 was quite strong regularization.
+
+---
+
+## 6. Other ways to increase accuracy (without more data)
+
+If you are capped at ~1,033 resumes and want to push entity-level F1 further, try these in order.
+
+### 6.1 Training and optimisation
+
+- **Batch size:** Try `batch_size=16` in the DataLoader if GPU memory allows; can sometimes improve stability and F1.
+- **Learning rate schedule:** Use a longer warmup (e.g. 15% of epochs instead of 10%) or decay to a lower end factor (e.g. `end_factor=0.1` instead of `0.2`) so the model trains longer at small LRs.
+- **More epochs / patience:** If F1 is still rising at epoch 60, try `EPOCHS=80` and `PATIENCE=15`.
+
+### 6.2 Class imbalance (oversample rare entities) — **implemented**
+
+- EDUCATION, EXPERIENCE, OCCUPATION often have fewer examples than SKILL/NAME/EMAIL. A **weighted random sampler** is used in the notebook: samples that contain at least one of B/I-EDUCATION, B/I-EXPERIENCE, or B/I-OCCUPATION get weight 2.0, others 1.0, so the model sees rarer-entity resumes more often. Implemented in section 3 (BERT tokenizer and dataset) with `WeightedRandomSampler`.
+
+### 6.3 Data augmentation (preserve spans)
+
+- **Synonym replacement:** For tokens labeled **O** only, replace with a synonym occasionally (e.g. from a small word list) so the model sees more varied O-context without changing entity spans.
+- **Duplicate + light noise:** Duplicate 10–20% of training resumes and apply only span-safe noise (e.g. normalise whitespace, optional lowercasing of O tokens). Do not change text inside annotated spans.
+
+### 6.4 Model tweaks
+
+- **Dropout:** Try `0.35` (between 0.3 and 0.4) if 0.3 overfits or 0.4 underfits.
+- **BiLSTM depth:** Try a 2-layer BiLSTM for a bit more capacity (may need more data to benefit).
+
+### 6.5 Post-processing and hybrid rules
+
+- You already use rule-based NAME/EMAIL. Add a **small known-skills list** (e.g. "Python", "Java", "SQL") and, when the model predicts O for such a token in a skills-like context, optionally override to SKILL. Use sparingly to avoid false positives.
+
+### 6.6 Ensemble
+
+- Train **2–3 models** with different random seeds (e.g. 42, 123, 456). At inference, take **majority vote** per token (or average logits then decode). Ensembles often add 1–3% F1 at the cost of 2–3× inference time.
