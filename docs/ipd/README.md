@@ -16,6 +16,7 @@ All documents for the IPD submission (6COSC023W, 15% of FYP). **Deadline:** 05 F
 | [architecture-and-schedule.md](architecture-and-schedule.md) | High-level and current prototype architecture (Mermaid), wireframes, updated Gantt and deviations. Use for "Overall system architecture" and "Updated time schedule" slides. |
 | [building-the-slides.md](presenttion/building-the-slides.md) | **Step-by-step guide to build the presentation:** slide order, content for each slide (with source doc + section), talking points, and checklist before recording. |
 | [presentation-material.md](presentation-material.md) | **Full content for every slide:** copy-paste ready text, bullets, tables, and references for all 12–13 slides in one document. |
+| [presentation-full-speech-20min.md](presentation-full-speech-20min.md) | **Full speech for the presentation:** word-for-word ~20-minute script aligned to your slide order, with timings. |
 | [demo-video-script.md](demo-video-script.md) | **Demo video script and outline:** code walk-through (max 7 min) for both NER models and job extractor, prototype demo steps (max 3 min), talking points, and checklist before recording. |
 | [demo-video-full-speech.md](demo-video-full-speech.md) | **Full speech for the demo:** word-for-word script to read aloud for Part A (repo, resume NER, job NER, job extractor, frontend) and Part B (live demo and closing); includes a short version if you need to trim time. |
 

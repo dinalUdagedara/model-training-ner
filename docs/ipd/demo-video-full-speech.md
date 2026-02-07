@@ -36,15 +36,35 @@ Why combine datasets? First, more training data: a single public dataset is ofte
 
 **[Open the Resume NER training notebook.]**
 
-"The first model is the resume NER. In this notebook I train a BERT-BiLSTM-CRF model to extract six entity types from resume text: NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, and EXPERIENCE. The data comes from the merged dataset we just described — combined resumes from multiple sources with a unified schema. We load that into the notebook, fine-tune the model, and then save the state dict and a small config so the backend can load it later."
+"The first model is the resume NER. In this notebook I train a BERT-BiLSTM-CRF model to extract six entity types from resume text: NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, and EXPERIENCE.
+
+Let me quickly explain how the notebook works end-to-end.
+
+First, it loads the merged dataset file, which is a list of items where each item has the raw text and span annotations. From those spans we generate token-level labels, typically in BIO format, so that every token becomes B-SKILL, I-SKILL, and so on, or O.
+
+Next, we tokenize the text with a BERT tokenizer. The important part here is label alignment: because BERT uses subword tokens, one original word might become multiple WordPieces, so the notebook aligns the BIO label to the correct sub-tokens and ignores special tokens like [CLS] and [SEP].
+
+Then we train the model. BERT produces contextual embeddings, BiLSTM adds sequential context across tokens, and CRF decodes the best global label sequence so we get consistent entity spans rather than noisy independent predictions.
+
+After training we evaluate on a validation or test split, then we save the model weights and label mappings. Those saved artifacts are what the backend loads at runtime."
 
 **[Switch to PROJECT, open crackint-backend/app/ml/resume_ner.py.]**
 
-"In the backend, the resume NER lives in app/ml/resume_ner.py. At runtime we load the saved model from RESUME_NER_LOAD_DIR or from Hugging Face. The main function is parse_resume_hybrid: it runs the BERT-BiLSTM-CRF model and also uses simple rule-based extraction for NAME and EMAIL to improve reliability. It returns a dictionary of entities."
+"In the backend, the resume NER lives in app/ml/resume_ner.py. At runtime we load the saved model from RESUME_NER_LOAD_DIR or from Hugging Face.
+
+The main function is parse_resume_hybrid. The extraction process is:
+
+- If the input is a PDF, we first extract text using PyMuPDF.
+- We run lightweight cleanup so the model sees plain text.
+- We tokenize the text, run the model forward pass, and decode labels with the CRF to get token-level predictions.
+- We convert token-level BIO labels back into final entity spans and group them into a clean JSON structure.
+- We also apply simple rule-based extraction for NAME and EMAIL as a reliability layer, and then merge those results with the model output.
+
+Finally, it returns a dictionary of entities for the frontend."
 
 **[Open app/api/resume/service.py and route.py.]"
 
-"The resume API is in app/api/resume. The route accepts either a PDF file or raw text. The service extracts text from the PDF using PyMuPDF, then calls parse_resume_hybrid. The result is saved to PostgreSQL and returned to the client. So the full flow is: PDF or text in, entities out, and we persist the resume record."
+"The resume API is in app/api/resume. The route accepts either a PDF file or raw text. The service extracts text from the PDF using PyMuPDF, then calls parse_resume_hybrid. The response includes the extracted entities and, if needed, the raw extracted text. Then we save the resume record and entities to PostgreSQL and return them to the client. So the full flow is: PDF or text in → text extraction → NER inference → post-processing → entities out → persist → return to UI."
 
 ---
 
@@ -52,15 +72,27 @@ Why combine datasets? First, more training data: a single public dataset is ofte
 
 **[Open the Job Poster NER training notebook.]**
 
-"The second model is the job poster NER. This notebook trains another BERT-BiLSTM-CRF model, but on job descriptions. The training data is the merged job-poster data — in our case mainly SkillSpan, converted and merged via prepare_data. The entity types are job-specific: JOB_TITLE, COMPANY, LOCATION, SALARY, SKILLS_REQUIRED, EXPERIENCE_REQUIRED, EDUCATION_REQUIRED, and JOB_TYPE. Same architecture as the resume model, but the labels and data are different. We save this model the same way so the backend can load it."
+"The second model is the job poster NER. This notebook trains another BERT-BiLSTM-CRF model, but on job descriptions. The training data is the merged job-poster dataset — in our case mainly SkillSpan, converted and merged via prepare_data.
+
+The notebook pipeline is the same pattern as the resume model:
+
+- Load the merged JSONL data with job text plus span annotations.
+- Convert spans into token-level BIO labels for the job entities.
+- Tokenize with BERT and align labels to subword tokens.
+- Train the BERT-BiLSTM-CRF model and evaluate on a split.
+- Save model weights plus the label mappings so the backend can reproduce the exact label IDs at inference time.
+
+The entity types here are job-specific: JOB_TITLE, COMPANY, LOCATION, SALARY, SKILLS_REQUIRED, EXPERIENCE_REQUIRED, EDUCATION_REQUIRED, and JOB_TYPE."
 
 **[Open PROJECT/crackint-backend/app/ml/job_poster_ner.py.]**
 
-"In the backend, the job poster NER is in app/ml/job_poster_ner.py. It’s loaded from JOB_POSTER_NER_LOAD_DIR. We also have rule-based SALARY extraction to catch salary phrases. If the job poster model isn’t set — for example in a minimal setup — the job extractor falls back to the resume NER so the API still works."
+"In the backend, the job poster NER is in app/ml/job_poster_ner.py. It’s loaded from JOB_POSTER_NER_LOAD_DIR.
+
+The extraction flow is the same idea as resume NER: we take raw text, tokenize, run the model, decode CRF labels, then post-process BIO tags into final entities. We also have rule-based SALARY extraction to catch salary patterns that can be missed by the model. If the job poster model isn’t set — for example in a minimal setup — the job extractor can fall back to the resume NER so the API still works end-to-end."
 
 **[Open app/api/job/route.py and service.py.]**
 
-"The job extractor is the endpoint POST /api/v1/jobs/extract. It accepts a PDF or raw text, extracts the text, then runs the job poster NER — or the resume NER fallback — and returns the entities. We don’t persist job extractions; it’s on-demand only. So that’s the job extractor: same idea as the resume API, but for job descriptions and with no database save."
+"The job extractor is the endpoint POST /api/v1/jobs/extract. It accepts a PDF or raw text, extracts text if it’s a PDF, then runs the job poster NER — or the resume NER fallback — and returns the entities as JSON. We don’t persist job extractions in the database in this IPD scope; it’s on-demand only. So the job flow is: PDF/text in → text extraction → job NER inference → post-processing → entities out."
 
 ---
 
@@ -97,18 +129,6 @@ Why combine datasets? First, more training data: a single public dataset is ofte
 **[Click Extract; wait for result.]**
 
 "Here we see the extracted information: name, email, skills, occupation, education, and experience. I can edit any of these with the Edit button, or replace the resume and extract again. So the resume NER is working end-to-end: from the frontend through the API to the model and back."
-
----
-
-### 3. Job extractor flow
-
-**[Go to Job description page.]**
-
-"Next, the job description page. I’ll paste a short job description — [or: upload a job PDF]. Then I click Extract."
-
-**[Click Extract; wait for result.]**
-
-"And here are the extracted job entities: job title, company, skills required, experience required, and so on. This uses the job poster NER in the backend — or the resume NER fallback if the job model isn’t loaded. So both extraction flows are working in the prototype."
 
 ---
 
