@@ -62,7 +62,28 @@ python prepare_data.py --dotin 545_cvs_train_v2 --output merged_resume_ner.json
 
 After this, `merged_resume_ner.json` will be in this folder.
 
-## 3. Run the notebook
+## 3. Generate extra resumes with LLM (optional)
+
+You can generate more synthetic resumes in the **same format** as `merged_resume_ner.json` using an LLM. Each line is one JSON object with `content` and `annotation` (character-offset spans).
+
+**Requirements:** `pip install openai`, and set `OPENAI_API_KEY` in the environment.
+
+```bash
+# From resume_ner_pipeline folder
+export OPENAI_API_KEY="your-key"
+
+# Generate 10 resumes into a JSONL file
+python generate_resumes_llm.py --count 10 --output llm_generated_resumes.jsonl
+
+# Optional: merge with existing merged data (use the combined file in the notebook)
+cat merged_resume_ner.json llm_generated_resumes.jsonl > merged_resume_ner_with_llm.json
+```
+
+Then point the notebook’s data path to `merged_resume_ner_with_llm.json` (e.g. upload to Google Drive and set that as `DATA_PATH`), or append the JSONL lines to your existing `merged_resume_ner.json` and re-upload.
+
+**Options:** `--model gpt-4o-mini` (default), `--timeout 60`, `--api-key KEY`.
+
+## 4. Run the notebook
 
 1. Open **BERT_BiLSTM_CRF_Resume_NER.ipynb** in Cursor or Jupyter.  
 2. Use a local Python kernel (or Colab).  
@@ -87,8 +108,8 @@ Dotin’s 12 entities are mapped to the 6 used in the notebook:
 
 ## Files in this folder
 
-- **prepare_data.py** – Merges existing + Dotin JSON and writes `merged_resume_ner.json`.  
-- **BERT_BiLSTM_CRF_Resume_NER.ipynb** – Same BERT-BiLSTM-CRF pipeline, uses merged data by default.  
+- **prepare_data.py** – Merges existing + Dotin (and optional sources) into `merged_resume_ner.json`.  
+- **generate_resumes_llm.py** – Generates synthetic resumes via OpenAI in the same JSONL format; use to augment training data.  
 - **README.md** – This file.
 
 After merging, you’ll also have **merged_resume_ner.json** (created by `prepare_data.py`).
