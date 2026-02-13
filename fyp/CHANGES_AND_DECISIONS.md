@@ -4,6 +4,15 @@ This document records the main changes and design decisions made for the FYP sub
 
 ---
 
+## 0. Final model choice: BiLSTM-CRF Path 2
+
+- **Decision:** Use **BiLSTM-CRF with Word2Vec** (Path 2) as the final Resume NER model.
+- **Reason:** Achieved Test F1 ≈ 0.79 and Val F1 ≈ 0.83 without pre-trained transformers. Strong performance on EMAIL, NAME, SKILL; acceptable on OCCUPATION. Aligns with supervisor constraints (BiLSTM-CRF core, no large pre-trained model experiments outside the outline).
+- **Dataset:** `merged_1030_plus_all_llm_plus_sri_lanka_tech.jsonl` (~4k resumes, 80/10/10 split).
+- **Notebook:** `fyp/BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb`
+
+---
+
 ## 1. Notebook structure and submission cleanup
 
 ### 1.1 Data source: Google Drive only

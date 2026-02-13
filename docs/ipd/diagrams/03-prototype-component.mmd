@@ -1,0 +1,39 @@
+%% Current Prototype Component Diagram - CrackInt
+%% Chapter 6, Section 6.3.2
+%% IPD scope: CV upload, Job extract, Edit entities, Sessions
+
+flowchart TB
+    User["User"]
+
+    subgraph Frontend["Frontend (Next.js)"]
+        CVUpload["CV Upload Page"]
+        JobPage["Job Description Page"]
+        EditDialog["Edit Entities Dialog"]
+    end
+
+    subgraph Backend["Backend (FastAPI)"]
+        ResumeRoute["POST /api/v1/resumes/extract"]
+        JobRoute["POST /api/v1/jobs/extract"]
+        PatchRoute["PATCH /api/v1/resumes/{id}"]
+    end
+
+    subgraph ML["ML Services"]
+        TextExtract["PDF/Image Text Extraction"]
+        ResumeNER["Resume NER (BiLSTM-CRF)"]
+        JobNER["Job Poster NER"]
+    end
+
+    DB[(PostgreSQL)]
+
+    User --> CVUpload
+    User --> JobPage
+    CVUpload --> ResumeRoute
+    JobPage --> JobRoute
+    ResumeRoute --> TextExtract
+    ResumeRoute --> ResumeNER
+    JobRoute --> TextExtract
+    JobRoute --> JobNER
+    ResumeRoute --> DB
+    CVUpload --> EditDialog
+    EditDialog --> PatchRoute
+    PatchRoute --> DB

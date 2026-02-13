@@ -1,0 +1,22 @@
+%% Sequence Diagram: Resume Extract Flow
+%% Chapter 6, Section 6.4
+%% UC-02: Upload Resume and Extract Information
+
+sequenceDiagram
+    participant User
+    participant Frontend as Next.js Frontend
+    participant API as FastAPI API
+    participant Extract as Text Extraction
+    participant NER as Resume NER (BiLSTM-CRF)
+    participant DB as PostgreSQL
+
+    User->>Frontend: Upload PDF or Paste text
+    Frontend->>API: POST /api/v1/resumes/extract (file or text)
+    API->>Extract: Extract text from PDF/image
+    Extract-->>API: Raw text
+    API->>NER: parse_resume_hybrid(text)
+    NER-->>API: entities (NAME, EMAIL, SKILL, etc.)
+    API->>DB: INSERT Resume (entities, raw_text)
+    DB-->>API: resume_id
+    API-->>Frontend: entities, raw_text, resume_id
+    Frontend-->>User: Display extracted entities (Edit option)

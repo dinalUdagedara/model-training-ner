@@ -1,0 +1,30 @@
+%% BiLSTM-CRF Neural Network Architecture - Resume NER
+%% Chapter 6, Section 6.5
+%% Path 2: Word2Vec + 2-Layer BiLSTM + CRF
+
+flowchart TB
+    Input["Input: Tokenized resume text<br/>(word-level)"]
+    
+    subgraph Embed["Embedding Layer"]
+        W2V["Word2Vec Embeddings<br/>256-dim, vocab ~46k"]
+    end
+
+    subgraph LSTM["Recurrent Layer"]
+        BiLSTM["2-Layer Bidirectional LSTM<br/>hidden_dim: 384 (192×2)<br/>dropout: 0.35"]
+    end
+
+    subgraph Projection["Projection"]
+        Linear["Linear → 13 labels"]
+    end
+
+    subgraph Decode["Decoding"]
+        CRF["CRF<br/>Conditional Random Field"]
+    end
+
+    Output["Output: BIO tags per token<br/>B-NAME, I-SKILL, O, etc."]
+
+    Input --> W2V
+    W2V --> BiLSTM
+    BiLSTM --> Linear
+    Linear --> CRF
+    CRF --> Output

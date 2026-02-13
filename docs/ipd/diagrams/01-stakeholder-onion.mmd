@@ -1,0 +1,33 @@
+%% Stakeholder Onion Diagram - CrackInt
+%% Chapter 4, Section 4.3.1
+%% Layers (inside out): Core → Operational → Strategic → External
+%% Export: mermaid.live or VS Code → PNG/SVG
+%%
+%% Note: For a true concentric-circle onion, redraw in PowerPoint/draw.io
+%% with 4 circles; Layer 1 (innermost), Layer 4 (outermost).
+
+flowchart TB
+    subgraph L4["Layer 4: External Influencers"]
+        Reg["Regulatory (GDPR/CCPA)"]
+        AIEth["AI Ethics Orgs"]
+        Comp["Competitors"]
+        TechProv["Tech Providers"]
+    end
+
+    subgraph L3["Layer 3: Strategic Stakeholders"]
+        Acad["Academic Institutions"]
+        Corp["Corporate Partners"]
+        Research["Research Community"]
+    end
+
+    subgraph L2["Layer 2: Operational Stakeholders"]
+        Career["Career Services"]
+        TechSup["Technical Support"]
+        DevTeam["Development Team"]
+    end
+
+    subgraph L1["Layer 1: Core Stakeholders"]
+        JobSeek["Job Seekers"]
+        Students["Students"]
+        EarlyCareer["Early-Career Professionals"]
+    end
