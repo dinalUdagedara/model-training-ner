@@ -18,6 +18,13 @@ Mermaid diagram files for the CrackInt IPD report. Export to PNG or SVG for the 
 | `08-activity-main-user-flow.mmd` | Activity: Main User Flows | 6 | 6.4 |
 | `09-bilstm-crf-architecture.mmd` | BiLSTM-CRF Neural Network | 6 | 6.5 |
 | `10-ui-wireframes-spec.md` | UI Wireframe Specifications | 6 | 6.6 |
+| `11-concept-map.mmd` | Concept Map (Literature Review) | 2 | 2.2 |
+
+---
+
+## Concept Map Export Tip
+
+For `11-concept-map.mmd`, use **Theme: Default** in mermaid.live (not Sketch) for clean, professional lines suitable for the thesis.
 
 ---
 
