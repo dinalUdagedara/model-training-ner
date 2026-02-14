@@ -120,38 +120,6 @@ The final Resume NER model is **Word2Vec + BiLSTM + CRF** (Path 2), achieving Te
 
 *Figure 9: BiLSTM-CRF Architecture — Resume NER model*
 
-```
-Input: Tokenized resume text (word-level)
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Word2Vec Embeddings (256-dim)      │  ← Trained on resume corpus
-│  vocab_size: ~46k, UNK/PAD handling │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  2-Layer Bidirectional LSTM         │
-│  hidden_dim: 384 (192×2)            │
-│  dropout: 0.35                      │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Linear projection → num_labels     │
-│  (13 BIO tags)                      │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  CRF (Conditional Random Field)     │
-│  Decodes best label sequence        │
-└─────────────────────────────────────┘
-         │
-         ▼
-Output: BIO tags per token (B-NAME, I-SKILL, O, etc.)
-```
-
 ### 6.5.2 Entity Types and BIO Tags
 
 | Entity | B-Tag | I-Tag | Example |
