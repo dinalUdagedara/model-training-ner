@@ -1,0 +1,34 @@
+%% Activity Diagram: Main User Flows - CrackInt
+%% Chapter 6, Section 6.4
+%% Primary flows: Resume Upload, Job Extract, Practice Session
+
+flowchart TB
+    Start([Start]) --> Choice{User Action}
+    Choice -->|Upload Resume| A1[Upload PDF or Paste text]
+    Choice -->|Extract Job| B1[Paste or Upload job description]
+    Choice -->|Practice| C1[Select resume + job]
+
+    A1 --> A2[Submit to backend]
+    A2 --> A3[Text extraction]
+    A3 --> A4[Resume NER]
+    A4 --> A5[Display entities]
+    A5 --> A6{Edit?}
+    A6 -->|Yes| A7[Edit entities modal]
+    A7 --> A8["PATCH /resumes/id"]
+    A8 --> A5
+    A6 -->|No| End1([End])
+
+    B1 --> B2[Submit to backend]
+    B2 --> B3[Text extraction if PDF]
+    B3 --> B4[Job Poster NER]
+    B4 --> B5[Display job entities]
+    B5 --> End2([End])
+
+    C1 --> C2[Create PrepSession]
+    C2 --> C3[Chat interface]
+    C3 --> C4{Answer question?}
+    C4 -->|Yes| C5[Submit answer]
+    C5 --> C6[POST message]
+    C6 --> C7[Future: Semantic feedback]
+    C7 --> C4
+    C4 -->|No / Done| End3([End])

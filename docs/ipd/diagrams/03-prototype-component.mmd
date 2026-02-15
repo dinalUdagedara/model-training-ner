@@ -1,0 +1,45 @@
+%% Current Prototype Component Diagram - CrackInt
+%% Chapter 6, Section 6.3.2
+%% IPD scope: CV upload, Job extract, Edit entities, Sessions
+%% Layout: single DB gateway so no line crosses Edit Dialog / PatchRoute
+
+flowchart TB
+    User["User"]
+
+    subgraph Frontend["Frontend (Next.js)"]
+        CVUpload["CV Upload Page"]
+        JobPage["Job Description Page"]
+        EditDialog["Edit Entities Dialog"]
+    end
+
+    subgraph Backend["Backend (FastAPI)"]
+        JobRoute["POST /api/v1/jobs/extract"]
+        ResumeRoute["POST /api/v1/resumes/extract"]
+        PatchRoute["PATCH /api/v1/resumes/{id}"]
+    end
+
+    subgraph ML["ML Services"]
+        TextExtract["PDF/Image Text Extraction"]
+        ResumeNER["Resume NER (BiLSTM-CRF)"]
+        JobNER["Job Poster NER"]
+    end
+
+    %% Single gateway: both DB connections go straight down (no rightward line across diagram)
+    Persistence["Persistence layer"]
+    DB[(PostgreSQL)]
+
+    User --> CVUpload
+    User --> JobPage
+    CVUpload --> ResumeRoute
+    JobPage --> JobRoute
+    CVUpload --> EditDialog
+    EditDialog --> PatchRoute
+
+    ResumeRoute --> TextExtract
+    ResumeRoute --> ResumeNER
+    JobRoute --> TextExtract
+    JobRoute --> JobNER
+
+    ResumeRoute --> Persistence
+    PatchRoute --> Persistence
+    Persistence --> DB

@@ -1,0 +1,22 @@
+%% Sequence Diagram: Job Extract Flow
+%% Chapter 6, Section 6.4
+%% UC-03: Provide Job Poster and Generate Questions (extract part)
+
+sequenceDiagram
+    participant User
+    participant Frontend as Next.js Frontend
+    participant API as FastAPI API
+    participant Extract as Text Extraction
+    participant JobNER as Job Poster NER
+    participant DB as PostgreSQL
+
+    User->>Frontend: Paste job description or Upload PDF
+    Frontend->>API: POST /api/v1/jobs/extract (text or file)
+    API->>Extract: Extract text (if PDF/image)
+    Extract-->>API: Raw text
+    API->>JobNER: Extract skills/entities from job text
+    JobNER-->>API: entities (Skills, Experience, Education, etc.)
+    API->>DB: INSERT JobPosting (optional, for persistence)
+    DB-->>API: job_posting_id
+    API-->>Frontend: entities
+    Frontend-->>User: Display extracted job entities

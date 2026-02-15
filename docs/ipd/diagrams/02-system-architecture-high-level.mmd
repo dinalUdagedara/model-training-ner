@@ -1,0 +1,35 @@
+%% System Architecture (High-Level) - CrackInt
+%% Chapter 6, Section 6.3.1
+%% Target/PPRS architecture: User → Next.js → FastAPI → NER/LLM/Semantic → PostgreSQL & S3
+
+flowchart LR
+    subgraph Client["Client"]
+        Browser["Browser"]
+    end
+
+    subgraph Frontend["Frontend"]
+        NextJS["Next.js 14"]
+    end
+
+    subgraph Backend["Backend"]
+        FastAPI["FastAPI"]
+    end
+
+    subgraph Services["Services"]
+        NER["Resume & Job NER"]
+        LLM["LLM Question Gen"]
+        Semantic["Semantic Feedback"]
+    end
+
+    subgraph Data["Data"]
+        DB[(PostgreSQL)]
+        S3[(AWS S3)]
+    end
+
+    Browser --> NextJS
+    NextJS --> FastAPI
+    FastAPI --> NER
+    FastAPI --> LLM
+    FastAPI --> Semantic
+    FastAPI --> DB
+    FastAPI --> S3

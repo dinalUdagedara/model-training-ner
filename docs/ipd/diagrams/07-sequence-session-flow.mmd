@@ -1,0 +1,24 @@
+%% Sequence Diagram: Session / Chat Flow
+%% Chapter 6, Section 6.4
+%% UC-04: Conduct Interactive Practice Session (structure; LLM/feedback pending)
+
+sequenceDiagram
+    participant User
+    participant Frontend as Next.js Frontend
+    participant API as FastAPI API
+    participant DB as PostgreSQL
+
+    User->>Frontend: Start new session (resume + job selected)
+    Frontend->>API: POST /api/v1/sessions (resume_id, job_posting_id)
+    API->>DB: INSERT PrepSession
+    DB-->>API: session_id
+    API-->>Frontend: PrepSession
+    Frontend-->>User: Session created, chat UI shown
+
+    Note over User,DB: Message flow (future: LLM QG + Semantic Feedback)
+    User->>Frontend: Submit answer
+    Frontend->>API: POST /api/v1/sessions/{id}/messages (QUESTION/ANSWER/FEEDBACK)
+    API->>DB: INSERT Message
+    DB-->>API: message
+    API-->>Frontend: Message
+    Frontend-->>User: Display message (future: display feedback)

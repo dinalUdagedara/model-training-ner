@@ -20,6 +20,23 @@ All documents for the IPD submission (6COSC023W, 15% of FYP). **Deadline:** 05 F
 | [demo-video-script.md](demo-video-script.md) | **Demo video script and outline:** code walk-through (max 7 min) for both NER models and job extractor, prototype demo steps (max 3 min), talking points, and checklist before recording. |
 | [demo-video-full-speech.md](demo-video-full-speech.md) | **Full speech for the demo:** word-for-word script to read aloud for Part A (repo, resume NER, job NER, job extractor, frontend) and Part B (live demo and closing); includes a short version if you need to trim time. |
 
+### IPD thesis chapter drafts (missing from PPRS)
+
+| Document | Purpose |
+|----------|---------|
+| [chapter-05-slep.md](chapter-05-slep.md) | **Chapter 5: SLEP** — Social, Legal, Ethical, Professional issues; 2×2 table; BCS Code of Conduct; consent and data handling. |
+| [chapter-06-design.md](chapter-06-design.md) | **Chapter 6: Design** — Design goals, system architecture, BiLSTM-CRF algorithm, detailed design, UI wireframes. |
+| [chapter-07-implementation.md](chapter-07-implementation.md) | **Chapter 7: Implementation** — Technology stack, dataset/NER stats, core modules, code structure, UI, challenges and solutions. |
+| [abstract-initial-results.md](abstract-initial-results.md) | **Abstract paragraph 3** — Initial results: NER metrics (F1 0.79), per-entity performance, integration. Copy-paste for IPD abstract. |
+| [chapter-08-time-schedule-updated.md](chapter-08-time-schedule-updated.md) | **Chapter 8: Time Schedule** — Updated Gantt, actual vs planned, deviations, impact. |
+
+### Diagrams
+
+| Folder | Purpose |
+|--------|---------|
+| [diagrams/](diagrams/) | Mermaid diagram files (.mmd) for Chapter 4 & 6: Stakeholder Onion, System Architecture, Prototype Component, Class Diagram, Sequence Diagrams (Resume, Job, Session), Activity Diagram, BiLSTM-CRF Architecture. Use [mermaid.live](https://mermaid.live) to export to PNG/SVG. |
+| [diagrams/10-ui-wireframes-spec.md](diagrams/10-ui-wireframes-spec.md) | UI wireframe specifications (ASCII layouts + element specs) for draw.io/Figma. |
+
 ---
 
 ## Related
