@@ -1,0 +1,82 @@
+%% Class Diagram - CrackInt Backend
+%% Chapter 6, Section 6.4
+%% Based on app/models.py
+%% Restructured to reduce overlapping: combined base models, LR direction
+
+classDiagram
+    direction LR
+
+    %% Base model (combines UUID + Timestamp mixins to reduce inheritance clutter)
+    class BaseModel {
+        <<abstract>>
+        +UUID id
+        +datetime created_at
+        +datetime updated_at
+    }
+
+    class User {
+        +UUID id
+        +str name
+        +str email
+        +datetime created_at
+        +datetime updated_at
+    }
+
+    class Resume {
+        +UUID id
+        +UUID user_id
+        +dict entities
+        +str raw_text
+        +datetime created_at
+        +datetime updated_at
+    }
+
+    class JobPosting {
+        +UUID id
+        +UUID user_id
+        +dict entities
+        +str raw_text
+        +str location
+        +datetime deadline
+        +datetime created_at
+        +datetime updated_at
+    }
+
+    class PrepSession {
+        +UUID id
+        +UUID user_id
+        +UUID resume_id
+        +UUID job_posting_id
+        +str mode
+        +str status
+        +float readiness_score
+        +dict summary
+        +datetime created_at
+        +datetime updated_at
+    }
+
+    class Message {
+        +UUID id
+        +UUID session_id
+        +str sender
+        +str type
+        +str content
+        +dict meta
+        +datetime created_at
+        +datetime updated_at
+    }
+
+    %% Inheritance (5 arrows instead of 10 - much cleaner)
+    BaseModel <|-- User
+    BaseModel <|-- Resume
+    BaseModel <|-- JobPosting
+    BaseModel <|-- PrepSession
+    BaseModel <|-- Message
+
+    %% Associations - domain relationships
+    User --> Resume
+    User --> JobPosting
+    User --> PrepSession
+    Resume --> PrepSession
+    JobPosting --> PrepSession
+    PrepSession --> Message
