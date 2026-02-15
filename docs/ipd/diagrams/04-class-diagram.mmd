@@ -1,13 +1,15 @@
 %% Class Diagram - CrackInt Backend
 %% Chapter 6, Section 6.4
 %% Based on app/models.py
+%% Restructured to reduce overlapping: combined base models, LR direction
 
 classDiagram
-    class UUIDModel {
-        +UUID id
-    }
+    direction LR
 
-    class TimestampModel {
+    %% Base model (combines UUID + Timestamp mixins to reduce inheritance clutter)
+    class BaseModel {
+        <<abstract>>
+        +UUID id
         +datetime created_at
         +datetime updated_at
     }
@@ -64,19 +66,17 @@ classDiagram
         +datetime updated_at
     }
 
-    UUIDModel <|-- User
-    UUIDModel <|-- Resume
-    UUIDModel <|-- JobPosting
-    UUIDModel <|-- PrepSession
-    UUIDModel <|-- Message
-    TimestampModel <|-- User
-    TimestampModel <|-- Resume
-    TimestampModel <|-- JobPosting
-    TimestampModel <|-- PrepSession
-    TimestampModel <|-- Message
-    User "1" --> "*" Resume : owns
-    User "1" --> "*" JobPosting : owns
-    User "1" --> "*" PrepSession : owns
-    Resume "1" --> "*" PrepSession : linked to
-    JobPosting "1" --> "*" PrepSession : linked to
-    PrepSession "1" --> "*" Message : contains
+    %% Inheritance (5 arrows instead of 10 - much cleaner)
+    BaseModel <|-- User
+    BaseModel <|-- Resume
+    BaseModel <|-- JobPosting
+    BaseModel <|-- PrepSession
+    BaseModel <|-- Message
+
+    %% Associations - domain relationships
+    User --> Resume
+    User --> JobPosting
+    User --> PrepSession
+    Resume --> PrepSession
+    JobPosting --> PrepSession
+    PrepSession --> Message
