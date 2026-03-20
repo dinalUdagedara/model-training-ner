@@ -1,0 +1,991 @@
+INFORMATICS INSTITUTE OF TECHNOLOGY
+In Collaboration with
+UNIVERSITY OF WESTMINSTER
+
+
+Insert your topic here
+
+Interim Project Demo by
+Insert your [Salutation] [First Name] [Last Name] 
+
+
+Supervised by
+Insert your supervisor’s [Salutation] [First Name] [Last Name]
+
+
+Submitted in partial fulfilment of the requirements for the BEng/BSc in <Insert the nomenclature of the degree> degree at the University of Westminster.
+
+insert Month insert Year
+
+Important Information
+Cover page Should not have a page number. If you start numbering from the cover page, only the first 100 pages will be evaluated. Nothing beyond that.
+
+Starting from abstract to list of abbreviations must use a different numbering system (ex: roman numerals).
+
+Introduction to conclusion will be the main content that has 100 pages (these will use the regular indo-arabic numbering).
+
+Follow TTT. Tell what you are going to tell; Tell it; Tell what you told. Do not put any table/figure that is not done by you or add unnecessary definitions/theory as this can simply be cited.
+
+All diagrams must have a brief description explaining what it illustrates as a summary paragraph before/after the diagram. Additionally Figure captions are required.
+
+Do not put important things in the appendix. Examiners usually do not even look at the appendix. Only additional things should be placed in it.
+
+Order of content Upto Introduction
+	•	Cover Page - Use the standard cover page provided 
+	•	Abstract
+	•	Declaration page
+	•	Acknowledgement
+	•	Table of contents
+	•	List of all sections, sub-sections, chapters with their respective page numbers.
+	•	Page numbering uses Roman numerals (i, ii, iii) for this section.
+	•	List of figures
+	•	Page Numbering: Continue using Roman numerals for this section.
+	•	List of Figures: Include figure numbers, captions, and page numbers.
+	•	List of tables
+	•	Page Numbering: Continue using Roman numerals for this section.
+	•	List of Tables: List all tables with numbers, titles, and page numbers.
+	•	List of abbreviations
+	•	Page Numbering: Continue using Roman numerals for this section.
+	•	List of Abbreviations: Include any abbreviations used in the document with their definitions.
+
+Formatting Guidelines for Thesis
+These guidelines must be strictly followed, and any deviation will be considered an attempt to cheat and may lead to penalties.
+1. Chapter Heading
+	•	Font Size: 16
+	•	Font Type: Times New Roman
+	•	Format: ALL CAPS
+	•	Style: Bold
+Example:
+Chapter 01: Introduction
+
+2. Subheading - First Level (e.g., 1.1)
+	•	Font Size: 14
+	•	Font Type: Times New Roman
+	•	Format: Only the first word is capitalized
+	•	Style: Bold
+Example:
+1.1 Problem background
+
+3. Subheading - Second Level (e.g., 1.1.1)
+	•	Font Size: 12
+	•	Font Type: Times New Roman
+	•	Format: Only the first word is capitalized
+	•	Style: Bold
+Example:
+1.1.1 Fraud detection system overview
+
+4. Body of Text (Paragraphs)
+	•	Font Size: 12
+	•	Font Type: Times New Roman
+	•	Line Spacing: 1.5
+	•	Text Alignment: Justified
+	•	Sentence Case: The text should follow normal sentence capitalization rules.
+	•	Margins: 1 inch on each side (top, bottom, left, and right).
+
+Footer and Header Instructions
+	•	Header:
+	•	Left: Short project name (e.g., "File Sense")
+	•	Right: Chapter name (e.g., "Introduction")
+	•	Footer:
+	•	Page number in the center
+	•	Your first name with initials or student ID (IIT Number / UoW Number)
+
+Important Notes:
+	•	No line borders or lines should be used in the header or footer, except for the coversheet.
+	•	Large phrases or unnecessary decoration should be avoided.
+By following these strict formatting guidelines, your document will meet the professional and academic standards required.
+
+
+
+
+
+ABSTRACT
+	•	Page Number: Starts from this page with Roman numerals (i).
+	•	Word Limit: Not exceeding 300 word limit.
+	•	Three Paragraphs:
+	•	Problem: Briefly summarize the problem your project addresses.
+	•	Methodology: How did you approach the problem? Summarize your research approach or methodology.
+	•	Initial Results: Provide a brief quantitative discussion of your prototype's results (e.g., Confusion Matrix, AUC-ROC, RMSE, etc.).
+	•	Subject Descriptors (from ACM): Use the ACM CCS system to select relevant descriptors. Below is an example format:
+Example:
+	•	Information systems -> Information retrieval -> Search engine architectures and scalability -> Search engine indexing
+	•	
+	•	Keywords: Choose 3-5 keywords that are relevant to your project and could help in literature review searches.
+
+Example Abstract: Stock Closing Price Prediction using Machine Learning Techniques
+Abstract Problem: Accurate prediction of stock market returns is a very challenging task due to volatile and non-linear nature of the financial stock markets. With the introduction of artificial intelligence and increased computational capabilities, programmed methods of prediction have proved to be more efficient in predicting stock prices..
+Methodology: In this work, Artificial Neural Network and Random Forest techniques have been utilized for predicting the next day closing price for five companies belonging to different sectors of operation. The financial data: Open, High, Low and Close prices of stock are used for creating new variables which are used as inputs to the model..
+Results:  The models are evaluated using standard strategic indicators: RMSE and MAPE. The low values of these two indicators show that the models are efficient in predicting stock closing price.
+
+Subject Descriptors:
+	•	Information systems -> Data management systems -> Database management system engines -> Data mining
+	•	Computing methodologies -> Machine learning -> Machine learning approaches -> Neural networks
+Keywords: Stock closing price prediction, real-time processing, Random Forest, neural networks
+
+Chapter 01: Introduction
+1.1 Chapter Overview
+	•	Briefly outline what the chapter will cover, providing a preview of the sections.
+1.2 Problem Background
+	•	Provide a detailed background of the problem domain.
+	•	1 and ½ page maximum
+	•	Example: "The increased reliance on digital banking has introduced a greater risk of fraudulent transactions. Current fraud detection systems fail to achieve real-time processing without compromising accuracy."
+1.3 Problem Definition
+	•	Define the specific problem the project aims to solve in a concise manner.
+	•	½ a page to 2/3 of a page
+	•	Example: "The inefficiency of existing fraud detection models to process real-time transaction data while maintaining high accuracy is the key problem addressed in this project."
+1.3.1 Problem Statement
+It is a statement that means not more than one sentence – problem in nutshell 
+1.4 Research Motivation (Why technically challenging)
+	•	Explain the significance of the research and why addressing this problem is important.
+	•	One paragraph
+	•	Example: "With the increasing frequency of online transactions, financial institutions require more robust fraud detection systems that can detect fraudulent activity in real-time."
+1.5 Existing Work – start here when writing the proposal – first to write 
+	•	Use a table to summarize existing research, their contributions, and limitations.
+	•	Include in the table adequate number of related recent work which can justify the research gap
+Citation
+Summary
+Limitation
+Contribution
+Smith et al. (2020)
+Investigated neural networks for fraud detection.
+Lacks real-time processing capability.
+Improved accuracy in offline fraud detection.
+Zhang et al. (2019)
+Decision trees for fraud detection.
+Less effective on complex datasets.
+High speed in simpler cases.
+
+Include a critical review of the above papers in a paragraph.
+1.6 Research Gap 
+	•	Identify gaps in existing research and justify the need for your project.
+	•	Example: "Most fraud detection models either prioritize speed or accuracy, but very few balance both effectively in real-time. Although Graph-based techniques have shown promising results, the ML algorithms have been underexplored to improve the accuracy"
+1.7 Contribution to Body of Knowledge 
+	•	Problem Domain Contribution: Explain how your system will address the identified problem.
+	•	Research Domain Contribution: Discuss how your research will contribute to advancing existing research (e.g., Eg: We propose using ML algorithms to improve the accuracy of real-time fraud detection using graph-based techniques. ).
+1.8 Research Challenges
+	•	Identify and include the research related challenges for your project. 
+	•	Example: "One of the main challenges is maintaining a balance between real-time detection and high accuracy."
+1.9 Research Questions 
+Have three to four question based on your scope of the research:
+
+RQ1 : How can deep learning architectures be optimized to improve the accuracy of AI-generated image detection?
+
+RQ2 : What are the most effective features and indicators for identifying AI-generated images?
+
+RQ3 : How can ensemble methods enhance the robustness and reliability of AI-generated image detection systems?
+The answer to these question(s) going to be your research thesis.
+
+1.10 Research Aim
+	•	Summarize the aim of the project. Aim is a statement as can be observed from the example below.
+	•	Example: "The aim of this research is to analyse, design, develop and evaluate a real-time fraud detection system using hybrid machine learning models."
+
+1.10 Research Objectives 
+
+Define specific research questions and link them to objectives.
+PS: each of the below might cover one or more learning outcomes but ensure all learning outcomes are covered atleast once in the following LOs Mapping 
+Objectives
+Research Objective
+Description
+LOs Mapped
+RQ Mapped
+Problem Identification
+R01: To identify the research gap in the area of Alzheimer’s detection using multimodal and multi model
+
+
+Map your learning outcomes with research objectives. Tell by completing these research objectives what are the learning outcomes that will be met?
+L02
+
+Literature Review 
+R02: To carryout a indepth literature survey on Alzheimer detection
+R02: To conduct a literature review on modality for Alzheimer detection
+R03: To conduct an literature review to choose best available ML/DL-based techniques to build high accurate and higher performance model for Alzheimer detection
+
+
+L01, L04
+
+Requirement Elicitation
+R04: To identify the stakeholder for developing a system for alzhimier detection 
+R04: To identify best possible requirement eliciation methods to develop Alzheimer detection model
+R05: To identify the user requirements to build a system to delect Alzheimer 
+
+
+L03
+
+System Design
+
+
+
+
+Implementation
+R11: To collect and preprocess transactional datasets
+Data will be collected from online transactions and cleaned.
+
+
+
+R12: To develop a hybrid machine learning model
+Combine decision trees and neural networks for fraud detection.
+L01
+
+
+R13: To implement real-time detection mechanisms
+Integrate real-time fraud detection into the system.
+
+
+Testing 
+R14: To evaluate the accuracy and efficiency of the model
+Perform testing and benchmarking.
+
+
+Documentation
+
+
+
+
+Publication
+1. Literature Survey can be published  
+2. Final Paper with result you can publish more than one 
+PS: do not submit same research paper to more than one place (if you do this you will be caught on self plagiarism)
+
+
+
+
+1.11 Project Scope
+1.11.1 In Scope
+Within the research problem, include what you will consider to address.
+Eg: System will work with only English language text data. 
+1.11.2 Out Scope
+State here any part of the problem, you think is relevant but cannot address during the project / duration in hand
+Eg: The system will not add romanized text or emojis when predicting the sentiment aspect.
+We will limit to using text from general-domain during predicting the sentiment. The system will not be generalized in predicting sentiment with Law, Medical, Literature domains.
+
+1.12 Hardware/Software Requirements
+In a Table include the hardware and Software requirements. 
+The hardware should cover the specification about the Development Environment (CPU) and/or model training requirement (GPU - VRAM and GPU card).
+The Software table should include the Software/Tools (eg: Python 3.10, Pytorch 2.0, Google docs) you used for development, documentation etc..
+
+1.13 Chapter Summary
+	•	Provide a summary of the chapter’s contents.
+
+
+Chapter 02: Literature Review
+2.1 Chapter Overview
+	•	Provide an overview of what the chapter will cover.
+2.2 Concept Map
+
+The concept map visually represents the key focus areas that explain the purpose of conducting the literature review. 
+
+2.2 Problem Domain
+	•	Discuss the problem domain in detail.
+	•	Example:
+	•	"Fraud detection in banking is an evolving field with increasing reliance on automated systems for identifying suspicious activities."
+2.3 Existing Work
+	•	Review and critique existing research.
+First search using your topic in the https://scholar.google.com/  why GoogleScholar? So far the largest collection of research papers.
+Example I’m interested in the following paper:
+https://link.springer.com/article/10.1007/s10590-017-9203-5 
+As result I can find paper that has cited the above paper
+https://scholar.google.com/scholar?cites=6936532516703825121&as_sdt=2005&sciodt=0,5&hl=en 
+
+Put something like below with your topic “a multimodal continuous authentication model using behavioural biometrics for this research topic come up with tabular form for Literature Survey covering the pipeline multimodal continuous authentication model using behavioural biometrics and also cover the citation, summary, what that author has contributed, what are limitations, methodology, link to the research paper or DOI, and come up with columns to include other important aspects including limitations and also critical review of the approach taken as columns. each step of the pipeline must be a column in literature survey table” to come up with a table for the literature survey
+
+Once I find set of research papers I will summarise the research paper in the literature survey tabular form.
+Once Literature Survey is done now I can write the Existing Work (Critical evaluation is what is most important)
+
+While writing Existing work for the topic multimodal continuous authentication model using behavioural biometrics I can use the following category to discuss research papers that I have used in the LS (literature survey).
+Biometric Modalities Used:
+	•	Touch-Based Biometrics: Studies that focus on touch gestures, such as swipes, taps, and typing patterns.
+	•	Keystroke Dynamics: Research that examines typing speed, rhythm, and key pressure.
+	•	Mouse Dynamics: For desktop environments, mouse movement patterns, clicks, and scroll behaviors.
+	•	Gait and Posture Analysis: Work that uses walking patterns or posture changes for authentication.
+	•	Multimodal Combinations: Studies combining two or more behavioral biometrics, such as touch and keystroke, to improve accuracy and resilience.
+
+	•	Example:
+	•	Neural Networks: "NNs have shown promising results but struggle with real-time constraints due to computational complexity."
+	•	Decision Trees: "DTs offer faster processing but lack the accuracy needed for large datasets."
+2.4  Dataset Selection 
+	•	Describe supporting datasets for the selected problem. Use citations for these datasets.
+	•	Example:
+	•	"Dataset: Transaction data from online retail platforms.
+2.5 Benchmarking and Evaluation
+	•	Compare existing solutions based on specific criteria.
+	•	Example:
+	•	"Benchmarking models based on accuracy, precision, recall, and processing time."
+2.7 Chapter Summary
+	•	Summarize key findings and highlight the gaps your project addresses.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example to show how to structure the literature review. Identify the headings/subheadings and a logical flow for your Literature review. Then expand each section. Critical review is important for each of these sections. 
+
+Chapter 2: Literature Review
+	•	Chapter Overview
+Scope of the Literature Review
+2.2 Concept map
+2.3   Problem Domain
+2.3.1 Overview of Continuous Authentication
+2.3.2 Importance of Behavioral Biometrics
+2.3.3 Application Areas
+2.2.3.1 Security-Sensitive Applications
+2.2.3.2 User Privacy and Convenience
+2.3.4 Challenges in Continuous Authentication
+2.2.4.1 Intrusiveness and User Experience
+2.2.4.2 Scalability and Real-Time Requirements
+2.2.4.3 Robustness to Impostor Attacks
+2.3.5 Proposed Architecture 
+2.4 Existing Work
+2.4.1 Touch-Based Biometrics
+2.4.2 Keystroke Dynamics
+2.4.3 Mouse Dynamics
+2.4.3 Gait and Posture Analysis
+2.4.4 Multimodal Combinations
+2.5 Technological Review 
+2.5.1 Dataset and Preprocessing
+	•	2.5.1.1 Data Sources and Acquisition
+	•	2.5.1.2 Preprocessing Techniques
+	•	2.5.1.2.1 Noise Filtering and Normalization
+	•	2.5.1.2.2 Feature Scaling and Standardization
+	•	2.5.1.2.3 Outlier Detection and Removal
+2.6 Benchmarking and Evaluation
+2.6.1 Evaluation Metrics for Authentication Models
+	•	2.6.1.1 Accuracy, Precision, and Recall
+	•	2.6.1.2 F1-Score and AUC-ROC
+	•	2.6.1.3 Computational Efficiency and Processing Time
+2.6.2 Comparative Analysis of Existing Models
+	•	2.5.2.1 Benchmarking Studies
+	•	2.5.2.2 Real-World Performance and User Experience
+2.6.3 Challenges in Benchmarking Multimodal Systems
+2.7  Chapter Summary
+Key Findings, Identified Gaps in Existing Research and Relevance to Proposed Research will be covered in the chapter summary 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 03: Methodology
+3.1 Chapter Overview
+	•	A brief introduction to what will be covered in the methodology chapter.
+3.2 Research Methodology (Saunders' Research Onion in Table Form)
+
+Layer
+ Choice (What is Being Used)
+Justification (Why You Are Using It)
+Philosophy
+Only quantitative then positivism 
+Only qualitative then interpretivism 
+Both quantitative and qualitative then pragmatism 
+Dataset for Data Science Part:
+Machine learning model requires quantitative dataset.
+Requirement Elicitation Methodology
+1. Literature Review – Archival research 
+a. Interviews – if it is structured then Quantitative if it is unstructured then qualitative 
+Evaluation Methodology:
+Interviews – if it is structured then Quantitative if it is unstructured then qualitative
+Or Questionnaire (open ended then qualitative or closed ended then Quantitative )
+
+Approach
+Inductive (Theory building)
+Deductive (Theory Testing – hypothesis testing)
+Deductive: 
+To test the efficacy of machine learning models for fraud detection.
+Once a general model is developed (e.g., using algorithms like One-Class SVM and Isolation Forest), the research might apply deductive reasoning to test hypotheses about the model's effectiveness in new scenarios or with new data. For example, you may hypothesize that the model will achieve high accuracy across various application contexts, then design experiments to test this hypothesis.
+Methodological Choice
+Mixed methods (Quantitative and qualitative)
+Multi method
+Mono Method
+To capture both model performance and stakeholder feedback.
+Strategy
+Experimental (Model testing and evaluation)
+4. Strategies:
+	•	Experimentation: Set up controlled experiments where users interact with your system under defined conditions, allowing for structured data collection.
+	•	Survey: Use surveys to collect user opinions, experiences, or preferences. This is particularly useful if you're testing user satisfaction or ease of use in your project.
+	•	Case Study: Focus on a specific instance or group, such as studying the implementation of your system in a particular environment, to gather detailed qualitative and quantitative data.
+	•	Archival Research: If relevant data exists, use archival methods to collect secondary data, such as logs from existing systems or datasets available online.
+	•	Action Research: Collaborate with users, implementing your project iteratively and collecting data at each stage, which can provide insights into real-world applications and continuous improvement.
+	•	Observation: Use observational methods such as screen recording or in-app tracking to gather data on user interactions and behavior.
+	•	Interviews: Conduct semi-structured or structured interviews with users to gain insights into their experiences or issues with the system.
+	•	Questionnaires (Survey): Distribute questionnaires or surveys to collect data on user perceptions, preferences, or satisfaction.
+	•	Data Logging: Implement logging within your system to automatically record user interactions, biometric data, or system performance metrics.
+	•	Sensors and IoT Devices: In cases involving physical interaction, use sensors like accelerometers, gyroscopes, or cameras to collect data on user behavior.
+	•	Self evaluation
+	•	Etc..
+
+Experimentally test fraud detection models on real-world datasets.
+Time Horizon
+Cross-sectional
+Longitudinal 
+Single snapshot data is used for model training and evaluation.
+Data Collection
+Secondary data (Use of publicly available datasets)
+Public transactional datasets from financial institutions.
+
+Hypothesis: A continuous authentication model based on multimodal behavioral biometrics (such as touch patterns, keystroke dynamics, and other user interactions) can effectively and accurately authenticate users in real-time, maintaining high accuracy, reliability, and user convenience without requiring additional hardware.
+3.3 Development Methodology
+Outline available development methodologies eg: Waterfall, SCRUM, Iterative, Agile etc. Then state what is your choice of development methodology and justify the reason for selecting it. 
+
+3.3.1 Requirement Elicitation Methodology
+Various methodologies were used to elicit system requirements:
+	•	Interviews: Interviews with a Domain/Technical Expert if their opinion is important to decide on Functional/Non-Functional Requirements.
+	•	(Online) Surveys: Collected feedback from end-users about system inputs/outputs/Functional/Non-Functional Requirements. 
+	•	Document Analysis: Make use of documents/reports/specimens to identify any FR/NFR
+	•	Brainstorming: Facilitated sessions with stakeholders/people who have implemented similar systems to refine system features.
+	•	Self evaluation
+	•	Observation 
+
+3.3.2 Design Methodology
+	•	SSADM (Structured Systems Analysis and Design Methodology) or OOADM (Object-Oriented Analysis and Design Methodology) depending on system structure.
+3.3.3 Programming Paradigm
+	•	Object-Oriented Programming (OOP): Modular design using Python or Java.
+	•	Structured Programming: For procedural tasks requiring clear control flow.
+	•	Functional Programming: Suitable for complex data manipulations (e.g., Haskell, R).
+3.3.4 Testing Methodology
+	•	Model Testing: Evaluate each model’s accuracy, precision, recall, etc.
+	•	Prototype Testing: Assess overall system performance, including integration and user interaction.
+
+3.3.5 Solution Methodology (Expanded Subsections)
+	•	Dataset Collection: Gather data from transactional logs or public datasets.
+	•	Data Preprocessing: Clean and preprocess data, ensuring it is ready for training.
+	•	Feature Selection and Engineering: Select the most relevant features, such as transaction amount, location, and time.
+	•	Model Selection: Choose a hybrid model combining decision trees and neural networks.
+	•	Model Training: Train the model using the preprocessed dataset.
+	•	Testing: Evaluate the model’s performance metrics (e.g., accuracy, precision, recall).
+	•	Feedback Loop: Refine the model based on test results.
+You need not repeat 3.4.1.1, 3.4.1.2 here since it is mentioned 
+in the introduction section
+	•	 Project Management Methodology
+	•	Scope
+	•	In-Scope: Developing and testing a real-time fraud detection system.
+	•	Out-Scope: Deploying the system in a live banking environment.
+3.4.2 Schedule 
+3.4.2.1 Gantt Chart
+Include a visual representation of the project schedule with key milestones, such as:
+A proper Gantt Chart should have the Work Breakdown Structure (WBS), Start Date and End Date for each task, and the visual representation of the task duration.
+
+3.4.2.2 Deliverables:
+Delivarebles 
+Dates
+Project Proposal
+
+Literature Review
+
+Project Proposal
+10th Oct 2025
+Project Proposal and Requirement Specification – final draft
+
+Project Proposal and Requirement Specification – Final
+06th Nov 2025
+Design Document
+
+Prototype
+2nd Feb 2026
+Interim Project Demo
+2nd Feb 2026
+Implementation
+2nd Feb 2026
+Testing 
+
+Evaluation
+
+Thesis Submission
+30th Mar 2026
+Prototype
+30th Mar 2026
+Dataset and Source Code
+30th Mar 2026
+You need not repeat 3.4.3.1, 3.4.3.2 here since it is mentioned 
+in the introduction section
+	•	Resource Requirements
+3.4.3.1 Hardware: High-performance computing infrastructure for model training.
+3.4.3.2 Software: Python, TensorFlow, Scikit-learn.
+3.4.3.3 Data: Large-scale transactional datasets.
+3.4.3.4 Skills: Machine learning, Python programming, data science expertise.
+
+	•	Risk and Mitigation (Expanded with Severity and Frequency)
+Risk Exposure = Probability of Occurrence * Severity
+1 to 25	1 to 5	1 to 5
+Risk
+Severity 
+Frequency 
+Mitigation Strategy
+Insufficient training data
+5
+3
+Use data augmentation techniques or source additional datasets.
+Poor model accuracy
+3
+3
+Tune hyperparameters and explore additional models.
+Overfitting
+5
+5
+Apply regularization, cross-validation, and expand dataset size.
+Hardware limitations
+3
+1
+Leverage cloud platforms such as AWS or Google Cloud.
+High false-positive rate
+5
+3
+Refine feature engineering and adjust model thresholds.
+Stakeholder dissatisfaction
+3
+3
+Maintain consistent communication and validate requirements regularly.
+Delays in model training
+3
+3
+Optimize code and consider parallel processing techniques.
+Regulatory compliance issues
+5
+1
+Consult with compliance teams and adhere to financial regulations.
+
+	•	Chapter Summary
+
+
+
+Chapter 04: Software Requirement Specification (SRS)
+4.1 Chapter Overview
+
+The Software Requirement Specification (SRS) chapter provides a detailed analysis of the system’s requirements, including how they were elicited, the stakeholders involved, their viewpoints, and the functional and non-functional requirements of the system. It also includes visual representations such as the Rich Picture Diagram, Stakeholder Onion Model, Context Diagram, and Use Case Diagram to help understand the system’s interactions. Requirements are prioritized using the MoSCoW principle to ensure the focus on what is essential for the system's success.
+
+4.2 Rich Picture Diagram
+The Rich Picture Diagram (RPD) represents the system and its environment, providing a high-level view of the system’s interactions with its users, stakeholders, and processes. It helps visualize the complexity of the system and identify key areas of concern or interaction.
+	•	Purpose: To capture the overall environment in which the system operates and how it interacts with different stakeholders and components.
+	•	Link: Refer to the slideshare for more information here.
+
+4.3 Stakeholder Analysis
+4.3.1 Stakeholder Onion Model
+The Stakeholder Onion Model presents a layered approach to identifying stakeholders based on their influence and involvement in the system. This model groups stakeholders into layers that surround the system and shows their relationships. It helps in understanding who has direct vs. indirect influence on the system and at what level.
+	•	Link to Stakeholder Onion Model: More details here..
+
+
+4.3.2 Stakeholder Viewpoints
+Each stakeholder may have different expectations and needs from the system. It is important to document these viewpoints to ensure that the system addresses their concerns.
+Tabular form
+
+Stakeholder
+Role
+Description
+Students
+Main users of the LMS
+Use the system to access course materials, submit assignments, and track progress.
+Lecturers
+Content creators and evaluators
+Upload lecture slides, create quizzes, grade assignments, and give feedback.
+Accreditation Bodies
+Regulators
+Check whether the LMS meets academic standards and policies
+
+	•	Stakeholders:
+	•	Fraud Analysts: Need accurate and quick fraud detection to reduce financial losses.
+	•	Banking Institution: Require system scalability and security.
+	•	End-Users: Want secure and fast transaction processing with minimal false alarms.
+	•	Regulatory Authorities: Concerned with compliance and auditability.
+
+4.4 Selection of Requirement Elicitation Methodologies
+For this project, various methodologies were employed to gather requirements. Each methodology was selected based on its ability to capture relevant, accurate, and actionable insights from stakeholders.
+	•	Interviews: Conducted with domain experts (e.g., fraud analysts) to gather in-depth knowledge about system needs.
+	•	Surveys: Distributed to end-users to gather feedback on usability and security preferences.
+	•	Document Analysis: Reviewed documentation from existing fraud detection systems to understand current shortcomings.
+	•	Brainstorming Sessions: Held with key stakeholders to generate ideas for system features and functionalities.
+
+4.5 Discussion of Findings
+For each methodology used, key findings are documented below.
+4.5.1 Literature Review Findings
+	•	Finding: Existing fraud detection systems prioritize either accuracy or speed but rarely both.
+	•	Citation: (Smith et al., 2020).
+
+4.5.2 Interviews Findings 
+Codes
+Themes
+Conclusion
+Real-time data
+Accuracy vs. speed
+Real-time processing is a significant challenge.
+False positives
+Detection effectiveness
+High false positives are common in existing systems.
+
+4.5.3 Survey Findings
+Online survey was structured to capture the system expectations from x, y, and z stakeholders. Refer to questionnaire in Appendix A. The online questionnaire was sent for <sent number> where a total of <received responses> were received.
+Response Analysis
+4.5.4 Brainstorming/Observation
+Refer to a good sample report
+
+4.6 Summary of Findings
+Refer to a good sample report
+4.7 Context Diagram
+The Context Diagram illustrates the system as a central bubble, with external users represented as rectangles. It shows what inputs each user gives to the system and what outputs they receive in return. Developers are not shown, only end-users and stakeholders.
+	•	Level 0 Data Flow Diagram:
+	•	Users: Fraud Analysts, End Users, Regulatory Bodies.
+	•	System Inputs: Transaction data from users, compliance requests from regulatory bodies.
+	•	System Outputs: Fraud alerts to analysts, audit logs to regulatory bodies.
+
+4.8 Use Case Diagram
+The Use Case Diagram represents the key interactions between the system and its users. The actors in the Use Case Diagram should match those in the Context Diagram to maintain 
+Main Actors:
+	•	Fraud Analysts: Receive fraud alerts.
+	•	End Users: Make transactions.
+	•	Regulatory Bodies: Review compliance reports.
+
+4.9 Use Case Descriptions
+Only the main use cases are described here; the rest will be provided in the appendix.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4.10 Requirements
+MoSCoW Principle
+The MoSCoW principle is used to prioritize requirements into:
+	•	M: Must Have (mandatory).
+	•	S: Should Have (important).
+	•	C: Could Have (desirable).
+	•	W: Will Not Have (out of scope).
+For the February submission, focus will be on Must Have (M) requirements, while the April submission will include both Must Have (M) and Should Have (S) requirements, with potential inclusion of Could Have (C) requirements for future enhancements.
+
+4.10.1 Functional Requirements
+ID
+Requirement
+Priority (MoSCoW)
+FR01
+The system must detect fraudulent transactions in real-time.
+Must Have
+FR02
+The system must provide fraud alerts to fraud analysts.
+Must Have
+FR03
+The system should allow fraud analysts to override false positives.
+Should Have
+FR04
+The system could integrate with external databases for additional fraud checks.
+Could Have
+
+4.10.2 Non-Functional Requirements
+ID
+Non-Functional Requirement
+Description
+Priority (MoSCoW)
+NFR01
+Scalability
+The system must handle 1,000 transactions per second.
+Must Have
+NFR02
+Security
+The system must encrypt all transaction data.
+Must Have
+NFR03
+Performance
+The system should maintain an average response time of <1 second.
+Should Have
+NFR04
+Usability
+The system could provide a dashboard for real-time monitoring of transactions.
+Could Have
+
+4.11 Chapter Summary
+The Software Requirement Specification chapter has provided a comprehensive overview of the system’s functional and non-functional requirements, the methodologies used to gather these requirements, and the tools and techniques employed to ensure stakeholder needs are addressed. Requirements were prioritized using the MoSCoW principle to focus on what is mandatory for the system’s success.
+
+
+
+Chapter 5: Social, Legal, Ethical and Professional issues (SLEP)
+
+The BCS code of conduct must be reviewed and detailed if any of the mentioned SLEP issues have been faced and how they were mitigated.  The BCS Code of Conduct has to be referenced in the overview. Must be very specific to your project.
+eg: Putting anyone’s name (ex: the ones who you interviewed) requires written consent.
+5.1	Chapter overview
+5.2	SLEP issues and mitigation
+Summarize the Social, Legal, Ethical and Professional Issues in a 2 x 2 Grid as below.
+
+Social
+
+
+
+Legal
+Ethical
+
+
+
+
+Professional
+
+5.3	Chapter summary
+
+Chapter 6 : Design
+6.1 Chapter Overview
+●     Purpose: Introduce the design phase and its importance to the project. 
+●     Content:
+o  Outline the chapter structure and highlight the design’s role in achieving system objectives. 
+6.2 Design Goals
+●     Purpose: The design goals are key attributes defining the quality of the software system. These attributes will be maintained system-wide
+●     Content: These attributes should be the same as the NFRs identified in the SRS chapter. Before including them, think how am I going to include them in the system design and finally during the implementation. eg: Performance, Usability, Accuracy etc.
+6.3 System Architecture Diagram
+	•	This is the high-level design diagram showing the tiered/layered architecture of your prototype.
+	•	Provide an overview for the diagram and include the high-level system architecture diagram.
+	•	Explain each tier/layer.
+6.4 Detailed Design
+There can be several detailed design diagrams. Include the relevant design diagrams in this section. Prior to each diagram provide a description of the purpose of that diagram.
+
+You need to determine the design diagrams based on the decided Analysis and Design Methodology. eg: SSADM/OOADM.
+
+General guidelines as follows.
+	•	OOAD - class diagram, sequence diagrams, Activity diagram etc. 
+	•	SSADM - data flow diagrams. 
+
+6.5  Algorithm Design
+
+Your AI/ML approach can be expressed as an algorithm (pseudocode) or by means of a flow chart. 
+Refer Lecture slides for example for an algorithm.
+
+Alternatively, if the AI/ML solution is following a Deep Neural Network, you may show the Neural network architecture. In the Lecture slides examples can be found.
+eg:
+Vision Transformer Outperforms Deep Convolutional Neural Network-based Model in Classifying X-ray Images (Uparkar et al., 2023) - Figure 4 
+
+If your having a AI/ML model, you may include it in this section.
+
+6.6  UI Design
+Note: These can be moved to the appendix. Either you can have the UI Design in the design chapter or the actual UI in the implementation chapter. It is not necessary to have both in the report. Either have the actual UI or the design in the report, the other one can be moved to the appendix.
+
+Low fidelity wireframes need to be included here. Since this is the design chapter, it is not expected to include the final implemented UIs. Comment on any design considerations related to improving Usability and Accessibility. 
+6.7  Chapter Summary
+
+Chapter 7: Implementation
+7.1 Chapter Overview
+●      Purpose: Introduce the implementation phase and its role in transforming designs into functional components.
+●       Content:
+o   Outline the objectives of implementation.
+o  Provide a roadmap for the chapter, linking it to the previous (design) chapter.
+7.2 Technology Selection
+Purpose: Justify the selection of tools, frameworks, and programming languages used for the development of the prototype and the AI/ML model. 
+
+Content : Discuss the specific technologies chosen (e.g., Python, PyTorch, TensorFlow, Flask) in terms of relevance for the software requirements specification, implementation support etc. The Technology stack is a visualization. The rest of the sections should include the implementation software choices you have made.
+
+7.2.1 	Technology Stack
+7.2.2 	Programming Languages
+7.2.3 	Development Framework
+7.2.4 	Libraries/ Toolkits
+7.2.5 	Integrated Development Environment (IDEs)
+7.2.4 	Summary of the Technology Selection
+
+
+7.3 Core Functionalities Implementation
+●   Purpose: Explain how the core features of the system were developed and integrated.
+●   Content:
+	•	Dataset (if applicable): If you are doing a AI/ML project, declare the dataset along with the statistics for the training, development and testing data split sizes. If you have collected own dataset, the process followed.
+	•	Dataset (if applicable) : Conduct an Exploratory Analysis (Optional)  on the dataset data to uncover patterns, spot anomalies, and check assumptions before considering the data for further processing / model training.
+	•	Modular Development:
+	•	Process diagram highlighting where your contribution is in it.
+	•	Detail the implementation of each module (e.g., data preprocessing, augmentation policies, or prediction model).
+	•	Relate modules to the functional requirements defined in SRS.
+	•	Code Structure: Present the logical organization of code (e.g., use of classes, functions, or design patterns). Where needed include screenshot of code snippets. Any code you show in the chapter needs to be supported with explanation.
+	•	Integration: Describe how modules interact, ensuring seamless functionality.
+
+Any code that is used without citations will be treated as plagiarized work and you will be penalized to get zero for the FYP model.
+7.4 User Interface Implementation
+●       Purpose: Highlight the development of the user interface and its integration with backend systems.
+●       Content:
+o   Frontend Development : Detail the UI elements implemented (e.g., input forms, dashboards, result visualizations).
+o   Backend Integration  :  Explain how frontend components communicate with backend processes.
+o   Accessibility Considerations : Include efforts to ensure usability for diverse user groups.
+
+7.5 Challenges and Solutions
+Purpose: Discuss obstacles encountered during implementation and how they were addressed.
+Content : 
+	•	Common challenges (e.g., debugging, resource constraints, performance bottlenecks).
+	•	Specific examples of issues and resolutions: E.g., Optimizing database queries to reduce response time.
+
+7.6 Chapter Summary
+●       Purpose: Summarize the key aspects of the implementation phase.
+●       Content:
+o   Recap technologies used, major modules implemented, and challenges overcome.
+o   Transition to the next phase by emphasizing readiness for testing.
+
+
+
+
+
+
+Chapter 8 : Testing
+8.1  Chapter Overview
+	•	Set the Objectives and Goals of Testing
+8.2 Testing Criteria
+	•	Define the types of testing which will be carried out. 
+	•	eg: AI/ML model Testing, Functional Testing, Non-Functional Testing would be the common testing types which will need to be conducted. 
+8.3 Model Testing (If AI/ML model is included in the project)
+Describe the evaluation tasks and evaluation matrices you will be using for the model testing. Define how the evaluation scores are calculated.
+Eg: Confusion Matrix
+	•	Accuracy
+	•	F1 Score
+	•	Precision
+	•	Recall
+	•	AUC/ROC Curve
+
+Include in a table the experiments conducted, and the results you have obtained. 
+8.4 Benchmarking (If AI/ML model is included in the project)
+It is important to benchmark your scores against other existing methods. If you are using a publicly available dataset, benchmarking needs to be considered. It is important to include a discussion on the final results obtained.
+8.5 Further Evaluations (Optional. Applicable if you have AI/ML models in the project)
+
+Any further evaluations you have carried out using the trained AI/ML model, those evaluations can be explained and the results can be reported. It is important to include a discussion on the final results obtained.
+8.6 Results Discussions
+
+8.7 Functional Testing
+This will be conducted on the prototype using test cases derived from the functional requirements. In appendix include all the functional test cases along with their result after executing. As a % calculate the pass rate of the functional testing.
+8.8  Non - Functional Testing
+Identify the non-functional requirements which will evaluated under this section. Show the evaluation criteria and the results. Include discussion on the results.
+
+Non-Functional Testing (Changes based on the nature of the project – related to prioritization of non-functional requirements in the RE chapter) 
+	•	Accuracy Testing
+	•	Performance Testing
+	•	Load Balance and Scalability
+	•	Security Testing
+8.9  (Optional) - If there’s any additional testing conducted include it in this section
+8.10   Limitations of the testing process
+Use this section to discuss any limitations you encountered during testing.
+8.11   Chapter Summary
+ 
+
+
+
+
+
+
+
+
+
+Chapter 9 : Critical Evaluation
+9.1   Chapter Overview
+9.2   Evaluation Methodology and Approach
+Describe the purpose of the critical evaluation phase.
+9.3   Evaluation Criteria
+9.4   Self-Evaluation – (Your own evaluation of your work)
+
+This section is important, the self-evaluation is a 
+9.5   Selection of the Evaluators
+9.6   Evaluation Results
+9.6.1	Expert Opinion 
+(Evaluate with experts, 5 technical experts and 5 domain experts, sub topics below depend on applicability) 
+	
+9.6.2	Domain Experts
+9.6.2.1	Concept
+9.6.2.2	Solution
+9.6.3	 Technical Experts
+9.6.3.1	 Scope
+9.6.3.2	 Architecture of the Solution
+9.6.3.3	 Implementation of the Solution
+9.6.4	Focus Group Testing – (with customer/user – depends on applicability)
+9.6.4.1	Prototype Features
+9.6.4.2	Usability – (if the solution is based on end user)
+
+9.7	Limitations of Evaluation
+9.8	Functional and Non-Functional Requirements Implementation
+9.9	Chapter Summary
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+Chapter 10 : Conclusion
+	•	Chapter Overview
+	•	Achievements of Research Aims & Objectives 
+Based on chapter 1 - In a table state whether the objectives (from Chapter 01) has been achieved. Include a discussion on how well these objectives were achieved.
+	•	Utilization of Knowledge from the Course
+	•	Use of Existing Skills 
+What is learned from the course applied to the project
+	•	Use of New Skills 
+What you have learned through the project – Not part of the curriculum) – Technical skills should be given preference
+	•	Achievement of Learning Outcomes
+Reflection of how well the learning outcomes defined for the module had been achieved.
+	•	Problems and Challenges Faced 
+Need to mention how did you overcome the problems and challenges
+	•	Deviations 
+Any deviations from the original plan should be mentioned and justified
+	•	Limitations of the Research 
+Should be linked with the testing limitations. Other than the testing limitations, any limitations related to the research conducted needs to be identified. No project can be without any limitations.
+	•	Future Enhancements
+Identify how the research can be extended in a future work.
+	•	Achievement of the contribution to body of knowledge
+	•	Concluding Remarks
+
+
+
+
+
+
+Refer to the link: https://chatgpt.com/share/6707e51c-aafc-8011-9e5d-8e2c1f236388
+WARNING: while chatgpt can be used to understand the content to cover never copy ands paste anything from chatgpt it is known as plagiarism 
+Read Guidance for students on the use of Generative AI in the BB Module Page
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+References
+
+Follow Harvard referencing style, ensuring at least 20 sources with 80% coming from high-impact journals and conference papers.
+The references will not be counted towards the 100 page limit.
+
+
+
+Appendices A, B, C, D….(if any)
+The Appendices will not be counted towards the 100 page limit.
