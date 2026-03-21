@@ -8,8 +8,8 @@ Examiners care that **claims match evidence**. Writing **Implementation → Test
 
 1. **Ch 7 Implementation** — Stack, modules, screenshots, map features → FR IDs from SRS.
 2. **Ch 8 Testing** — NER metrics table; functional test cases vs FRs; pass %; NFR checks where feasible; limitations.
-3. **Ch 9 Critical evaluation** — Criteria, self-evaluation, optional expert/user feedback; FR/NFR implementation summary.
-4. **Ch 10 Conclusion** — Objectives table (achieved / partial); deviations; limitations; future work.
+3. **Ch 9 Critical evaluation** — Use **[chapter-09-critical-evaluation-DRAFT.md](./chapter-09-critical-evaluation-DRAFT.md)** (template §9.1–9.9); FR/NFR summary vs **[IMPLEMENTED-VS-PENDING-FINAL.md](./IMPLEMENTED-VS-PENDING-FINAL.md)** (verify in app before finalising).
+4. **Ch 10 Conclusion** — Use **[chapter-10-conclusion-DRAFT.md](./chapter-10-conclusion-DRAFT.md)**; objectives table must match **Chapter 01** Table 1.
 5. **Abstract** — ≤300 words; para 1 problem, para 2 method, para 3 **numbers** from Ch 8.
 6. **Ch 4 SRS** — Update MoSCoW and diagrams if the app changed after IPD.
 7. **Ch 5 SLEP** — Tie to real data handling (auth, API keys, consent for interviews).
