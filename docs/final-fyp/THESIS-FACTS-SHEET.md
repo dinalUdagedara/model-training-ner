@@ -20,13 +20,15 @@
 
 | Field                        | Value                                                 |
 | ---------------------------- | ----------------------------------------------------- |
-| Dataset / file               | e.g. merged JSONL name                                |
-| Train / val / test counts    |                                                       |
+| Dataset / file               | `merged_1030_plus_all_llm.json` (line-delimited JSON; frozen run) |
+| Corpus size                  | **3023** résumés                                      |
+| Train / val / test counts    | **2418 / 302 / 303** (seed 42)                        |
 | Entity types                 | NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, EXPERIENCE |
-| Micro F1 (test)              |                                                       |
-| Per-entity F1 (if in thesis) | paste table or “see Table X”                          |
-| Model / pipeline             | Word2Vec + BiLSTM-CRF (Path 2)                        |
-| Path 2 notebook (Appendix A) | exact `.ipynb` filename as submitted                  |
+| Micro F1 (validation)        | **~0.80** (seqeval, frozen run)                       |
+| Micro F1 (test)              | **0.78** (P 0.83, R 0.74)                             |
+| Per-entity F1 (if in thesis) | see Ch 7 **Table 7.2** / notebook `classification_report` |
+| Model / pipeline             | Word2Vec + BiLSTM-CRF (résumé NER); `MAX_LEN` **256** |
+| Training notebook (Appendix A) | exact `.ipynb` filename as submitted (see repo)     |
 
 
 ---
@@ -36,9 +38,15 @@
 
 | Field                     | Value                                 |
 | ------------------------- | ------------------------------------- |
-| Training data note        | e.g. SkillSpan limitation if relevant |
-| Metrics (if reported)     |                                       |
-| Fallback behaviour in app | resume NER if job model not loaded    |
+| Approach                  | Word2Vec + BiLSTM + CRF (same recipe as résumé NER; `MAX_LEN` **512**) |
+| Dataset / file (frozen)   | e.g. `merged_job_poster_ner_full_varied.json` — **Appendix A** |
+| Corpus size               | **6327** postings                     |
+| Train / val / test        | **5061 / 632 / 634** (seed 42)       |
+| Micro F1 (validation)     | **~0.89**                             |
+| Micro F1 (test)           | **~0.85** (seqeval **~0.854**)       |
+| Per-entity F1             | see Ch 7 **Table 7.4**               |
+| Notebook (Appendix A)     | job-poster training `.ipynb` as submitted |
+| Fallback behaviour in app | résumé NER if job model not loaded    |
 
 
 ---
