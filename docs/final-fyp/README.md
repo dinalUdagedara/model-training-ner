@@ -122,6 +122,7 @@ From **`docs/final-fyp/`**, same as: `../../resume_ner_pipeline/`, `../../job_po
 | **[chapter-07-implementation-DRAFT.md](./chapter-07-implementation-DRAFT.md)** | **Chapter 7 (Implementation) — thesis draft** — paste into Word; includes sample-FPR structure notes |
 | **[chapter-08-testing-PLAN.md](./chapter-08-testing-PLAN.md)** | **Chapter 8 (Testing) — IIT §8.1–8.11 mapped to CrackInt** |
 | **[chapter-08-testing-DRAFT.md](./chapter-08-testing-DRAFT.md)** | **Chapter 8 (Testing) — thesis draft** — NER tables, functional/NFR outline, placeholders for pass rate |
+| **[WORD-THESIS-STRUCTURE-ALIGNMENT.md](./WORD-THESIS-STRUCTURE-ALIGNMENT.md)** | **Fix Word TOC/chapters** — Ch 8 = Testing only; Gantt belongs in Ch 3 (2025/26 template) |
 | **[FINAL-FYP-MARKING-SCHEME-SUMMARY.md](./FINAL-FYP-MARKING-SCHEME-SUMMARY.md)** | **Official final FYP rubric** (from `6COSC023W_...xlsx`) — weights, chapter expectations, grade bands |
 
 ---

@@ -3,9 +3,9 @@
 **Student:** Udagedara Thiyunu Dinal Bandara | **ID:** W1998730  
 **Project:** CrackInt — AI-driven personalized interview preparation platform  
 
-**How to use:** Copy into your final thesis `.docx` following the **IIT 2025/26 template** (Chapter 8 : Testing). Apply chapter/subheading styles (16pt ALL CAPS chapter title, etc.). Replace `[Figure X]` / `[Table X]` if your numbering differs. **Numbers** below must match `**THESIS-FACTS-SHEET.md`** and **Chapter 07** (Tables 7.2 & 7.4).
+**How to use (author notes — delete before submission):** Paste into your thesis `.docx` using the **IIT 2025/26** styles for Chapter 8 (Testing). Replace `[Figure X]` / `[Table X]` if numbering differs. **Quantitative values** below must stay **consistent** with **Chapter 07** (Tables 7.2 & 7.4) and **Appendix A** (training notebooks, corpora, exported checkpoints).
 
-**Template alignment:** §8.1–8.11 follow `docs/thesis-template-2025-26-export.md`. Full functional test case lists can go in **Appendix** (template expects appendix for detailed cases).
+**Template:** §8.1–8.11 follow the official **Chapter 8 : Testing** outline. Detailed functional test scripts may appear in **Appendix B** if required.
 
 ---
 
@@ -28,14 +28,14 @@ Testing was carried out **manually** for the full-stack system (browser + API), 
 Testing is organised into three complementary types:
 
 
-| Type                       | Focus                                         | Evidence in this chapter                                              |
-| -------------------------- | --------------------------------------------- | --------------------------------------------------------------------- |
-| **Model (AI/ML)**          | Résumé NER and job-poster NER                 | §8.3–8.6; splits and metrics aligned with `**THESIS-FACTS-SHEET.md`** |
-| **Functional (black-box)** | FRs: auth, ingestion, sessions, match, etc.   | §8.7; traceability to FR IDs from SRS (Chapter 04)                    |
-| **Non-functional**         | NFRs: security, responsiveness, documentation | §8.8; honest status for items not load-tested                         |
+| Type                       | Focus                                         | Evidence in this chapter                                                                             |
+| -------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Model (AI/ML)**          | Résumé NER and job-poster NER                 | §8.3–8.6; splits and metrics consistent with **Chapter 07** and **Appendix A** (frozen training run) |
+| **Functional (black-box)** | FRs: auth, ingestion, sessions, match, etc.   | §8.7; traceability to FR IDs from SRS (Chapter 04)                                                   |
+| **Non-functional**         | NFRs: security, responsiveness, documentation | §8.8; honest status for items not load-tested                                                        |
 
 
-**Scope:** Automated **unit/integration** test suite counts may be recorded in `**THESIS-FACTS-SHEET.md`** if you run `pytest` (or similar); if not, state **manual/regression** testing only.
+**Scope:** If automated **unit/integration** tests are run (e.g. `pytest`), state counts here or in **Appendix B**; otherwise describe **manual** and **regression** testing only.
 
 ---
 
@@ -52,7 +52,7 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
   - **Résumé:** NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, EXPERIENCE.  
   - **Job poster:** JOB_TITLE, COMPANY, LOCATION, SALARY, SKILLS_REQUIRED, EXPERIENCE_REQUIRED, EDUCATION_REQUIRED, JOB_TYPE.
 
-*[Optional: confusion-matrix style discussion — only if you export one from notebooks.]*
+*[Optional: confusion-matrix style discussion — only if exported from the training/evaluation notebooks listed in Appendix A.]*
 
 #### 8.3.2 Résumé NER — experiments and results
 
@@ -108,7 +108,7 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
 
 **Job-poster NER:** Data include **SkillSpan**-aligned merges and **project-specific** expansions. Reported **F1 scores** on SkillSpan in the literature use **different** entity sets and evaluation protocols; therefore this chapter reports **internal** test metrics (Tables 8.1–8.2) and treats external work as **contextual background** (Chapter 02) rather than a strict head-to-head benchmark.
 
-**Qualitative positioning:** Word2Vec + BiLSTM + CRF is a **strong** classical baseline for sequence NER; **weighted sampling** during training was used to mitigate **class imbalance** (Chapter 07). A formal **ablation study** (e.g. with vs without sampling) is **optional future work** unless already logged in notebooks.
+**Qualitative positioning:** Word2Vec + BiLSTM + CRF is a **strong** classical baseline for sequence NER; **weighted sampling** during training was used to mitigate **class imbalance** (Chapter 07). A formal **ablation study** (e.g. with vs without sampling) is **optional future work** unless already recorded in **Appendix A** training logs.
 
 ---
 
@@ -117,7 +117,7 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
 *[Include only if you have evidence. Examples:]*
 
 - **Qualitative samples:** 2–3 **screenshots** or short JSON snippets of **good** vs **noisy** extractions (PDFs).  
-- **LLM features:** Smoke test that `**POST /sessions/{id}/next-question`** returns a structured response when `**SESSION_QA_AGENT_ENABLED**` and `**OPENAI_API_KEY**` are set (document **status code** and **sample** output shape—**no** full API key in thesis).
+- **LLM features:** Smoke test that the **session next-question** API route returns a structured response when the session Q&A agent and provider credentials are enabled per **Appendix A** deployment notes (document **HTTP status**, response shape, and redact secrets).
 
 ---
 
@@ -125,7 +125,7 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
 
 **NER:** The **résumé** model achieves **test micro F1 0.78**; **job-poster** **test micro F1 ~0.85** and **seqeval ~0.854**. Job-poster **SKILLS_REQUIRED** remains the **hardest** span type (lowest F1 per table), consistent with **long, multi-token** skill lists. **EMAIL** and **NAME** on résumés are **high** precision, supporting **rule-based** post-processing in the hybrid pipeline (Chapter 07).
 
-**Link to requirements:** **FR04** (résumé entity extraction) and **FR07** (job analysis) are **supported** by these metrics, subject to **deployment** of matching checkpoints under `**RESUME_NER_LOAD_DIR`** and `**JOB_POSTER_NER_LOAD_DIR**`.
+**Link to requirements:** **FR04** (résumé entity extraction) and **FR07** (job analysis) are **supported** by these metrics, subject to **deployment** of the résumé and job-poster NER checkpoints and configuration described in **Appendix A** (artefact paths and environment mapping).
 
 **System features:** End-to-end **skill-gap** and **readiness** features **depend** on NER quality but also on **API** and **LLM** availability; functional tests (§8.7) validate **integration**, not only F1.
 
@@ -140,17 +140,17 @@ Functional tests were derived from the **SRS** (Chapter 04) and **PPRS** require
 **Table 8.3 — Representative functional test cases (sample)**
 
 
-| ID    | FR        | Scenario                                                          | Expected outcome                                 | Result                                         |
-| ----- | --------- | ----------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------- |
-| FT-01 | FR01      | Register with email/password                                      | User created; can log in                         | *Pass*                                         |
-| FT-02 | FR02      | Login; access protected route with JWT                            | 401 without token; 200 with Bearer token         | *Pass*                                         |
-| FT-03 | FR04      | `POST` résumé extract with valid PDF/text                         | JSON with entity fields populated                | *Pass*                                         |
-| FT-04 | FR05      | Patch saved résumé entities                                       | Updated entities persisted                       | *Pass*                                         |
-| FT-05 | FR06–FR07 | `POST` job extract (text + optional PDF)                          | Job entities or fallback per config              | *Pass*                                         |
-| FT-06 | FR08–FR11 | Session: create → next question → **evaluate** (with LLM enabled) | Messages stored; evaluation payload when enabled | *Partial / Pass* — *requires `OPENAI_API_KEY*` |
-| FT-07 | FR14      | List sessions; messages persist after refresh                     | Data persisted in DB                             | *Pass*                                         |
-| FT-08 | —         | `POST` skill-gap match (resume + job posting)                     | JSON skill-gap structure                         | *Pass*                                         |
-| FT-09 | —         | `GET` readiness / home-summary                                    | Dashboard payload                                | *Pass*                                         |
+| ID    | FR        | Scenario                                                          | Expected outcome                                 | Result                                                          |
+| ----- | --------- | ----------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------- |
+| FT-01 | FR01      | Register with email/password                                      | User created; can log in                         | *Pass*                                                          |
+| FT-02 | FR02      | Login; access protected route with JWT                            | 401 without token; 200 with Bearer token         | *Pass*                                                          |
+| FT-03 | FR04      | `POST` résumé extract with valid PDF/text                         | JSON with entity fields populated                | *Pass*                                                          |
+| FT-04 | FR05      | Patch saved résumé entities                                       | Updated entities persisted                       | *Pass*                                                          |
+| FT-05 | FR06–FR07 | `POST` job extract (text + optional PDF)                          | Job entities or fallback per config              | *Pass*                                                          |
+| FT-06 | FR08–FR11 | Session: create → next question → **evaluate** (with LLM enabled) | Messages stored; evaluation payload when enabled | *Partial / Pass* — *requires provider credentials (Appendix A)* |
+| FT-07 | FR14      | List sessions; messages persist after refresh                     | Data persisted in DB                             | *Pass*                                                          |
+| FT-08 | —         | `POST` skill-gap match (resume + job posting)                     | JSON skill-gap structure                         | *Pass*                                                          |
+| FT-09 | —         | `GET` readiness / home-summary                                    | Dashboard payload                                | *Pass*                                                          |
 
 
 *Replace `Pass`/`Partial` with your observed results after running the demo.*
@@ -201,7 +201,7 @@ Selected NFRs from the SRS were checked as follows:
 
 ### 8.11 Chapter summary
 
-This chapter presented **model testing** (résumé and job-poster NER with **test F1** summarised in §8.3 and Tables **8.1–8.2**), **benchmarking** limitations (§8.4), **functional** checks against **FRs** (§8.7), and **non-functional** evidence (§8.8). **Limitations** (§8.10) bound the claims that can be made in the **Conclusion** and **Critical evaluation** (Chapter 09). Quantitative results here must **match** `**THESIS-FACTS-SHEET.md`** and the **Abstract**.
+This chapter presented **model testing** (résumé and job-poster NER with **test F1** summarised in §8.3 and Tables **8.1–8.2**), **benchmarking** limitations (§8.4), **functional** checks against **FRs** (§8.7), and **non-functional** evidence (§8.8). **Limitations** (§8.10) bound the claims that can be made in the **Conclusion** and **Critical evaluation** (Chapter 09). Quantitative results here must remain **internally consistent** with **Chapter 07**, **Appendix A**, and the **Abstract**.
 
 ---
 
