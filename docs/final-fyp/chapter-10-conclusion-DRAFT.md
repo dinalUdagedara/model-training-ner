@@ -40,7 +40,7 @@ This chapter concludes the dissertation by summarising **what was achieved**, ho
 | **R09** | Design DB schema; secure storage; analytics | LO1, LO6, LO7 | **Achieved** | Chapter 06–07; PostgreSQL + optional S3. |
 | **R10** | Collect / use annotated résumé and job data for NER | LO1, LO5 | **Achieved** | Chapter 07; merged corpora; **3023** résumés / **6327** job postings (frozen splits). |
 | **R11** | OCR / preprocessing for multi-format ingestion | LO1, LO5, LO7 | **Achieved** | Chapter 07; PyMuPDF / OCR paths; user may paste text. |
-| **R13** | LLM-driven question generator with adaptive difficulty | LO1, LO5, LO7 | **Partial** | Session **next-question** agent when enabled; difficulty hooks where implemented — not a separate fine-tuned QG model for all flows. |
+| **R13** | LLM-driven question generator with adaptive difficulty | LO1, LO5, LO7 | **Partial** | Questions generated **inside** `POST /sessions/{id}/chat` (session QA agent); difficulty hooks (`prefer_difficulty`) where implemented — not a separate fine-tuned QG model for all flows. |
 | **R14** | Semantic feedback engine (depth, clarity, relevance) | LO1, LO5, LO7 | **Partial** | **Evaluate-answer** path when LLM enabled; no separate embedding-only engine as sole evaluator. |
 | **R15** | Integrate into Next.js + FastAPI with secure storage & history | LO1, LO5, LO7 | **Achieved** | Chapter 07; sessions, JWT, OpenAPI. |
 | **R16** | Evaluate NER with precision, recall, F1 | LO1, LO7, LO8 | **Achieved** | Chapter 08; résumé test micro F1 **0.78**; job-poster test micro F1 **~0.85** (seqeval). |

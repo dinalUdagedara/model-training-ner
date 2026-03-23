@@ -58,7 +58,7 @@ This section records the **author’s own** critical assessment of CrackInt.
 
 **NER performance.** **Résumé** test **micro F1 0.78** and **job-poster** **~0.85** (Chapter 08) show the models are **fit for purpose** as **assistive** extractors, not infallible parsers. **SKILLS_REQUIRED** on job postings remains the **weakest** entity type—expected for long, variable skill phrases. The **hybrid** strategy (rules for high-precision fields where applicable, model for spans) is **justified** in practice.
 
-**LLM features.** Session **next-question** and **evaluate-answer** behaviour depends on **provider availability** and **feature flags**. When disabled, the system should not silently claim “full coaching”; Chapter 08 records **partial** verification where appropriate. This is an **honest** limitation, not a failure of coding effort.
+**LLM features.** The production UI drives **`POST /sessions/{id}/chat`**, which invokes question generation and evaluation **in one call**; provider availability and **`OPENAI_API_KEY`** still gate real LLM output. When the provider is unavailable, the API should not silently claim “full coaching”; Chapter 08 records **partial** verification where appropriate. This is an **honest** limitation, not a failure of coding effort.
 
 **What would be improved with more time.** Larger **user evaluation** (task-based usability); **automated regression** tests in CI; **documented** latency percentiles on a fixed hardware profile; **broader** OCR stress tests on résumé scans.
 

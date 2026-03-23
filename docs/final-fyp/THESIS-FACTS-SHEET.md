@@ -64,8 +64,8 @@ Check boxes when verified in running app + API docs.
 | Job extract                | yes          | `/jobs/extract`                            |
 | Job postings CRUD          | yes          | `/job-postings/...`                        |
 | Sessions + messages        | yes          | `/sessions/...`                            |
-| Next question (LLM)        | yes          | needs `SESSION_QA_AGENT_ENABLED` + API key |
-| Evaluate answer            | yes          |                                            |
+| Chat turn (questions + eval + next Q) | yes | `POST /sessions/{id}/chat` — primary UI; needs `OPENAI_API_KEY` for LLM |
+| Legacy split endpoints     | optional     | `next-question`, `evaluate-answer`, `send` — still in API; UI uses `/chat` |
 | Skill-gap / match          | yes          | `/match/skill-gap`                         |
 | Readiness / dashboard APIs | yes          | `/users/me/...`                            |
 | CV score                   | yes          | `CV_SCORING_ENABLED` + API key             |

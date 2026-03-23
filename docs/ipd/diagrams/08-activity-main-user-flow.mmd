@@ -28,7 +28,7 @@ flowchart TB
     C2 --> C3[Chat interface]
     C3 --> C4{Answer question?}
     C4 -->|Yes| C5[Submit answer]
-    C5 --> C6[POST message]
-    C6 --> C7[Future: Semantic feedback]
+    C5 --> C6[POST /sessions/id/chat unified turn]
+    C6 --> C7[Agent stores feedback + next question in thread]
     C7 --> C4
     C4 -->|No / Done| End3([End])

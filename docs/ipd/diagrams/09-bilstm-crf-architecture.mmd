@@ -1,30 +1,53 @@
-%% BiLSTM-CRF Neural Network Architecture - Resume NER
-%% Chapter 6, Section 6.5
-%% Path 2: Word2Vec + 2-Layer BiLSTM + CRF
+%% BiLSTM-CRF architecture — Resume NER (Path 2: Word2Vec + 2-layer BiLSTM + CRF)
+%% Chapter 6 — align with fyp/BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb (BiLSTMCRF class)
+%%
+%% Export: mmd → PNG for thesis. For “Pansilus” polish (hatching, custom colours), trace in Draw.io
+%% or use the HTML diagram under docs/final-fyp/diagrams/ if you add one.
 
 flowchart TB
-    Input["Input: Tokenized resume text<br/>(word-level)"]
-    
-    subgraph Embed["Embedding Layer"]
-        W2V["Word2Vec Embeddings<br/>256-dim, vocab ~46k"]
+    %% ---- Title note (render as caption in Word/LaTeX) ----
+    TITLE["Figure caption (in thesis): BiLSTM-CRF for résumé NER — Path 2 (self-composed)"]
+
+    subgraph PRE["Preprocessing (offline / batch)"]
+        TOK["Tokenization (word-level)<br/>vocab indices · PAD · UNK tokens"]
     end
 
-    subgraph LSTM["Recurrent Layer"]
-        BiLSTM["2-Layer Bidirectional LSTM<br/>hidden_dim: 384 (192×2)<br/>dropout: 0.35"]
+    subgraph EMB["(a) Embedding"]
+        W2V["nn.Embedding + Word2Vec init<br/>dim <b>256</b> · |V| ≈ <b>46k</b><br/>weights trainable (fine-tune)"]
     end
 
-    subgraph Projection["Projection"]
-        Linear["Linear → 13 labels"]
+    subgraph SEQ["(b) Sequence encoder — 2× BiLSTM"]
+        L1["BiLSTM <b>layer 1</b><br/>hidden/-dir 192 → concat <b>384</b>"]
+        D1["Dropout <b>0.2</b> (inter-layer)"]
+        L2["BiLSTM <b>layer 2</b><br/>same width · inter-layer dropout"]
+        D2["Dropout <b>0.35</b> (post-LSTM)"]
     end
 
-    subgraph Decode["Decoding"]
-        CRF["CRF<br/>Conditional Random Field"]
+    subgraph HEAD["(c) Emission head"]
+        LIN["Linear: 384 → <b>K = 13</b> labels<br/><i>emission scores</i> <b>e</b>ᵢ ∈ ℝᴷ per token"]
     end
 
-    Output["Output: BIO tags per token<br/>B-NAME, I-SKILL, O, etc."]
+    subgraph DEC["(d) Structured decoding — CRF"]
+        CRF["Linear-chain CRF<br/>learns transition matrix <b>A</b> (K×K)<br/>decode: Viterbi over emissions"]
+    end
 
-    Input --> W2V
-    W2V --> BiLSTM
-    BiLSTM --> Linear
-    Linear --> CRF
-    CRF --> Output
+    subgraph OUT["Output"]
+        BIO["BIO tags per token<br/>B-NAME, I-SKILL, O, …"]
+    end
+
+    subgraph MASK["Parallel: validity"]
+        M["Sequence mask (ignore PAD)<br/>passed into CRF loss / decode"]
+    end
+
+    subgraph TRAIN["Training objective (footnote)"]
+        LOSS["Loss = <b>−</b> log-likelihood of gold tag sequence<br/>(CRF marginal / forward algorithm)"]
+    end
+
+    TITLE -.-> PRE
+    TOK --> W2V
+    W2V --> L1 --> D1 --> L2 --> D2 --> LIN --> CRF --> BIO
+    TOK -.-> M
+    M -.-> CRF
+    LIN -.-> LOSS
+
+    %% Shape hints (caption in thesis text): batch B, length L — tensors [B,L], [B,L,256], [B,L,384], [B,L,K]

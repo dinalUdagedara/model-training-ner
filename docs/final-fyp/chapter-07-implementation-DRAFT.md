@@ -271,7 +271,7 @@ The backend is organised under `app/`:
 - Match: **skill-gap** between a stored résumé and job posting.
 - Users: **readiness**, summary, trend, **home-summary** for dashboard cards.
 
-**Configuration:** Feature behaviour is controlled via environment variables (e.g. `SESSION_QA_AGENT_ENABLED`, `CV_SCORING_ENABLED`, `OPENAI_API_KEY`, NER model directories). When a feature is disabled or keys are missing, the API returns documented error codes (e.g. 503) rather than failing silently.
+**Configuration:** Feature behaviour is controlled via environment variables (e.g. `CV_SCORING_ENABLED`, `OPENAI_API_KEY`, NER model directories). The session QA agent is **always enabled** in deployment; LLM calls require provider credentials. When optional features are disabled or keys are missing, the API returns documented error codes (e.g. 503) rather than failing silently.
 
 #### 7.3.4 Novel, adapted, and third-party code
 

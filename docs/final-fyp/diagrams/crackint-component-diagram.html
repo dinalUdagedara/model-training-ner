@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrackInt — Component diagram (runtime + training)</title>
+  <style>
+    :root { --muted: #475569; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1.25rem;
+      line-height: 1.45;
+    }
+    h1 { font-size: 1.2rem; margin: 0 0 0.35rem; font-weight: 600; }
+    .meta { font-size: 0.85rem; color: var(--muted); max-width: 80rem; margin-bottom: 1rem; }
+    .wrap {
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+    svg { display: block; min-width: 100%; max-width: 96rem; height: auto; }
+    .legend { margin-top: 1.1rem; font-size: 0.8rem; color: var(--muted); max-width: 80rem; }
+    .legend h2 { font-size: 0.95rem; color: #0f172a; margin: 0 0 0.35rem; }
+    .legend ul { margin: 0; padding-left: 1.2rem; }
+    .conn-table { width: 100%; max-width: 80rem; border-collapse: collapse; font-size: 0.78rem; margin-top: 0.75rem; }
+    .conn-table th, .conn-table td { border: 1px solid #e2e8f0; padding: 0.35rem 0.5rem; text-align: left; }
+    .conn-table th { background: #f8fafc; font-weight: 600; }
+    @media print { body { background: #fff; } .wrap { border: none; box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <h1>CrackInt — UML-style component diagram</h1>
+  <p class="meta">
+    <strong>Reading order:</strong> <em>Runtime</em> flows top-to-bottom (Web → API → Processing → model &amp; stores). <em>Training</em> sits below the data row so its arrows do not cross the model hub. <strong>R1–R9</strong> match the table under the figure. Dashed = optional (LLM, dataset blobs).
+  </p>
+
+  <div class="wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 900" role="img" aria-label="CrackInt component diagram">
+      <defs>
+        <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <polygon points="0 0, 7 3.5, 0 7" fill="#334155" />
+        </marker>
+        <marker id="arrD" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <polygon points="0 0, 7 3.5, 0 7" fill="#64748b" />
+        </marker>
+        <marker id="arrP" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <polygon points="0 0, 7 3.5, 0 7" fill="#6d28d9" />
+        </marker>
+        <!-- UML component glyph (tabs on left) — same idea as Pansilus Figure 11 -->
+        <g id="glyph-component">
+          <rect x="0" y="0" width="18" height="12" rx="1" fill="#fff" stroke="#334155" stroke-width="0.9" />
+          <rect x="2" y="2" width="5" height="3" rx="0.5" fill="#e5e7eb" stroke="#334155" stroke-width="0.5" />
+          <rect x="2" y="7" width="5" height="3" rx="0.5" fill="#e5e7eb" stroke="#334155" stroke-width="0.5" />
+        </g>
+      </defs>
+
+      <text x="620" y="34" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">CrackInt — component diagram (runtime + NER training)</text>
+      <text x="620" y="52" text-anchor="middle" font-size="9.5" fill="#64748b">UML assembly (socket ◗ / lollipop ○) on R1–R3 · other links orthogonal · R1–R9 in table</text>
+
+      <!-- Swimlanes -->
+      <rect x="40" y="68" width="1160" height="318" rx="6" fill="#fafaf9" stroke="#e7e5e4" stroke-width="1" />
+      <text x="56" y="86" font-size="9" font-weight="700" fill="#57534e">A — Runtime (online)</text>
+      <rect x="40" y="520" width="1160" height="300" rx="6" fill="#f5f3ff" fill-opacity="0.35" stroke="#e9d5ff" stroke-width="1" />
+      <text x="56" y="540" font-size="9" font-weight="700" fill="#5b21b6">B — Training (offline / notebook)</text>
+
+      <!-- ===== Boxes (coordinates chosen so edges align to integer grid for clean lines) ===== -->
+      <!-- Web -->
+      <g stroke="#c2410c" stroke-width="2" fill="#fffbeb">
+        <rect x="56" y="108" width="268" height="128" rx="10" />
+      </g>
+      <text x="190" y="128" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">«subsystem» Web client</text>
+      <text x="72" y="152" font-size="8.5" fill="#78350f" font-family="Consolas, monospace">:Next.js app shell</text>
+      <text x="72" y="168" font-size="8.5" fill="#78350f" font-family="Consolas, monospace">:Routes &amp; server-driven panels</text>
+
+      <!-- API -->
+      <g stroke="#c2410c" stroke-width="2" fill="#fff7ed">
+        <rect x="352" y="108" width="216" height="128" rx="10" />
+      </g>
+      <text x="460" y="128" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">«subsystem» Application API</text>
+      <text x="368" y="152" font-size="8.5" fill="#9a3412" font-family="Consolas, monospace">:FastAPI REST (/api/v1)</text>
+      <text x="368" y="168" font-size="8.5" fill="#9a3412" font-family="Consolas, monospace">:Routers · middleware · OpenAPI</text>
+      <text x="368" y="196" font-size="7" fill="#64748b">Persists via ORM → PostgreSQL</text>
+
+      <!-- Processing -->
+      <g stroke="#0f766e" stroke-width="2" fill="#ecfdf5">
+        <rect x="596" y="96" width="500" height="152" rx="10" />
+      </g>
+      <text x="846" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#134e4a">«subsystem» Processing &amp; ML</text>
+      <text x="612" y="138" font-size="8" fill="#134e4a" font-family="Consolas, monospace">:Text extraction · :Résumé NER · :Job NER · :Session agent · :Semantic feedback</text>
+      <text x="612" y="156" font-size="8" fill="#134e4a" font-family="Consolas, monospace">:ORM services · :S3 upload / presigned URLs</text>
+      <text x="612" y="182" font-size="7" fill="#64748b">Loads NER checkpoints · may call remote LLM</text>
+
+      <!-- LLM external -->
+      <g stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4" fill="#f8fafc">
+        <rect x="1124" y="118" width="96" height="76" rx="8" />
+      </g>
+      <text x="1172" y="142" text-anchor="middle" font-size="9" font-weight="700" fill="#334155">«external»</text>
+      <text x="1172" y="162" text-anchor="middle" font-size="8" fill="#475569">Remote LLM</text>
+
+      <!-- Model management -->
+      <g stroke="#1e40af" stroke-width="2" fill="#eff6ff">
+        <rect x="472" y="268" width="376" height="100" rx="10" />
+      </g>
+      <text x="660" y="290" text-anchor="middle" font-size="11" font-weight="700" fill="#1e3a8a">«subsystem» Model management</text>
+      <text x="488" y="312" font-size="8.5" fill="#1e40af" font-family="Consolas, monospace">:Checkpoint loader · :Checkpoint saver · :NER weight storage (disk / S3)</text>
+      <text x="488" y="332" font-size="7" fill="#64748b">Runtime loads · training saves</text>
+
+      <!-- PostgreSQL -->
+      <g stroke="#1d4ed8" stroke-width="1.8" fill="#dbeafe" fill-opacity="0.9">
+        <rect x="256" y="400" width="240" height="88" rx="8" />
+      </g>
+      <text x="376" y="428" text-anchor="middle" font-size="10" font-weight="700" fill="#1e3a8a">«subsystem» PostgreSQL</text>
+      <text x="376" y="448" text-anchor="middle" font-size="7.5" fill="#475569">users · résumés · sessions · messages · postings</text>
+
+      <!-- S3 -->
+      <g stroke="#1d4ed8" stroke-width="1.8" fill="#dbeafe" fill-opacity="0.9">
+        <rect x="744" y="400" width="240" height="88" rx="8" />
+      </g>
+      <text x="864" y="428" text-anchor="middle" font-size="10" font-weight="700" fill="#1e3a8a">«subsystem» AWS S3</text>
+      <text x="864" y="448" text-anchor="middle" font-size="7.5" fill="#475569">uploads · artefacts · training blobs (optional)</text>
+
+      <!-- Training CLI -->
+      <g stroke="#7c3aed" stroke-width="1.8" fill="#f5f3ff">
+        <rect x="56" y="568" width="200" height="64" rx="8" />
+      </g>
+      <text x="156" y="592" text-anchor="middle" font-size="10" font-weight="700" fill="#5b21b6">«subsystem» Training entry</text>
+      <text x="68" y="612" font-size="8.5" fill="#6d28d9" font-family="Consolas, monospace">:Notebook / CLI</text>
+
+      <!-- NER training -->
+      <g stroke="#7c3aed" stroke-width="2" fill="#ede9fe">
+        <rect x="56" y="652" width="400" height="112" rx="10" />
+      </g>
+      <text x="256" y="674" text-anchor="middle" font-size="11" font-weight="700" fill="#5b21b6">«subsystem» NER training</text>
+      <text x="72" y="698" font-size="8.5" fill="#5b21b6" font-family="Consolas, monospace">:Dataset loader (JSONL / splits)</text>
+      <text x="72" y="714" font-size="8.5" fill="#5b21b6" font-family="Consolas, monospace">:BiLSTM-CRF trainer · :Metrics &amp; checkpoint export</text>
+      <text x="72" y="738" font-size="7" fill="#64748b">Writes checkpoints to model store · may read datasets from disk or S3</text>
+
+      <!-- UML component glyph (top-right inside each subsystem, cf. Pansilus Fig. 11) -->
+      <g fill="none" stroke="#334155" stroke-width="0.9">
+        <use href="#glyph-component" transform="translate(300, 110)" />
+        <use href="#glyph-component" transform="translate(538, 110)" />
+        <use href="#glyph-component" transform="translate(1066, 98)" />
+        <use href="#glyph-component" transform="translate(818, 270)" />
+        <use href="#glyph-component" transform="translate(466, 402)" />
+        <use href="#glyph-component" transform="translate(954, 402)" />
+        <use href="#glyph-component" transform="translate(226, 570)" />
+        <use href="#glyph-component" transform="translate(426, 654)" />
+      </g>
+
+      <!-- R1–R3: UML assembly (required socket + provided lollipop), no arrowheads -->
+      <g stroke="#334155" stroke-width="1.35" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- R1: Web requires «IApplicationAPI» — API provides -->
+        <path d="M 330 166 A 6 6 0 0 0 324 172 A 6 6 0 0 0 330 178" fill="#ffffff" stroke="#334155" />
+        <line x1="336" y1="172" x2="340" y2="172" />
+        <circle cx="346" cy="172" r="6" fill="#ffffff" stroke="#334155" stroke-width="1.35" />
+        <!-- R2: API requires «IPipeline» — Processing provides -->
+        <path d="M 568 166 A 6 6 0 0 1 574 172 A 6 6 0 0 1 568 178" fill="#ffffff" stroke="#334155" />
+        <line x1="580" y1="172" x2="584" y2="172" />
+        <circle cx="590" cy="172" r="6" fill="#ffffff" stroke="#334155" stroke-width="1.35" />
+        <!-- R3: Processing requires «ICheckpointLoad» — Model provides (ball on model top) -->
+        <path d="M 840 248 A 6 6 0 0 0 846 254 A 6 6 0 0 0 852 248" fill="#ffffff" stroke="#334155" />
+        <polyline points="846,254 846,258 660,258 660,262" />
+        <circle cx="660" cy="262" r="6" fill="#ffffff" stroke="#334155" stroke-width="1.35" />
+      </g>
+
+      <!-- R4–R6: dependency-style (arrow) — not assembly -->
+      <g stroke="#334155" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arr)">
+        <polyline points="380,236 380,368 376,368 376,400" />
+        <polyline points="996,248 996,360 864,360 864,400" />
+      </g>
+      <!-- R6 Processing → LLM dashed -->
+      <polyline points="1096,172 1124,172" stroke="#64748b" stroke-width="1.35" fill="none" stroke-dasharray="5 4" stroke-linecap="round" marker-end="url(#arrD)" />
+
+      <!-- Training purple -->
+      <g stroke="#6d28d9" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrP)">
+        <!-- R7 CLI → NER -->
+        <polyline points="156,632 156,652" />
+        <!-- R8 NER → Model (up the left side, clear channel) -->
+        <polyline points="256,652 256,268 472,268" />
+      </g>
+      <!-- R9 NER → S3 optional datasets dashed -->
+      <polyline points="456,708 620,708 620,420 864,420 864,400" stroke="#6d28d9" stroke-width="1.35" fill="none" stroke-dasharray="6 4" stroke-linecap="round" marker-end="url(#arrD)" opacity="0.95" />
+
+      <!-- Numbered callouts -->
+      <g font-family="Segoe UI, system-ui, sans-serif" font-size="8" font-weight="700" fill="#0f172a">
+        <rect x="328" y="162" width="18" height="14" rx="2" fill="#fef3c7" stroke="#d97706" stroke-width="0.8" />
+        <text x="337" y="172" text-anchor="middle" font-size="7.5">R1</text>
+        <rect x="572" y="162" width="18" height="14" rx="2" fill="#fef3c7" stroke="#d97706" stroke-width="0.8" />
+        <text x="581" y="172" text-anchor="middle" font-size="7.5">R2</text>
+        <rect x="838" y="238" width="18" height="14" rx="2" fill="#fef3c7" stroke="#d97706" stroke-width="0.8" />
+        <text x="847" y="248" text-anchor="middle" font-size="7.5">R3</text>
+        <rect x="368" y="318" width="18" height="14" rx="2" fill="#fef3c7" stroke="#d97706" stroke-width="0.8" />
+        <text x="377" y="328" text-anchor="middle" font-size="7.5">R4</text>
+        <rect x="988" y="298" width="18" height="14" rx="2" fill="#fef3c7" stroke="#d97706" stroke-width="0.8" />
+        <text x="997" y="308" text-anchor="middle" font-size="7.5">R5</text>
+        <rect x="1104" y="162" width="18" height="14" rx="2" fill="#e0e7ff" stroke="#6366f1" stroke-width="0.8" />
+        <text x="1113" y="172" text-anchor="middle" font-size="7.5">R6</text>
+        <rect x="148" y="636" width="18" height="14" rx="2" fill="#ede9fe" stroke="#7c3aed" stroke-width="0.8" />
+        <text x="157" y="646" text-anchor="middle" font-size="7.5">R7</text>
+        <rect x="248" y="420" width="18" height="14" rx="2" fill="#ede9fe" stroke="#7c3aed" stroke-width="0.8" />
+        <text x="257" y="430" text-anchor="middle" font-size="7.5">R8</text>
+        <rect x="528" y="698" width="18" height="14" rx="2" fill="#ede9fe" stroke="#7c3aed" stroke-width="0.8" />
+        <text x="537" y="708" text-anchor="middle" font-size="7.5">R9</text>
+      </g>
+
+      <!-- Short labels -->
+      <g font-family="Segoe UI, system-ui, sans-serif" font-size="7.5" fill="#475569">
+        <text x="300" y="164">HTTP/JSON</text>
+        <text x="575" y="164">invoke</text>
+        <text x="700" y="252">load weights</text>
+        <text x="300" y="350">ORM</text>
+        <text x="920" y="340">objects</text>
+        <text x="1088" y="164" font-style="italic">optional</text>
+        <text x="170" y="648">drive</text>
+        <text x="300" y="400">save checkpoints</text>
+        <text x="600" y="720" font-style="italic">datasets (optional)</text>
+      </g>
+
+    </svg>
+
+    <table class="conn-table">
+      <caption style="caption-side: top; text-align: left; font-weight: 600; margin-bottom: 0.35rem;">Connector reference (matches labels R1–R9 in the figure)</caption>
+      <thead>
+        <tr><th>ID</th><th>From → To</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>R1</td><td>Web client → Application API</td><td>HTTPS requests / JSON responses</td></tr>
+        <tr><td>R2</td><td>Application API → Processing &amp; ML</td><td>Invoke pipelines (internal service calls)</td></tr>
+        <tr><td>R3</td><td>Processing &amp; ML → Model management</td><td>Load NER checkpoints at runtime</td></tr>
+        <tr><td>R4</td><td>Application API → PostgreSQL</td><td>ORM / relational persistence (SQLModel)</td></tr>
+        <tr><td>R5</td><td>Processing &amp; ML → AWS S3</td><td>/uploads, artefacts, presigned access</td></tr>
+        <tr><td>R6</td><td>Processing &amp; ML → Remote LLM</td><td>Optional outbound LLM calls (dashed)</td></tr>
+        <tr><td>R7</td><td>Training entry → NER training</td><td>Notebook/CLI drives training job</td></tr>
+        <tr><td>R8</td><td>NER training → Model management</td><td>Save / update checkpoint weights</td></tr>
+        <tr><td>R9</td><td>NER training → AWS S3</td><td>Optional: read/write training blobs (dashed)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <h2>Design notes</h2>
+    <ul>
+      <li><strong>Why this layout:</strong> Runtime flows in <strong>lane A</strong> (top). Data stores sit in a <strong>middle band</strong> with space between PostgreSQL and S3 so vertical connectors <strong>R4</strong> and <strong>R5</strong> use <strong>left vs right channels</strong> and do not cross each other. Training sits in <strong>lane B</strong> (bottom); <strong>R8</strong> rises in a <strong>single vertical</strong> to the model hub so it does not pass through the Model box horizontally.</li>
+      <li><strong>PostgreSQL vs model files:</strong> Checkpoints are files under Model management / S3; PostgreSQL holds application entities (users, sessions, etc.).</li>
+    </ul>
+  </div>
+</body>
+</html>

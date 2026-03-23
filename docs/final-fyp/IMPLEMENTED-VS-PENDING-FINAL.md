@@ -7,7 +7,7 @@
 | Type | Location |
 |------|----------|
 | API routes & behaviour | `FYP/PROJECT/crackint-backend/app/api/router.py` + **[API_OVERVIEW.md](../../../PROJECT/crackint-backend/API_OVERVIEW.md)** (from repo root: `../PROJECT/crackint-backend/API_OVERVIEW.md`) |
-| Feature flags / env | `crackint-backend/app/config.py` (e.g. `SESSION_QA_AGENT_ENABLED`, `CV_SCORING_ENABLED`, `OPENAI_API_KEY`) |
+| Feature flags / env | `crackint-backend/app/config.py` (e.g. `CV_SCORING_ENABLED`, `OPENAI_API_KEY`; session QA agent **on** in deployment) |
 | Original FR/NFR IDs | [project/proposal-summary.md](../project/proposal-summary.md) §7–8 (PPRS Table 11–12) |
 
 **Note:** `API_OVERVIEW.md` does not list every route in one table (e.g. **auth**, **job-postings**, **cover-letter** are in code). This document merges **router + README + route files**. Update if you add endpoints.
@@ -23,7 +23,7 @@
 | `/api/v1/resumes` | `resume` | Extract, CRUD, list, **score** (LLM, gated) |
 | `/api/v1/jobs` | `job` | Job text/PDF **extract** |
 | `/api/v1/job-postings` | `job_posting` | Job posting **CRUD**, reorder, deadlines (auth) |
-| `/api/v1/sessions` | `session` | Prep sessions, messages, **next-question**, **evaluate-answer** |
+| `/api/v1/sessions` | `session` | Prep sessions; **`POST .../chat`** unified turn (UI); also `next-question`, `evaluate-answer`, `send`, `messages` — see `session/route.py` |
 | `/api/v1/match` | `match` | **Skill-gap** (resume vs job posting) |
 | `/api/v1/users` | `users` | **Readiness**, summary, trend, **home-summary** |
 | `/api/v1/stt` | `stt` | Socket.IO speech-to-text hooks |
@@ -45,10 +45,10 @@ Interactive: **`/api/v1/docs`** (Swagger), **`/api/v1/redoc`**.
 | **FR05** | Review / edit extracted data | **Implemented** | `PATCH /resumes/{id}` |
 | **FR06** | Job description input (paste / title) | **Implemented** | `POST /jobs/extract` (text or PDF); job postings stored via `/job-postings` |
 | **FR07** | Analyse job (skills, qualifications, etc.) | **Implemented** | Job NER + entities; job poster model or fallback per `JOB_POSTER_NER_LOAD_DIR` |
-| **FR08** | 10–15 personalized questions (LLM) | **Partial** | `POST /sessions/{id}/next-question` — requires **`SESSION_QA_AGENT_ENABLED=true`** + **`OPENAI_API_KEY`**; count/limit is agent behaviour (document in Ch 7) |
+| **FR08** | 10–15 personalized questions (LLM) | **Partial** | Questions generated **inside** `POST /sessions/{id}/chat` (and optional `next-question` for tooling); session QA agent on in deployment; **`OPENAI_API_KEY`** for LLM; count/limit = agent behaviour (Ch 7) |
 | **FR09** | Chat-based practice UI | **Implemented** | Session + message model + frontend `(dashboard)/sessions`; STT optional via Socket.IO |
 | **FR10** | Text answers | **Implemented** | `POST .../messages` + evaluate flow |
-| **FR11** | Semantic evaluation of answers | **Partial** | `POST .../evaluate-answer` when agent enabled; exact rubric = agent implementation |
+| **FR11** | Semantic evaluation of answers | **Partial** | Evaluation runs **inside** `POST .../chat` (and optional `evaluate-answer`); exact rubric = agent implementation |
 | **FR12** | Feedback: score 0–100, strengths, improvements | **Partial** | API returns `feedback`, `score`, `dimension_tags`; wording depends on LLM |
 | **FR13** | Conversational follow-ups | **Partial / TBC** | Confirm in `session_qa_agent` whether follow-ups are generated |
 | **FR14** | Save sessions (questions, answers, feedback, scores) | **Implemented** | PostgreSQL sessions + messages; readiness fields as per models |
@@ -58,7 +58,7 @@ Interactive: **`/api/v1/docs`** (Swagger), **`/api/v1/redoc`**.
 | **FR18** | Profile, multiple résumés, preferences | **Partial** | `GET /auth/me`; multiple resumes via list + upload; full “preferences” UI TBC |
 | **FR19** | Pause / resume session, auto-save | **Partial** | Messages persisted; timed auto-save every 2 min may not match — verify product behaviour |
 | **FR20** | Hints on request | **Pending / TBC** | Check session agent for hint messages |
-| **FR21** | Adaptive difficulty | **Partial** | `next-question` + `prefer_difficulty`; session difficulty curve in agent |
+| **FR21** | Adaptive difficulty | **Partial** | `prefer_difficulty` on **`POST .../chat`** (and related routes); curve in agent |
 | **FR22** | Search session history | **Pending** | List endpoints; full-text search not listed |
 | **FR23** | Email notifications | **Pending** | Not in API router |
 | **FR24** | Fallbacks (LLM fail → bank; evaluator fail → rules) | **Partial** | NER fallback resume→job; evaluation fallback — confirm in agent code |
@@ -103,7 +103,7 @@ Interactive: **`/api/v1/docs`** (Swagger), **`/api/v1/redoc`**.
 |------|-------------|
 | Auth + CRUD | DB + `JWT_SECRET` |
 | NER | `RESUME_NER_LOAD_DIR` (and optionally `JOB_POSTER_NER_LOAD_DIR`) |
-| LLM questions + evaluation | `OPENAI_API_KEY`, `SESSION_QA_AGENT_ENABLED=true` |
+| LLM questions + evaluation | `OPENAI_API_KEY` (session QA agent always enabled in deployment) |
 | CV scoring | `OPENAI_API_KEY`, `CV_SCORING_ENABLED=true` |
 | Google login | `GOOGLE_CLIENT_ID` |
 | S3 image upload | `S3_UPLOADS_BUCKET`, AWS keys |

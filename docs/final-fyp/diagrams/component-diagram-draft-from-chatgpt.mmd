@@ -1,0 +1,65 @@
+%% CrackInt component diagram (runtime + NER training)
+%% Source created from: component-diagram-draft from chatgpt.png
+%% R1-R9 connector IDs mirror the annotated figure.
+
+flowchart TB
+
+  %% =========================
+  %% Runtime (online)
+  %% =========================
+  subgraph Runtime["Runtime (online)"]
+    direction LR
+
+    WC["«subsystem» Web Client<br/>- Next.js app shell<br/>- Routes and server-driven panels"]
+    API["«subsystem» Application API<br/>- FastAPI REST<br/>- ORM"]
+    PM["«subsystem» Processing and ML<br/>- Text Extraction<br/>- Resume NER<br/>- Job NER<br/>- Session Agent<br/>- ORM<br/>- S3 Upload"]
+    LLM["«external» Remote LLM<br/>(optional)"]
+
+    MM["«IPipeline» Model Management<br/>- Checkpoint Loader/Saver<br/>- NER Weights on Disk or S3"]
+    PG[("PostgreSQL")]
+    S3[("AWS S3")]
+  end
+
+  %% =========================
+  %% Training (offline)
+  %% =========================
+  subgraph Training["Training (offline)"]
+    direction LR
+    TE["«subsystem» Training Entry<br/>- Notebook / CLI"]
+    NT["«subsystem» NER Training<br/>- Dataset Loader<br/>- BiLSTM-CRF Trainer<br/>- Metrics<br/>- Checkpoint Export"]
+  end
+
+  %% =========================
+  %% Annotated connectors (R1-R9)
+  %% =========================
+  WC -->|R2: HTTP/JSON| API
+  API -->|R3: «IApplicationAPI» invoke| PM
+
+  PM -->|R3: load checkpoint| MM
+  API -->|R4: ORM persistence| PG
+  PG -->|records| S3
+  S3 -->|R5: blobs/artefacts| PG
+
+  PM -.->|R6: optional call| LLM
+  PM -.->|R6: optional model IO| S3
+
+  TE -->|R7: run training| NT
+  NT -->|R8: export checkpoints| MM
+  NT -.->|R9: optional datasets| S3
+
+  %% =========================
+  %% Styling
+  %% =========================
+  classDef runtime fill:#f8fafc,stroke:#334155,stroke-width:1.6,color:#0f172a;
+  classDef processing fill:#ecfeff,stroke:#0f766e,stroke-width:2,color:#134e4a;
+  classDef model fill:#eef2ff,stroke:#1d4ed8,stroke-width:1.8,color:#1e3a8a;
+  classDef store fill:#f1f5f9,stroke:#475569,stroke-width:1.6,color:#111827;
+  classDef train fill:#f5f3ff,stroke:#6d28d9,stroke-width:1.8,color:#4c1d95;
+  classDef external fill:#ffffff,stroke:#6b7280,stroke-width:1.5,stroke-dasharray: 6 4,color:#111827;
+
+  class WC,API runtime;
+  class PM processing;
+  class MM model;
+  class PG,S3 store;
+  class TE,NT train;
+  class LLM external;

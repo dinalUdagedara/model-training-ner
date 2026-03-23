@@ -117,7 +117,7 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
 *[Include only if you have evidence. Examples:]*
 
 - **Qualitative samples:** 2–3 **screenshots** or short JSON snippets of **good** vs **noisy** extractions (PDFs).  
-- **LLM features:** Smoke test that the **session next-question** API route returns a structured response when the session Q&A agent and provider credentials are enabled per **Appendix A** deployment notes (document **HTTP status**, response shape, and redact secrets).
+- **LLM features:** Smoke test **`POST /api/v1/sessions/{id}/chat`** (the unified turn used by the UI): after a valid prep session, send a chat turn and assert **`ChatTurnPayload.new_messages`** with expected QUESTION/FEEDBACK shapes when the provider and OpenAI credentials are configured per **Appendix A** (document **HTTP status**, response shape, redact secrets). Optionally repeat for legacy routes (`next-question`, `evaluate-answer`) if you document them.
 
 ---
 
