@@ -38,7 +38,7 @@
 - **Non-functional:** security (JWT), usability/accessibility notes, performance *as feasible* (e.g. response time informal, or “not load-tested in scope”).
 
 ### 8.3 Model testing
-- **Résumé NER:** data split, metrics — **mirror or cite Chapter 7 Table 7.2** (`THESIS-FACTS-SHEET`: 3023 docs, 2418/302/303, test F1 ~0.78 micro). Optional: per-entity discussion (SKILL vs OCCUPATION harder, etc.).
+- **Résumé NER:** data split, metrics — **mirror or cite Chapter 7 Table 7.2** (`THESIS-FACTS-SHEET`: 4738 docs, 3790/473/475, test F1 ~0.83 micro). Optional: per-entity discussion (SKILL vs OCCUPATION harder, etc.).
 - **Job-poster NER:** **mirror or cite Table 7.4** (6327 postings, 5061/632/634, test micro ~0.85, seqeval ~0.854).
 - **How metrics are computed:** seqeval, BIO → entity, ignore padding; one short paragraph.
 - **Confusion / error analysis (optional but good):** 1 paragraph or small table of common failure modes (no full confusion matrix required unless you have it).

@@ -1,0 +1,567 @@
+
+BiLSTM_CRF_Job_Poster_NER_Path2_FYP.ipynb
+BiLSTM_CRF_Job_Poster_NER_Path2_FYP.ipynb_
+Job Poster NER with BiLSTM-CRF from Scratch (Path 2 – FYP)
+This notebook implements Path 2 for job poster NER: a Word2Vec + BiLSTM + CRF model built from scratch (no pre-trained transformer). Entity types: JOB_TITLE, COMPANY, LOCATION, SALARY, SKILLS_REQUIRED, EXPERIENCE_REQUIRED, EDUCATION_REQUIRED, JOB_TYPE.
+
+Feature engineering: Word embeddings (Word2Vec) trained on job posting corpus
+Model: Embedding → BiLSTM → Linear → CRF
+Training: Full training loop with CRF loss
+Data: merged_job_poster_ner.json (e.g. SkillSpan ~11.5k sentences)
+Dependencies
+Run once. (No transformers; uses gensim for Word2Vec.)
+
+
+[ ]
+!pip install -q torch pytorch-crf seqeval gensim
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.6/43.6 kB 3.8 MB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 27.9/27.9 MB 59.3 MB/s eta 0:00:00
+  Building wheel for seqeval (setup.py) ... done
+Mount Google Drive
+
+[ ]
+try:
+    from google.colab import drive
+    drive.mount("/content/drive")
+    print("Drive mounted.")
+except ImportError:
+    print("Not in Colab – skip this cell when running locally.")
+Mounted at /content/drive
+Drive mounted.
+1. Data loading
+
+[ ]
+import json
+import os
+
+_drive_base = "/content/drive/MyDrive" if os.path.exists("/content/drive/MyDrive") else "/content/drive/My Drive"
+# Prefer merged files with LLM data (SkillSpan + LLM + Sri Lanka jobs)
+for _name in ["merged_job_poster_ner_full_varied.json", "merged_job_poster_ner_full_varied.json", "merged_job_poster_ner_full_varied.json"]:
+    _p = os.path.join(_drive_base, _name)
+    if os.path.exists(_p):
+        DATA_PATH = _p
+        break
+else:
+    DATA_PATH = "../../job_poster_ner_pipeline/merged_job_poster_ner_full.json"
+if not os.path.exists(DATA_PATH):
+    DATA_PATH = "../../job_poster_ner_pipeline/merged_job_poster_ner_with_llm.json"
+if not os.path.exists(DATA_PATH):
+    DATA_PATH = "../../job_poster_ner_pipeline/merged_job_poster_ner.json"
+if not os.path.exists(DATA_PATH):
+    raise FileNotFoundError("No data file found. Place merged_job_poster_ner_full.json in Drive or job_poster_ner_pipeline/.")
+
+data = []
+with open(DATA_PATH, "r", encoding="utf-8") as f:
+    for line in f:
+        line = line.strip()
+        if line:
+            data.append(json.loads(line))
+print(f"Loaded {len(data)} job postings from {os.path.basename(DATA_PATH)}")
+
+LABEL_MAPPING = {
+    "JOB_TITLE": "JOB_TITLE", "COMPANY": "COMPANY", "LOCATION": "LOCATION", "SALARY": "SALARY",
+    "SKILLS_REQUIRED": "SKILLS_REQUIRED", "EXPERIENCE_REQUIRED": "EXPERIENCE_REQUIRED",
+    "EDUCATION_REQUIRED": "EDUCATION_REQUIRED", "JOB_TYPE": "JOB_TYPE", "O": "O",
+    "Job Title": "JOB_TITLE", "Company": "COMPANY", "Location": "LOCATION", "Salary": "SALARY",
+    "Skill": "SKILLS_REQUIRED", "Occupation": "JOB_TITLE", "Qualification": "EDUCATION_REQUIRED",
+}
+for item in data:
+    for ann in item.get("annotation", []):
+        ann["label"] = [LABEL_MAPPING.get(l, "O") for l in ann["label"]]
+Loaded 6327 job postings from merged_job_poster_ner_full_varied.json
+2. Preprocessing and train/val/test split
+
+[ ]
+import re
+import random
+
+def tokenize_with_positions(text):
+    return [(m.group(), m.start(), m.end()) for m in re.finditer(r"\S+", text)]
+
+def create_bio_tags_fixed(tokens, annotations):
+    bio = ["O"] * len(tokens)
+    for ann in annotations:
+        if not ann.get("label") or ann["label"][0] == "O":
+            continue
+        entity = ann["label"][0]
+        for pt in ann.get("points", []):
+            s, e = pt["start"], pt["end"]
+            first = True
+            for i, (_, ts, te) in enumerate(tokens):
+                if te <= s or ts >= e:
+                    continue
+                bio[i] = f"B-{entity}" if first else f"I-{entity}"
+                first = False
+    return bio
+
+all_sents, all_labels = [], []
+for item in data:
+    content = item.get("content", "")
+    anns = item.get("annotation", [])
+    if not content or not anns:
+        continue
+    toks = tokenize_with_positions(content)
+    if not toks:
+        continue
+    labs = create_bio_tags_fixed(toks, anns)
+    all_sents.append([t[0] for t in toks])
+    all_labels.append(labs)
+
+n = len(all_sents)
+random.seed(42)
+idx = list(range(n))
+random.shuffle(idx)
+n_train, n_val = int(0.8 * n), int(0.1 * n)
+train_sents = [all_sents[i] for i in idx[:n_train]]
+train_labels = [all_labels[i] for i in idx[:n_train]]
+val_sents = [all_sents[i] for i in idx[n_train : n_train + n_val]]
+val_labels = [all_labels[i] for i in idx[n_train : n_train + n_val]]
+test_sents = [all_sents[i] for i in idx[n_train + n_val :]]
+test_labels = [all_labels[i] for i in idx[n_train + n_val :]]
+print(f"Train {len(train_sents)} Val {len(val_sents)} Test {len(test_sents)}")
+Train 5061 Val 632 Test 634
+3. Word embeddings (Word2Vec) and vocabulary
+
+[ ]
+from gensim.models import Word2Vec
+import numpy as np
+
+EMBED_DIM = 256
+W2V_MIN_COUNT = 1
+W2V_WINDOW = 6
+W2V_EPOCHS = 35
+
+w2v = Word2Vec(sentences=all_sents, vector_size=EMBED_DIM, window=W2V_WINDOW, min_count=W2V_MIN_COUNT, epochs=W2V_EPOCHS, workers=4)
+
+PAD_TOKEN = "<PAD>"
+UNK_TOKEN = "<UNK>"
+word2id = {PAD_TOKEN: 0, UNK_TOKEN: 1}
+for w in w2v.wv.key_to_index:
+    if w not in word2id:
+        word2id[w] = len(word2id)
+vocab_size = len(word2id)
+
+embedding_matrix = np.zeros((vocab_size, EMBED_DIM), dtype=np.float32)
+for w, i in word2id.items():
+    if w in (PAD_TOKEN, UNK_TOKEN):
+        continue
+    if w in w2v.wv:
+        embedding_matrix[i] = w2v.wv[w]
+    else:
+        embedding_matrix[i] = np.random.normal(0, 0.1, EMBED_DIM)
+
+print(f"Vocab size: {vocab_size}, Embed dim: {EMBED_DIM}")
+Vocab size: 10095, Embed dim: 256
+4. Labels and dataset (word-level, padded)
+
+[ ]
+import torch
+from torch.utils.data import Dataset, DataLoader
+
+TAGS = ["O", "B-JOB_TITLE", "I-JOB_TITLE", "B-COMPANY", "I-COMPANY", "B-LOCATION", "I-LOCATION", "B-SALARY", "I-SALARY",
+        "B-SKILLS_REQUIRED", "I-SKILLS_REQUIRED", "B-EXPERIENCE_REQUIRED", "I-EXPERIENCE_REQUIRED",
+        "B-EDUCATION_REQUIRED", "I-EDUCATION_REQUIRED", "B-JOB_TYPE", "I-JOB_TYPE"]
+LABEL2ID = {t: i for i, t in enumerate(TAGS)}
+ID2LABEL = {i: t for i, t in enumerate(TAGS)}
+NUM_LABELS = len(TAGS)
+
+class WordNERDataset(Dataset):
+    def __init__(self, sents, labels, word2id, max_len=512):
+        self.samples = []
+        for words, labs in zip(sents, labels):
+            if len(words) != len(labs) or len(words) == 0:
+                continue
+            if len(words) > max_len:
+                words, labs = words[:max_len], labs[:max_len]
+            ids = [word2id.get(w, word2id[UNK_TOKEN]) for w in words]
+            lab_ids = [LABEL2ID.get(l, 0) for l in labs]
+            self.samples.append((ids, lab_ids, len(ids)))
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, i):
+        return self.samples[i]
+
+def collate_pad(batch):
+    max_l = max(b[2] for b in batch)
+    pad_id = word2id[PAD_TOKEN]
+    pad_label = -100
+    ids = torch.tensor([b[0] + [pad_id] * (max_l - b[2]) for b in batch], dtype=torch.long)
+    labels = torch.tensor([b[1] + [pad_label] * (max_l - b[2]) for b in batch], dtype=torch.long)
+    mask = torch.tensor([[1] * b[2] + [0] * (max_l - b[2]) for b in batch], dtype=torch.long)
+    return ids, mask, labels
+
+MAX_LEN = 512
+train_ds = WordNERDataset(train_sents, train_labels, word2id, MAX_LEN)
+val_ds = WordNERDataset(val_sents, val_labels, word2id, MAX_LEN)
+
+# Oversample any sample with entities (not just O) to prevent all-O collapse
+entity_tags = {"B-SALARY", "I-SALARY", "B-EDUCATION_REQUIRED", "I-EDUCATION_REQUIRED", "B-JOB_TYPE", "I-JOB_TYPE",
+               "B-EXPERIENCE_REQUIRED", "I-EXPERIENCE_REQUIRED", "B-COMPANY", "I-COMPANY", "B-LOCATION", "I-LOCATION",
+               "B-JOB_TITLE", "I-JOB_TITLE", "B-SKILLS_REQUIRED", "I-SKILLS_REQUIRED"}
+# Higher weight (3.5) for entity-rich samples to prevent model collapsing to all-O predictions
+train_weights = [3.5 if any(t in entity_tags for t in l) else 1.0 for w, l in zip(train_sents, train_labels) if len(w) == len(l) and len(w) > 0]
+from torch.utils.data import WeightedRandomSampler
+train_sampler = WeightedRandomSampler(weights=train_weights, num_samples=len(train_weights))
+train_loader = DataLoader(train_ds, batch_size=8, sampler=train_sampler, collate_fn=collate_pad)
+val_loader = DataLoader(val_ds, batch_size=12, collate_fn=collate_pad)
+print("Datasets ready")
+Datasets ready
+5. Model: BiLSTM-CRF (from scratch)
+
+[ ]
+import torch.nn as nn
+from torchcrf import CRF
+
+class BiLSTMCRF(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_labels, embedding_matrix=None, dropout=0.35):
+        super().__init__()
+        self.embed = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        if embedding_matrix is not None:
+            self.embed.weight.data.copy_(torch.from_numpy(embedding_matrix))
+            self.embed.weight.requires_grad = True
+        self.lstm = nn.LSTM(embed_dim, hidden_dim // 2, num_layers=2, bidirectional=True, batch_first=True, dropout=0.2)
+        self.drop = nn.Dropout(dropout)
+        self.fc = nn.Linear(hidden_dim, num_labels)
+        self.crf = CRF(num_labels, batch_first=True)
+
+    def forward(self, input_ids, mask, labels=None):
+        x = self.embed(input_ids)
+        x = self.drop(x)
+        out, _ = self.lstm(x)
+        emissions = self.fc(self.drop(out))
+        mask_b = mask.bool()
+        if labels is not None:
+            labels = labels.clone().masked_fill(labels == -100, 0)
+            return -self.crf(emissions, labels, mask=mask_b, reduction="mean")
+        return self.crf.decode(emissions, mask=mask_b)
+
+HIDDEN_DIM = 384
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+    device = torch.device("mps")
+else:
+    device = torch.device("cpu")
+
+model = BiLSTMCRF(vocab_size, EMBED_DIM, HIDDEN_DIM, NUM_LABELS, embedding_matrix=embedding_matrix, dropout=0.35).to(device)
+# Lower LR (5e-4) helps prevent collapse to all-O; raise to 1e-3 if training is too slow
+optimizer = torch.optim.Adam(model.parameters(), lr=5e-4, weight_decay=5e-5)
+print(f"Model on {device}")
+Model on cuda
+6. Training (early stopping, validation F1)
+
+[ ]
+from seqeval.metrics import f1_score
+from torch.optim.lr_scheduler import LinearLR, SequentialLR, ConstantLR
+
+def run_validation(model, val_loader, device, id2label, num_labels):
+    model.eval()
+    true_all, pred_all = [], []
+    with torch.no_grad():
+        for ids, mask, labels in val_loader:
+            ids, mask = ids.to(device), mask.to(device)
+            preds = model(ids, mask)
+            for b in range(ids.size(0)):
+                m, labs = mask[b].cpu(), labels[b].cpu()
+                pred_b = preds[b]
+                tlist, plist = [], []
+                for i in range(m.size(0)):
+                    if m[i].item() == 0:
+                        break
+                    if labs[i].item() == -100:
+                        continue
+                    tlist.append(id2label[labs[i].item()])
+                    p = id2label[pred_b[i]] if i < len(pred_b) and pred_b[i] < num_labels else "O"
+                    plist.append(p)
+                if tlist and plist:
+                    true_all.append(tlist)
+                    pred_all.append(plist)
+    f1 = f1_score(true_all, pred_all, zero_division=0) if true_all else 0.0
+    return f1
+
+EPOCHS = 80
+PATIENCE = 20
+warmup_epochs = max(2, EPOCHS // 15)
+scheduler = SequentialLR(optimizer, [
+    ConstantLR(optimizer, factor=0.1, total_iters=warmup_epochs),
+    LinearLR(optimizer, start_factor=1.0, end_factor=0.15, total_iters=EPOCHS - warmup_epochs),
+], milestones=[warmup_epochs])
+best_f1 = 0.0
+best_state = None
+epochs_no_improve = 0
+
+for epoch in range(EPOCHS):
+    model.train()
+    total = 0
+    for ids, mask, lab in train_loader:
+        ids, mask, lab = ids.to(device), mask.to(device), lab.to(device)
+        optimizer.zero_grad()
+        loss = model(ids, mask, lab)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 2.0)
+        optimizer.step()
+        total += loss.item()
+    scheduler.step()
+    val_f1 = run_validation(model, val_loader, device, ID2LABEL, NUM_LABELS)
+    if val_f1 > best_f1:
+        best_f1 = val_f1
+        best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+        epochs_no_improve = 0
+    else:
+        epochs_no_improve += 1
+    print(f"Epoch {epoch+1}/{EPOCHS} Loss: {total/len(train_loader):.4f} Val F1: {val_f1:.4f} Best: {best_f1:.4f}")
+    if epochs_no_improve >= PATIENCE:
+        print(f"Early stopping (no improvement for {PATIENCE} epochs).")
+        break
+if best_state is not None:
+    model.load_state_dict(best_state)
+    print("Restored best checkpoint (by val F1).")
+Epoch 1/80 Loss: 41.6969 Val F1: 0.5544 Best: 0.5544
+Epoch 2/80 Loss: 16.2193 Val F1: 0.7238 Best: 0.7238
+Epoch 3/80 Loss: 11.4120 Val F1: 0.7567 Best: 0.7567
+Epoch 4/80 Loss: 9.3547 Val F1: 0.7944 Best: 0.7944
+Epoch 5/80 Loss: 8.7275 Val F1: 0.7962 Best: 0.7962
+Epoch 6/80 Loss: 7.5921 Val F1: 0.8553 Best: 0.8553
+Epoch 7/80 Loss: 5.2440 Val F1: 0.8653 Best: 0.8653
+Epoch 8/80 Loss: 4.1059 Val F1: 0.8658 Best: 0.8658
+Epoch 9/80 Loss: 3.3231 Val F1: 0.8723 Best: 0.8723
+Epoch 10/80 Loss: 2.8334 Val F1: 0.8820 Best: 0.8820
+Epoch 11/80 Loss: 2.4056 Val F1: 0.8728 Best: 0.8820
+Epoch 12/80 Loss: 2.0879 Val F1: 0.8803 Best: 0.8820
+Epoch 13/80 Loss: 1.7145 Val F1: 0.8803 Best: 0.8820
+Epoch 14/80 Loss: 1.5861 Val F1: 0.8878 Best: 0.8878
+Epoch 15/80 Loss: 1.4224 Val F1: 0.8854 Best: 0.8878
+Epoch 16/80 Loss: 1.2683 Val F1: 0.8869 Best: 0.8878
+Epoch 17/80 Loss: 1.1215 Val F1: 0.8832 Best: 0.8878
+Epoch 18/80 Loss: 1.0033 Val F1: 0.8837 Best: 0.8878
+Epoch 19/80 Loss: 0.8880 Val F1: 0.8862 Best: 0.8878
+Epoch 20/80 Loss: 0.7693 Val F1: 0.8842 Best: 0.8878
+Epoch 21/80 Loss: 0.7021 Val F1: 0.8860 Best: 0.8878
+Epoch 22/80 Loss: 0.6753 Val F1: 0.8813 Best: 0.8878
+Epoch 23/80 Loss: 0.6210 Val F1: 0.8813 Best: 0.8878
+Epoch 24/80 Loss: 0.5883 Val F1: 0.8858 Best: 0.8878
+Epoch 25/80 Loss: 0.5105 Val F1: 0.8835 Best: 0.8878
+Epoch 26/80 Loss: 0.5266 Val F1: 0.8867 Best: 0.8878
+Epoch 27/80 Loss: 0.5029 Val F1: 0.8876 Best: 0.8878
+Epoch 28/80 Loss: 0.4891 Val F1: 0.8874 Best: 0.8878
+Epoch 29/80 Loss: 0.4360 Val F1: 0.8887 Best: 0.8887
+Epoch 30/80 Loss: 0.3696 Val F1: 0.8877 Best: 0.8887
+Epoch 31/80 Loss: 0.4072 Val F1: 0.8852 Best: 0.8887
+Epoch 32/80 Loss: 0.3776 Val F1: 0.8844 Best: 0.8887
+Epoch 33/80 Loss: 0.3884 Val F1: 0.8855 Best: 0.8887
+Epoch 34/80 Loss: 0.3336 Val F1: 0.8868 Best: 0.8887
+Epoch 35/80 Loss: 0.3259 Val F1: 0.8836 Best: 0.8887
+Epoch 36/80 Loss: 0.3000 Val F1: 0.8881 Best: 0.8887
+Epoch 37/80 Loss: 0.3071 Val F1: 0.8877 Best: 0.8887
+Epoch 38/80 Loss: 0.2794 Val F1: 0.8897 Best: 0.8897
+Epoch 39/80 Loss: 0.2828 Val F1: 0.8835 Best: 0.8897
+Epoch 40/80 Loss: 0.2664 Val F1: 0.8866 Best: 0.8897
+Epoch 41/80 Loss: 0.2186 Val F1: 0.8851 Best: 0.8897
+Epoch 42/80 Loss: 0.2897 Val F1: 0.8829 Best: 0.8897
+Epoch 43/80 Loss: 0.2557 Val F1: 0.8873 Best: 0.8897
+Epoch 44/80 Loss: 0.2179 Val F1: 0.8898 Best: 0.8898
+Epoch 45/80 Loss: 0.2193 Val F1: 0.8909 Best: 0.8909
+Epoch 46/80 Loss: 0.2292 Val F1: 0.8902 Best: 0.8909
+Epoch 47/80 Loss: 0.2152 Val F1: 0.8872 Best: 0.8909
+Epoch 48/80 Loss: 0.2057 Val F1: 0.8856 Best: 0.8909
+Epoch 49/80 Loss: 0.1985 Val F1: 0.8858 Best: 0.8909
+Epoch 50/80 Loss: 0.1905 Val F1: 0.8863 Best: 0.8909
+Epoch 51/80 Loss: 0.1657 Val F1: 0.8871 Best: 0.8909
+Epoch 52/80 Loss: 0.1852 Val F1: 0.8904 Best: 0.8909
+Epoch 53/80 Loss: 0.1766 Val F1: 0.8864 Best: 0.8909
+Epoch 54/80 Loss: 0.1767 Val F1: 0.8850 Best: 0.8909
+Epoch 55/80 Loss: 0.1831 Val F1: 0.8893 Best: 0.8909
+Epoch 56/80 Loss: 0.1507 Val F1: 0.8895 Best: 0.8909
+Epoch 57/80 Loss: 0.1776 Val F1: 0.8864 Best: 0.8909
+Epoch 58/80 Loss: 0.1663 Val F1: 0.8843 Best: 0.8909
+Epoch 59/80 Loss: 0.1633 Val F1: 0.8872 Best: 0.8909
+Epoch 60/80 Loss: 0.1354 Val F1: 0.8868 Best: 0.8909
+Epoch 61/80 Loss: 0.1616 Val F1: 0.8898 Best: 0.8909
+Epoch 62/80 Loss: 0.1471 Val F1: 0.8861 Best: 0.8909
+Epoch 63/80 Loss: 0.1351 Val F1: 0.8849 Best: 0.8909
+Epoch 64/80 Loss: 0.1258 Val F1: 0.8890 Best: 0.8909
+Epoch 65/80 Loss: 0.1162 Val F1: 0.8834 Best: 0.8909
+Early stopping (no improvement for 20 epochs).
+Restored best checkpoint (by val F1).
+7. Save model and assets
+
+[ ]
+_save_base = "/content/drive/MyDrive" if os.path.exists("/content/drive/MyDrive") else "."
+SAVE_DIR = os.environ.get("JOB_POSTER_NER_PATH2_SAVE_DIR", os.path.join(_save_base, "job_poster_ner_path2"))
+os.makedirs(SAVE_DIR, exist_ok=True)
+
+torch.save(model.state_dict(), os.path.join(SAVE_DIR, "bilstm_crf_state.pt"))
+w2v.save(os.path.join(SAVE_DIR, "word2vec.model"))
+config = {"tags": TAGS, "word2id": word2id, "embed_dim": EMBED_DIM, "num_labels": NUM_LABELS, "max_len": MAX_LEN}
+with open(os.path.join(SAVE_DIR, "ner_config.json"), "w", encoding="utf-8") as f:
+    json.dump(config, f, indent=2)
+
+print("Saved:", SAVE_DIR)
+print("  - bilstm_crf_state.pt")
+print("  - word2vec.model")
+print("  - ner_config.json")
+Saved: /content/drive/MyDrive/job_poster_ner_path2
+  - bilstm_crf_state.pt
+  - word2vec.model
+  - ner_config.json
+8. Inference on job poster text
+
+[ ]
+def parse_job_poster_path2(text, word2id, model, device, id2label, max_len=512):
+    """Extract entities from job poster text using Path 2 model."""
+    words = re.findall(r"\S+", text)[:max_len]
+    if not words:
+        return [], [], {}
+    ids = torch.tensor([[word2id.get(w, word2id[UNK_TOKEN]) for w in words]], dtype=torch.long).to(device)
+    mask = torch.ones_like(ids, dtype=torch.long).to(device)
+    model.eval()
+    with torch.no_grad():
+        preds = model(ids, mask)
+    pred_tags = [id2label.get(preds[0][i], "O") for i in range(len(preds[0]))]
+    entities = {}
+    i = 0
+    while i < len(words):
+        tag = pred_tags[i] if i < len(pred_tags) else "O"
+        if tag.startswith("B-"):
+            entity_type = tag[2:]
+            phrase = [words[i]]
+            i += 1
+            while i < len(words) and i < len(pred_tags) and pred_tags[i] == f"I-{entity_type}":
+                phrase.append(words[i])
+                i += 1
+            raw = " ".join(phrase)
+            cleaned = raw.strip().rstrip(".,;:!?)]}\"'").lstrip("([{\"'").strip()
+            if cleaned:
+                entities.setdefault(entity_type, []).append(cleaned)
+        else:
+            i += 1
+    for k in entities:
+        entities[k] = list(dict.fromkeys(entities[k]))
+    return words, pred_tags, entities
+
+# Simpler regex to avoid escaping issues (catches $80k, $120k-150k, 80k-120k, Competitive)
+SALARY_RE = re.compile(r'\\$[\\d,]+\\.?\\d*\\s*(k|K|M)?|\\d+\\s*(k|K)\\s*-\\s*\\d+\\s*(k|K)|Competitive', re.IGNORECASE)
+
+def parse_job_poster_path2_hybrid(text, word2id, model, device, id2label, max_len=512):
+    """Hybrid: SALARY from rules, rest from model."""
+    words, pred_tags, entities = parse_job_poster_path2(text, word2id, model, device, id2label, max_len)
+    sal = list(dict.fromkeys(m.group(0).strip() for m in SALARY_RE.finditer(text)))
+    if sal:
+        entities["SALARY"] = sal
+    return words, pred_tags, entities
+
+[ ]
+JOB_POSTER_TEXT = """
+Senior Data Scientist at Acme Corp. Remote. $120k-150k. Skills: Python, ML. 5+ years experience. PhD preferred. Full-time.
+"""
+words, tags, entities = parse_job_poster_path2_hybrid(JOB_POSTER_TEXT.strip(), word2id, model, device, ID2LABEL)
+print("Entities (hybrid):")
+for k, v in entities.items():
+    print(f"  {k}: {v}")
+print("\nWord-level tags (first 25):", list(zip(words[:25], tags[:25])))
+Entities (hybrid):
+  JOB_TITLE: ['Senior Data Scientist']
+  COMPANY: ['Acme Corp']
+  LOCATION: ['Remote']
+  SALARY: ['$120k-150k']
+  SKILLS_REQUIRED: ['Python', 'ML']
+  EXPERIENCE_REQUIRED: ['5+ years experience']
+  EDUCATION_REQUIRED: ['PhD preferred']
+  JOB_TYPE: ['Full-time']
+
+Word-level tags (first 25): [('Senior', 'B-JOB_TITLE'), ('Data', 'I-JOB_TITLE'), ('Scientist', 'I-JOB_TITLE'), ('at', 'O'), ('Acme', 'B-COMPANY'), ('Corp.', 'I-COMPANY'), ('Remote.', 'B-LOCATION'), ('$120k-150k.', 'B-SALARY'), ('Skills:', 'O'), ('Python,', 'B-SKILLS_REQUIRED'), ('ML.', 'B-SKILLS_REQUIRED'), ('5+', 'B-EXPERIENCE_REQUIRED'), ('years', 'I-EXPERIENCE_REQUIRED'), ('experience.', 'I-EXPERIENCE_REQUIRED'), ('PhD', 'B-EDUCATION_REQUIRED'), ('preferred.', 'I-EDUCATION_REQUIRED'), ('Full-time.', 'B-JOB_TYPE')]
+9. Evaluation (validation and test)
+
+[ ]
+from seqeval.metrics import classification_report, f1_score
+
+model.eval()
+true_all, pred_all = [], []
+with torch.no_grad():
+    for ids, mask, labels in val_loader:
+        ids, mask = ids.to(device), mask.to(device)
+        preds = model(ids, mask)
+        for b in range(ids.size(0)):
+            m, labs = mask[b].cpu(), labels[b].cpu()
+            pred_b = preds[b]
+            tlist, plist = [], []
+            for i in range(m.size(0)):
+                if m[i].item() == 0:
+                    break
+                if labs[i].item() == -100:
+                    continue
+                tlist.append(ID2LABEL[labs[i].item()])
+                p = ID2LABEL[pred_b[i]] if i < len(pred_b) and pred_b[i] < NUM_LABELS else "O"
+                plist.append(p)
+            if tlist and plist:
+                true_all.append(tlist)
+                pred_all.append(plist)
+
+print("--- Validation ---")
+print(classification_report(true_all, pred_all, zero_division=0))
+print("Val F1:", f1_score(true_all, pred_all, zero_division=0))
+
+test_ds = WordNERDataset(test_sents, test_labels, word2id, MAX_LEN)
+test_loader = DataLoader(test_ds, batch_size=12, collate_fn=collate_pad)
+true_test, pred_test = [], []
+with torch.no_grad():
+    for ids, mask, labels in test_loader:
+        ids, mask = ids.to(device), mask.to(device)
+        preds = model(ids, mask)
+        for b in range(ids.size(0)):
+            m, labs = mask[b].cpu(), labels[b].cpu()
+            pred_b = preds[b]
+            tlist, plist = [], []
+            for i in range(m.size(0)):
+                if m[i].item() == 0:
+                    break
+                if labs[i].item() == -100:
+                    continue
+                tlist.append(ID2LABEL[labs[i].item()])
+                p = ID2LABEL[pred_b[i]] if i < len(pred_b) and pred_b[i] < NUM_LABELS else "O"
+                plist.append(p)
+            if tlist and plist:
+                true_test.append(tlist)
+                pred_test.append(plist)
+
+print("--- Test ---")
+print(classification_report(true_test, pred_test, zero_division=0))
+print("Test F1:", f1_score(true_test, pred_test, zero_division=0))
+--- Validation ---
+                     precision    recall  f1-score   support
+
+            COMPANY       1.00      1.00      1.00       298
+ EDUCATION_REQUIRED       0.98      0.98      0.98       262
+EXPERIENCE_REQUIRED       0.97      0.97      0.97       287
+          JOB_TITLE       1.00      1.00      1.00       298
+           JOB_TYPE       1.00      0.99      0.99       278
+           LOCATION       0.98      0.99      0.98       292
+             SALARY       1.00      0.99      0.99       297
+    SKILLS_REQUIRED       0.80      0.78      0.79      1992
+
+          micro avg       0.89      0.89      0.89      4004
+          macro avg       0.97      0.96      0.96      4004
+       weighted avg       0.89      0.89      0.89      4004
+
+Val F1: 0.8908954100827691
+--- Test ---
+                     precision    recall  f1-score   support
+
+            COMPANY       1.00      1.00      1.00       276
+ EDUCATION_REQUIRED       0.98      0.98      0.98       247
+EXPERIENCE_REQUIRED       0.98      0.98      0.98       265
+          JOB_TITLE       1.00      1.00      1.00       276
+           JOB_TYPE       1.00      0.99      0.99       249
+           LOCATION       0.98      0.98      0.98       269
+             SALARY       0.97      0.97      0.97       275
+    SKILLS_REQUIRED       0.74      0.73      0.73      2058
+
+          micro avg       0.86      0.85      0.85      3915
+          macro avg       0.96      0.95      0.95      3915
+       weighted avg       0.86      0.85      0.85      3915
+
+Test F1: 0.8542868127643215
+Colab paid products - Cancel contracts here

@@ -46,7 +46,7 @@ Use this when fixing your **`.docx`** export (e.g. content like *Untitled-1*) so
 
 - Remove **duplicated** middle paragraphs / bullet lists (lines 27–31 area).
 - Align claims with **built system**: LLM session Q&A / evaluation are **implemented** where configured — avoid “plans for future phases” if Ch 7 already describes them.
-- **NER numbers:** use **`THESIS-FACTS-SHEET.md`** (résumé test micro F1 **0.78**, job-poster **~0.85**) consistently with Ch 7 Tables 7.2 & 7.4 — avoid “≈0.79” in one place and 0.78 in another unless you explain (e.g. rounding).
+- **NER numbers:** use **`THESIS-FACTS-SHEET.md`** (résumé test micro F1 **0.83**, job-poster **~0.85**) consistently with Ch 7 Tables 7.2 & 7.4 — avoid mixed values across sections unless explicitly justified.
 
 ---
 

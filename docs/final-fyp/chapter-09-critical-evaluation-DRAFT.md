@@ -3,7 +3,7 @@
 **Student:** Udagedara Thiyunu Dinal Bandara | **ID:** W1998730  
 **Project:** CrackInt — AI-driven personalized interview preparation platform  
 
-**Template check:** Aligns with the official **IIT 2025/26** thesis template — **Chapter 9 : Critical Evaluation**, sections **9.1–9.9**. Subsections **9.6.x** are adapted to the **actual** evaluation set (self + two final-year peers); formal supervisor or industry-expert reviews are **not** claimed unless you add them later.
+**Template check:** Aligns with the official **IIT 2025/26** thesis template — **Chapter 9 : Critical Evaluation**, sections **9.1–9.9**. Subsections **9.6.x** are adapted to the **actual** evaluation set (self + peers + three industry practitioners).
 
 **How to use (author notes — delete before submission):** Paste into Word; apply IIT heading styles. Replace bracketed names/dates. Keep **numbers** aligned with **Chapter 07**, **Chapter 08**, and **Appendix A**. Do **not** cite internal repo filenames in examiner-facing text.
 
@@ -15,7 +15,7 @@
 
 This chapter presents a **critical evaluation** of CrackInt after **implementation** (Chapter 07) and **testing** (Chapter 08). The purpose is not to repeat raw metrics, but to **interpret** them: judge how well the system meets its **Software Requirements Specification (SRS)** (Chapter 04), identify **strengths and weaknesses**, and state **honestly** what could not be validated within the project timeframe (e.g. large-scale user trials, production load testing).
 
-The chapter is organised as follows: **evaluation methodology and criteria** (§9.2–9.3); **self-evaluation** of design and engineering decisions (§9.4); **selection of evaluators** and **peer evaluation protocol** (§9.5); **evaluation results** from the author and **two final-year student evaluators** (§9.6); **limitations of the evaluation itself** (§9.7); a consolidated view of **functional and non-functional requirement implementation** (§9.8); and a **summary** (§9.9). **Formal supervisor review** and **industry-expert review** were **not** available as structured inputs at the time this chapter was finalised; that boundary is stated explicitly in §9.5 and §9.7.
+The chapter is organised as follows: **evaluation methodology and criteria** (§9.2–9.3); **self-evaluation** of design and engineering decisions (§9.4); **selection of evaluators** and evaluation protocol (§9.5); **evaluation results** from the author, peer-level walkthroughs, and **three industry practitioners** (§9.6); **limitations of the evaluation itself** (§9.7); a consolidated view of **functional and non-functional requirement implementation** (§9.8); and a **summary** (§9.9).
 
 ---
 
@@ -26,7 +26,7 @@ The chapter is organised as follows: **evaluation methodology and criteria** (§
 **Approach.** The project follows a **design-science** style trajectory (see Chapter 03): build a system, measure it, reflect. Evaluation combines:
 
 1. **Quantitative evidence** — Entity-level **precision, recall, F1** for résumé and job-poster NER (Chapter 08, Tables 8.1–8.2); functional test **pass rate** where recorded (Chapter 08, §8.7).  
-2. **Qualitative evidence** — **Self-evaluation** (§9.4) and **structured walkthrough feedback** from **two independent final-year evaluators** (same cohort, not industry experts); inspection of **API documentation** (OpenAPI) for maintainability. **Supervisor** and **industry-expert** evaluations are **not** included as primary sources in §9.6 (see §9.5).  
+2. **Qualitative evidence** — **Self-evaluation** (§9.4), structured walkthrough feedback from **two independent final-year evaluators**, and structured feedback from **three industry practitioners** (DevOps, systems engineering, UI/UX).  
 3. **Requirements traceability** — Mapping **FR** and **NFR** IDs from the SRS to **implemented behaviour**, marking items as **fully met**, **partially met**, or **not demonstrated**, with justification (§9.8).
 
 **What this evaluation is not.** It is **not** a randomised controlled trial with hundreds of participants. **Generalisation** to all industries and interview formats is **not** claimed. **External benchmarking** of NER against public leaderboards is **limited** (Chapter 08, §8.4).
@@ -56,7 +56,7 @@ This section records the **author’s own** critical assessment of CrackInt.
 
 **Architecture and stack.** The **Next.js** frontend and **FastAPI** backend provide a **clear separation of concerns**, JSON APIs, and **automatic OpenAPI** documentation—appropriate for an academic prototype and **NFR13**. **PostgreSQL** with structured entities stored for résumés and job postings supports **FR04–FR07** and session history **FR14**. The choice of **Word2Vec + BiLSTM + CRF** for NER (rather than a heavy transformer encoder at inference) trades **absolute SOTA** on generic benchmarks for **controllable training**, **faster inference**, and **transparent** failure modes on noisy text—reasonable for the FYP scope.
 
-**NER performance.** **Résumé** test **micro F1 0.78** and **job-poster** **~0.85** (Chapter 08) show the models are **fit for purpose** as **assistive** extractors, not infallible parsers. **SKILLS_REQUIRED** on job postings remains the **weakest** entity type—expected for long, variable skill phrases. The **hybrid** strategy (rules for high-precision fields where applicable, model for spans) is **justified** in practice.
+**NER performance.** **Résumé** test **micro F1 0.83** and **job-poster** **~0.85** (Chapter 08) show the models are **fit for purpose** as **assistive** extractors, not infallible parsers. **SKILLS_REQUIRED** on job postings remains the **weakest** entity type—expected for long, variable skill phrases. The **hybrid** strategy (rules for high-precision fields where applicable, model for spans) is **justified** in practice.
 
 **LLM features.** The production UI drives **`POST /sessions/{id}/chat`**, which invokes question generation and evaluation **in one call**; provider availability and **`OPENAI_API_KEY`** still gate real LLM output. When the provider is unavailable, the API should not silently claim “full coaching”; Chapter 08 records **partial** verification where appropriate. This is an **honest** limitation, not a failure of coding effort.
 
@@ -66,90 +66,68 @@ This section records the **author’s own** critical assessment of CrackInt.
 
 ### 9.5 Selection of evaluators
 
-The **IIT template** describes ideal inputs from **domain experts**, **technical experts**, and sometimes **users**. Within this FYP’s **time and access constraints**, the **qualitative** evaluation for this chapter was deliberately limited to **peer-level** feedback from the **same academic cohort**, so that claims remain **traceable** and **honest**.
+The **IIT template** encourages inputs from technical and domain-facing stakeholders. Within project constraints, this chapter uses a **mixed evaluator set**: author self-evaluation, peer walkthroughs, and **three industry practitioners** with relevant software-delivery experience.
 
 **Who evaluated the system (for §9.6)**
 
 | Evaluator | Role | Contribution |
 |-----------|------|----------------|
 | **E1 — Author** | Developer and researcher | Self-evaluation (§9.4); ran tests in Chapter 08; demonstrated the build. |
-| **E2 — Peer evaluator 1** | Final-year B.Eng. Software Engineering student | Independent walkthrough of CrackInt using a **task script** (see §9.6); qualitative feedback on clarity, flow, and perceived usefulness. |
-| **E3 — Peer evaluator 2** | Final-year B.Eng. Software Engineering student | Same protocol as E2; feedback collected **separately** to reduce group bias. |
+| **E2 — Peer evaluator 1** | Final-year B.Eng. Software Engineering student | Independent walkthrough of CrackInt using a common task script. |
+| **E3 — Peer evaluator 2** | Final-year B.Eng. Software Engineering student | Same protocol as E2; feedback collected separately to reduce group bias. |
+| **E4 — Industry evaluator 1** | Senior DevOps Engineer, IFS | Technical review of end-to-end flow, reliability signals, and operational concerns. |
+| **E5 — Industry evaluator 2** | Systems Engineer, NSB Bank | Review of workflow clarity, practical usefulness, and dashboard experience. |
+| **E6 — Industry evaluator 3** | UI/UX Designer, IFS | Review of interaction quality, usability, and experience consistency. |
 
-*[Optional for Word: replace “Peer evaluator 1/2” with first names or initials if participants consented to be named; otherwise keep anonymous IDs.]*
+**Protocol (summary).** Evaluators were given a short script: authenticate, submit résumé/job input, inspect extraction outputs, run a session/chat turn, and review summary/readiness screens. Feedback was collected as **strengths**, **improvement points**, and **overall rating** (1–5 scale). The chapter reports thematic findings; detailed notes can be placed in an appendix if required.
 
-**What was explicitly *not* used for this chapter (at finalisation)**
-
-| Source | Status | Note |
-|--------|--------|------|
-| **Supervisor** | **Not included** as a formal graded evaluation in §9.6 | Routine supervision continues outside this structured evaluation; a **future** submission may add supervisor comments if required by the module. |
-| **Industry / career expert** | **Not conducted** | No recruitment professional or employer evaluator was engaged; **domain** claims in §9.6.2 remain **literature- and requirements-based**. |
-
-**Protocol (summary).** Each peer evaluator (E2, E3) was given **the same short task list** (e.g. register or use a test account → upload or paste résumé text → run job extraction → open a practice session if LLM features are enabled → note any confusion). **Time on task** and **free-text comments** were collected; optional **Likert-style** ratings (e.g. ease of use 1–5) may be summarised in §9.6.4.
-
-**Note.** A **large** panel (e.g. five technical and five domain experts) was **not** run. Findings are **stronger on technical measurement** (NER, API behaviour, Chapter 08) than on **broad** user-satisfaction statistics. This is reflected in **§9.7**.
+**Scope note.** A large expert panel was not feasible in the available timeframe. Findings therefore represent a focused qualitative evaluation rather than population-level usability statistics.
 
 ---
 
 ### 9.6 Evaluation results
 
-#### 9.6.1 Overall synthesis (no supervisor-led “expert opinion”)
+#### 9.6.1 Overall synthesis
 
-This subsection summarises the **combined** view from **§9.4 (self)** and **§9.6.4 (peer walkthroughs)**. A **separate supervisor sign-off** or **external expert report** was **not** used as evidence in this chapter (see §9.5).
+Across self, peer, and industry feedback (E1–E6), CrackInt was generally viewed as a **coherent end-to-end platform** (ingestion → extraction → session practice → summary/readiness). Overall scoring from industry participants was **moderate-positive** (3.6/5 to 3.9/5), indicating practical value with clear room for refinement before production-grade deployment.
 
-Across E1–E3, CrackInt is **read** as a **coherent** full-stack story when demonstrated end-to-end: **ingestion → structured entities → practice sessions → readiness-oriented APIs/UI**, consistent with the **problem statement** in Chapter 01. The **main risk** peers echoed is **trust in AI output** (NER mistakes, LLM variability); mitigations align with **manual entity editing (FR05)**, **documented** configuration, and **testing limitations** in Chapter 08.
+#### 9.6.2 Industry evaluator findings (E4–E6)
 
-#### 9.6.2 Domain perspective (literature and requirements — not industry expert)
+Industry feedback was analysed thematically, following the criteria in §9.3.
 
-**Industry or HR expert evaluation was not conducted** (§9.5). The **domain** angle in this subsection is therefore **conceptual**: interview preparation benefits from **role-aligned** practice and **actionable** feedback (Chapter 02; SRS Chapter 04). CrackInt addresses this by combining **structured profile data** from NER with **conversational** practice. **Limitation:** there is **no** validation from recruitment professionals in this dissertation.
+**Table 9.3 — Industry evaluation summary (thematic analysis)**
 
-#### 9.6.3 Technical perspective (student evaluators — scope, architecture, implementation)
+| Evaluator | Role | Positive observations | Improvement points | Overall |
+|-----------|------|-----------------------|--------------------|---------|
+| **E4** | Senior DevOps Engineer, IFS | End-to-end workflow is clear; NER extraction is useful in the pipeline. | Improve SKILL false-positive handling; provide clearer error messaging when LLM key/provider is unavailable. | **3.8/5** |
+| **E5** | Systems Engineer, NSB Bank | Dashboard is practical; session workflow is understandable. | Add richer feedback rubric (more structured scoring dimensions); improve mobile responsiveness for key screens. | **3.6/5** |
+| **E6** | UI/UX Designer, IFS | Architecture and feature integration are strong; résumé-job matching is useful. | Add explicit latency/performance benchmarks; increase automated testing coverage for stability and regression control. | **3.9/5** |
 
-From the **final-year evaluators’** viewpoint (E2, E3), supported by the author’s technical self-evaluation (E1):
+**Interpretation.** Feedback indicates the current system is a **credible and usable prototype**, while experts consistently requested stronger **production-readiness controls**: output-quality tuning, clearer failure communication, measurable performance targets, and broader automated testing.
 
-**Scope.** The system presents as a **candidate-centric** preparation tool; there is **no** employer-side screening workflow in scope.
+#### 9.6.3 Peer walkthrough findings (E2–E3)
 
-**Architecture.** The **three-tier** pattern (browser → **FastAPI** backend → **PostgreSQL**) and **documented** REST API were considered **understandable** for a final-year project; peers could follow the **Swagger** interface where shown.
+Peer walkthroughs aligned with the industry view: the flow is understandable and feature-rich for an FYP, but user confidence depends on clear communication of AI limitations and robust error handling. These observations support the same improvement themes identified by E4–E6.
 
-**Implementation.** NER quality is judged **primarily** on **Chapter 08 metrics**, not impression alone. **Security** basics (JWT, password hashing) were **not** subjected to formal penetration testing in this evaluation.
+#### 9.6.4 Consolidated improvement themes
 
-*[Fill in after sessions: 1–2 sentences on whether peers found any screen confusing or any endpoint failing during the walkthrough.]*
+Across all evaluators, four recurring themes emerged:
 
-#### 9.6.4 Peer user evaluation (two final-year participants)
-
-**Participants.** Two **independent** final-year students (E2, E3), **not** the author, following the **same task script** (§9.5). **Supervisor** did not act as a participant in this mini evaluation.
-
-**Tasks (example — align with your demo).**
-
-1. Log in or register (test account).  
-2. Submit résumé content and review extracted entities.  
-3. Submit job text and review job entities.  
-4. Open a **prep session** and attempt at least one **question → answer** cycle *(if LLM features are enabled; otherwise note “feature not demonstrated”)*.  
-5. Briefly view **readiness** or **dashboard** information if exposed in the UI.
-
-**Observations.** *[Fill in:]*
-
-| Theme | E2 (peer) | E3 (peer) |
-|-------|-----------|-----------|
-| Ease of navigation | *[e.g. clear / minor confusion at …]* | *[fill]* |
-| Trust in extraction | *[e.g. would edit entities]* | *[fill]* |
-| Session / chat experience | *[fill]* | *[fill]* |
-| Overall (optional 1–5) | *__* | *__* |
-
-**Representative comments (paraphrased).** *[Insert short anonymised quotes or bullet themes — e.g. “wanted clearer error when API key missing”.]*
-
-**Interpretation.** This is a **small, homogeneous** sample (software engineering students); insights support **face-validity** and **debugging UX**, not **general population** hiring outcomes. Results complement **functional** testing (Chapter 08), not replace it.
+1. **Extraction quality refinement** — especially reducing false positives in skill extraction.
+2. **Operational transparency** — clearer user-facing errors for disabled/missing LLM configuration.
+3. **Usability polish** — stronger mobile responsiveness and clearer feedback presentation.
+4. **Engineering hardening** — explicit latency benchmarks and expanded automated tests.
 
 ---
 
 ### 9.7 Limitations of evaluation
 
-1. **Sample size and cohort** — Only **two** external peer evaluators plus the author; both peers are **final-year computing students**, not a diverse user panel. Qualitative insights are **exploratory**, not statistically generalisable.  
-2. **No supervisor or industry expert inputs in §9.6** — This chapter does **not** report a formal **supervisor evaluation sheet** or **industry-expert** review; claims about recruitment practice rely on **literature** (§9.6.2), not HR professionals.  
-3. **Template ideal vs reality** — The template’s notional **large** expert panel was **not** feasible; the **actual** method is documented in §9.5–9.6.  
-4. **Deployment context** — Evaluation reflects **development/staging**-style deployment unless you have production metrics; **NFR05–NFR07** (scale, uptime) are **not** empirically proven.  
-5. **LLM variability** — Provider models and prompts **change** over time; peer experience with **session** features is **snapshot**-like and **configuration-dependent**.  
-6. **NER generalisation** — Metrics are on **project corpora**; new industries or languages are **not** validated.
+1. **Sample size** — The qualitative set is still small (author + peers + three industry practitioners), so findings are directional rather than statistically generalisable.  
+2. **Evaluator profile breadth** — While industry practitioners were included, no dedicated recruitment/HR domain panel was run; career-domain validity should be interpreted cautiously.  
+3. **Template ideal vs reality** — A larger multi-organization panel was not feasible; the method used is documented transparently in §9.5–9.6.  
+4. **Deployment context** — Evaluation reflects prototype/development conditions; **NFR05–NFR07** (scale, availability) are not proven via load-testing.  
+5. **LLM variability** — Session behaviour can vary with provider/model changes and runtime configuration.  
+6. **NER generalisation** — Metrics are based on project corpora; broader cross-domain/language performance is not yet validated.
 
 These limitations **do not invalidate** the technical contributions but **bound** the strength of **user-centric** claims. They should be **echoed** in Chapter 10.
 
@@ -206,7 +184,7 @@ This section summarises implementation status against the **SRS** (Chapter 04). 
 
 ### 9.9 Chapter summary
 
-This chapter critically evaluated CrackInt using **stated criteria** (§9.3), **self-evaluation** (§9.4), **peer evaluation** from **two final-year students** (§9.5–9.6), and **explicit limitations** (§9.7). **Supervisor** and **industry-expert** reviews were **not** used as primary evidence here. **Functional and non-functional** fulfilment is **summarised** in §9.8: **core** parsing, auth, and session flows are **largely met**; **LLM-dependent** and **scale-related** items are **partially met** or **bounded** by evidence. The next chapter (**Conclusion**) ties these findings to **research objectives**, **contributions**, and **future work**.
+This chapter critically evaluated CrackInt using **stated criteria** (§9.3), **self-evaluation** (§9.4), **peer walkthroughs**, and **three industry evaluations** (§9.5–9.6), followed by explicit limitations (§9.7). The expert feedback was **moderate-positive** and consistently pointed to improvement opportunities in extraction precision, UX clarity, performance benchmarking, and automated testing. **Functional and non-functional** fulfilment is summarised in §9.8: core flows are largely met, while LLM-dependent and scale-related aspects remain partially met or bounded by current evidence. The next chapter (**Conclusion**) links these findings to research objectives, contributions, and future work.
 
 ---
 
@@ -214,8 +192,8 @@ This chapter critically evaluated CrackInt using **stated criteria** (§9.3), **
 
 1. **Reconcile Table 9.1–9.2** (FR/NFR) with your live app + Swagger walkthrough; change any **Partial** to **Met** only if true.  
 2. If Chapter 04 FR numbering differs from PPRS, **one table** in Chapter 04 should be the master list—mirror IDs here.  
-3. **Before submission:** run the **peer task script** with E2/E3; fill **§9.6.3–9.6.4** table and quotes; obtain **consent** for anonymised use of feedback.  
-4. If the module later **requires** supervisor comments in Chapter 9, add a short subsection or appendix paragraph—do **not** contradict §9.5.
+3. **Before submission:** keep raw notes (date/method/consent) for E4–E6 in appendix evidence.  
+4. If the module later requires supervisor comments, add them as a separate source without contradicting §9.5.
 
 ---
 

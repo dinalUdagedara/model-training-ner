@@ -1,0 +1,37 @@
+6.6 UI Design
+
+6.6.1 Résumé ingestion and entity review
+
+The page supports two ways to provide a résumé: upload a document (PDF; images where OCR is enabled) or paste plain text. A drag-and-drop zone validates the file type and shows errors when needed. The user triggers extraction with a primary Extract control; a loading state appears while the backend runs NER.
+
+After extraction, results appear in a structured card grouped by entity type: NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, and EXPERIENCE. The user can open Edit entities (modal), replace the résumé to start again, or continue to other modules (e.g. job input, matching, sessions).
+
+6.6.2 Edit entities dialog
+
+A modal lists labelled fields per entity type. Multi-value fields (e.g. skills) support add and remove actions. Save sends updates to the API (PATCH /api/v1/resumes/{id}). Cancel closes the modal without saving.
+
+6.6.3 Job description ingestion
+
+The user enters a job description in a text area or uploads a file where supported. Extract calls the jobs API (POST /api/v1/jobs/extract). Results show job-oriented fields such as JOB_TITLE, COMPANY, LOCATION, SALARY, SKILLS_REQUIRED, EXPERIENCE_REQUIRED, EDUCATION_REQUIRED, and JOB_TYPE. The interface explains partial results or configuration limits where applicable.
+
+6.6.4 Sessions and chat
+
+The user sees a list of prep sessions and can open one. The session screen shows the question context, a text area for the answer, and a feedback area. The main flow uses the unified chat turn (POST /api/v1/sessions/{id}/chat). Feedback may include scores, strengths, and improvements depending on the API response. Messages persist so the session survives refresh.
+
+6.6.5 Dashboard and readiness
+
+Dashboard-style views show summary cards and, where implemented, charts for progress and readiness. These align with user endpoints for summary, trend, and home summary.
+
+6.6.6 Additional integrated features
+
+Skill-gap or match views connect résumé and job data. CV scoring and cover letter flows appear when enabled and when required credentials are present. Speech-related features appear only when configured. Disabled or external-service-dependent features show clear messages instead of failing silently.
+
+6.6.7 Design considerations
+
+Usability: clear labels, consistent spacing, and one obvious primary action per screen.
+
+Accessibility: semantic HTML where used, keyboard access to controls, visible focus, and sufficient colour contrast.
+
+Responsiveness: layouts adapt from narrow mobile widths to large desktop screens.
+
+Reliability: distinct loading, empty, and error states; errors explain missing keys or disabled services in user-facing language.

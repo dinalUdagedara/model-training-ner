@@ -6,7 +6,7 @@
 
 **Template check:** Aligns with the official **IIT 2025/26** thesis template — **Chapter 10 : Conclusion** (overview; achievements of aims & objectives; utilization of course knowledge; existing vs new skills; learning outcomes; problems/challenges; deviations; limitations; future enhancements; contribution; concluding remarks).
 
-**Sources used for this draft:** IPD submission **`docs/ipd/w1998730_20221214_IPD.pdf`** (Table 1 research objectives and LO mapping), **`docs/project/proposal-summary.md`**, and **frozen results** aligned with **Chapter 07–08** (résumé NER test micro F1 **0.78**; job-poster test micro F1 **~0.85**).
+**Sources used for this draft:** IPD submission **`docs/ipd/w1998730_20221214_IPD.pdf`** (Table 1 research objectives and LO mapping), **`docs/project/proposal-summary.md`**, and **frozen results** aligned with **Chapter 07–08** (résumé NER test micro F1 **0.83**; job-poster test micro F1 **~0.85**).
 
 **How to use (author notes — delete before submission):** Paste into Word; apply IIT styles. If **Chapter 01** Table 1 wording differs slightly from IPD, keep **Chapter 01** as the master copy and adjust this file to match.
 
@@ -38,12 +38,12 @@ This chapter concludes the dissertation by summarising **what was achieved**, ho
 | **R07** | Identify user requirements for integrated prep system | LO3, LO6 | **Achieved** | Chapter 04 FR/NFR tables. |
 | **R08** | Design architecture (NER, QG, feedback modules) | LO1, LO3, LO7 | **Achieved** | Chapter 06; implemented Ch 07. |
 | **R09** | Design DB schema; secure storage; analytics | LO1, LO6, LO7 | **Achieved** | Chapter 06–07; PostgreSQL + optional S3. |
-| **R10** | Collect / use annotated résumé and job data for NER | LO1, LO5 | **Achieved** | Chapter 07; merged corpora; **3023** résumés / **6327** job postings (frozen splits). |
+| **R10** | Collect / use annotated résumé and job data for NER | LO1, LO5 | **Achieved** | Chapter 07; merged corpora; **4738** résumés / **6327** job postings (frozen splits). |
 | **R11** | OCR / preprocessing for multi-format ingestion | LO1, LO5, LO7 | **Achieved** | Chapter 07; PyMuPDF / OCR paths; user may paste text. |
 | **R13** | LLM-driven question generator with adaptive difficulty | LO1, LO5, LO7 | **Partial** | Questions generated **inside** `POST /sessions/{id}/chat` (session QA agent); difficulty hooks (`prefer_difficulty`) where implemented — not a separate fine-tuned QG model for all flows. |
 | **R14** | Semantic feedback engine (depth, clarity, relevance) | LO1, LO5, LO7 | **Partial** | **Evaluate-answer** path when LLM enabled; no separate embedding-only engine as sole evaluator. |
 | **R15** | Integrate into Next.js + FastAPI with secure storage & history | LO1, LO5, LO7 | **Achieved** | Chapter 07; sessions, JWT, OpenAPI. |
-| **R16** | Evaluate NER with precision, recall, F1 | LO1, LO7, LO8 | **Achieved** | Chapter 08; résumé test micro F1 **0.78**; job-poster test micro F1 **~0.85** (seqeval). |
+| **R16** | Evaluate NER with precision, recall, F1 | LO1, LO7, LO8 | **Achieved** | Chapter 08; résumé test micro F1 **0.83**; job-poster test micro F1 **~0.85** (seqeval). |
 | **R17** | Assess question quality (BLEU/ROUGE; expert evaluation) | LO1, LO7, LO8 | **Partial** | BLEU/ROUGE against references **not** run as primary metric; no large expert QG panel — scope bounded in Ch 09. |
 | **R18** | Validate semantic feedback vs expert ratings | LO1, LO7, LO8 | **Partial** | No correlation study with human raters; LLM outputs evaluated functionally (Ch 08–09). |
 | **R19** | User studies on readiness / engagement | LO2, LO8 | **Partial** | **Two** final-year peer walkthroughs + self-evaluation (Ch 09); not a large longitudinal readiness study. |
@@ -118,7 +118,7 @@ Chapter 01 maps each research objective to **University of Westminster module le
 
 - **LLM provider emphasis:** Early documents sometimes highlighted **Gemini** alongside OpenAI; the **submitted** implementation uses the **OpenAI** client path for session agents where configured — provider choice follows **feasibility** and **integration** in the codebase, not a comparative study.  
 - **Evaluation scale:** The PPRS/Gantt narrative mentioned **larger** user testing (e.g. **20** participants in some planning text); the **reported** critical evaluation uses **self-assessment plus two final-year peers** (Chapter 09), which is **narrower** but **honest**.  
-- **NER corpus and metrics:** Prototype-era figures (e.g. different corpus sizes or **~0.79** résumé F1 in older drafts) were **superseded** by the **frozen** training runs documented in Chapter 07 and **test** metrics in Chapter 08 (**0.78** résumé micro F1; **~0.85** job-poster micro F1).  
+- **NER corpus and metrics:** Prototype-era figures (e.g. different corpus sizes or **~0.79** résumé F1 in older drafts) were **superseded** by the **frozen** training runs documented in Chapter 07 and **test** metrics in Chapter 08 (**0.83** résumé micro F1; **~0.85** job-poster micro F1).
 - **IPD vs final feature set:** The interim demo emphasised **NER extraction**; the final system adds **full session flows**, **readiness/skill-gap** features, and optional services (e.g. cover letter, CV scoring) as described in Chapter 07 — a **positive** extension rather than a reduction.
 
 ---
@@ -164,7 +164,7 @@ CrackInt shows that a **classical** neural NER stack (**Word2Vec + BiLSTM + CRF*
 
 ## Appendix for you (not in thesis)
 
-1. **Abstract** — Write last; ≤300 words; **three numbers** consistent with Chapter 08 (résumé F1 **0.78**, job-poster **~0.85**, plus corpus sizes or pass rate if used).  
+1. **Abstract** — Write last; ≤300 words; **three numbers** consistent with Chapter 08 (résumé F1 **0.83**, job-poster **~0.85**, plus corpus sizes or pass rate if used).  
 2. **Table 10.2** — Replace the “Typical theme” column with **verbatim LO titles** from the **6COSC023W** (or current) module handbook if your examiner expects exact wording.  
 3. **R12** — Confirm whether Chapter 01 Table 1 includes **R12**; align rows with Word.
 

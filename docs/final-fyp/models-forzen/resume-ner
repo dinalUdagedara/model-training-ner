@@ -1,0 +1,516 @@
+
+BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb
+BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb_
+Resume NER with BiLSTM-CRF
+Word2Vec word embeddings, BiLSTM encoder, and linear + CRF for BIO tagging. Entity types: NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, EXPERIENCE.
+
+Dependencies
+
+[ ]
+!pip install -q torch pytorch-crf seqeval gensim
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.6/43.6 kB 3.0 MB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 27.9/27.9 MB 40.7 MB/s eta 0:00:00
+  Building wheel for seqeval (setup.py) ... done
+Google Drive (Colab)
+
+[ ]
+from google.colab import drive
+drive.mount("/content/drive")
+Mounted at /content/drive
+1. Data loading
+Colab: If the traceback shows out.append(json.loads(line)) or JSONDecodeError around line 3519, the runtime is using an old copy of this notebook. Re-upload the latest BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb from the repo, then Runtime → Restart session and run all cells. If the error persists, replace merged_1030_plus_all_llm_plus_proper.jsonl on Drive with the fixed file from resume_ner_pipeline/ in the repo (4738 valid JSON lines).
+
+
+[ ]
+import json
+import os
+
+_drive_base = "/content/drive/MyDrive" if os.path.exists("/content/drive/MyDrive") else "/content/drive/My Drive"
+_candidates = [
+    "merged_1030_plus_all_llm_plus_proper.json"
+]
+DATA_PATH = None
+if not os.path.isdir("/content/drive"):
+    raise RuntimeError("Mount Google Drive first (run the Drive cell above).")
+for _name in _candidates:
+    _p = os.path.join(_drive_base, _name)
+    if os.path.isfile(_p):
+        DATA_PATH = _p
+        break
+if DATA_PATH is None:
+    raise FileNotFoundError(f"Merged dataset not found in Drive root: {_drive_base}")
+
+
+def load_resume_dataset(path):
+    with open(path, "r", encoding="utf-8") as f:
+        lines = [ln.rstrip("\r\n") for ln in f]
+    if lines:
+        lines[0] = lines[0].lstrip("\ufeff")
+    if not lines or not any(ln.strip() for ln in lines):
+        return []
+    joined = "\n".join(lines).strip()
+    try:
+        data = json.loads(joined)
+        if isinstance(data, list):
+            return data
+        if isinstance(data, dict):
+            return [data]
+    except json.JSONDecodeError:
+        pass
+    out = []
+    i, n = 0, len(lines)
+    while i < n:
+        s = lines[i].strip()
+        if not s:
+            i += 1
+            continue
+        buf, j = s, i
+        while True:
+            try:
+                out.append(json.loads(buf))
+                i = j + 1
+                break
+            except json.JSONDecodeError as e:
+                j += 1
+                if j >= n:
+                    raise json.JSONDecodeError(
+                        f"{e.msg} (line {i+1} + following; JSONL: one object per line, or a single JSON array)",
+                        e.doc,
+                        e.pos,
+                    ) from None
+                buf = buf + lines[j]
+    return out
+
+
+data = load_resume_dataset(DATA_PATH)
+print(f"Loaded {len(data)} resumes from {os.path.basename(DATA_PATH)}")
+
+LABEL_MAPPING = {
+    "Name": "NAME", "Email Address": "EMAIL", "Skills": "SKILL", "Designation": "OCCUPATION",
+    "Degree": "EDUCATION", "College Name": "EDUCATION", "Graduation Year": "EDUCATION",
+    "Companies worked at": "EXPERIENCE", "Years of Experience": "EXPERIENCE", "Location": "O", "UNKNOWN": "O",
+    "NAME": "NAME", "EMAIL": "EMAIL", "SKILL": "SKILL", "OCCUPATION": "OCCUPATION", "EDUCATION": "EDUCATION", "EXPERIENCE": "EXPERIENCE", "O": "O",
+}
+for item in data:
+    for ann in item.get("annotation", []):
+        ann["label"] = [LABEL_MAPPING.get(l, "O") for l in ann["label"]]
+Loaded 4738 resumes from merged_1030_plus_all_llm_plus_proper.json
+2. Preprocessing and train/val/test split
+
+[ ]
+import re
+import random
+
+def tokenize_with_positions(text):
+    return [(m.group(), m.start(), m.end()) for m in re.finditer(r"\S+", text)]
+
+def create_bio_tags_fixed(tokens, annotations):
+    bio = ["O"] * len(tokens)
+    for ann in annotations:
+        if not ann.get("label") or ann["label"][0] == "O":
+            continue
+        entity = ann["label"][0]
+        for pt in ann.get("points", []):
+            s, e = pt["start"], pt["end"]
+            first = True
+            for i, (_, ts, te) in enumerate(tokens):
+                if te <= s or ts >= e:
+                    continue
+                bio[i] = f"B-{entity}" if first else f"I-{entity}"
+                first = False
+    return bio
+
+all_sents, all_labels = [], []
+for item in data:
+    content = item.get("content", "")
+    anns = item.get("annotation", [])
+    if not content or not anns:
+        continue
+    toks = tokenize_with_positions(content)
+    if not toks:
+        continue
+    labs = create_bio_tags_fixed(toks, anns)
+    all_sents.append([t[0] for t in toks])
+    all_labels.append(labs)
+
+n = len(all_sents)
+random.seed(42)
+idx = list(range(n))
+random.shuffle(idx)
+n_train, n_val = int(0.8 * n), int(0.1 * n)
+train_sents = [all_sents[i] for i in idx[:n_train]]
+train_labels = [all_labels[i] for i in idx[:n_train]]
+val_sents = [all_sents[i] for i in idx[n_train : n_train + n_val]]
+val_labels = [all_labels[i] for i in idx[n_train : n_train + n_val]]
+test_sents = [all_sents[i] for i in idx[n_train + n_val :]]
+test_labels = [all_labels[i] for i in idx[n_train + n_val :]]
+print(f"Train {len(train_sents)} Val {len(val_sents)} Test {len(test_sents)}")
+Train 3790 Val 473 Test 475
+3. Word embeddings (Word2Vec) and vocabulary
+
+[ ]
+from gensim.models import Word2Vec
+import numpy as np
+
+EMBED_DIM = 256
+W2V_MIN_COUNT = 1
+W2V_WINDOW = 6
+W2V_EPOCHS = 35
+
+w2v = Word2Vec(sentences=all_sents, vector_size=EMBED_DIM, window=W2V_WINDOW, min_count=W2V_MIN_COUNT, epochs=W2V_EPOCHS, workers=4)
+
+PAD_TOKEN = "<PAD>"
+UNK_TOKEN = "<UNK>"
+word2id = {PAD_TOKEN: 0, UNK_TOKEN: 1}
+for w in w2v.wv.key_to_index:
+    if w not in word2id:
+        word2id[w] = len(word2id)
+vocab_size = len(word2id)
+
+embedding_matrix = np.zeros((vocab_size, EMBED_DIM), dtype=np.float32)
+for w, i in word2id.items():
+    if w in (PAD_TOKEN, UNK_TOKEN):
+        continue
+    if w in w2v.wv:
+        embedding_matrix[i] = w2v.wv[w]
+    else:
+        embedding_matrix[i] = np.random.normal(0, 0.1, EMBED_DIM)
+
+print(f"Vocab size: {vocab_size}, Embed dim: {EMBED_DIM}")
+Vocab size: 47426, Embed dim: 256
+4. Dataset
+
+[ ]
+import torch
+from torch.utils.data import Dataset, DataLoader
+
+TAGS = ["O", "B-NAME", "I-NAME", "B-EMAIL", "I-EMAIL", "B-SKILL", "I-SKILL", "B-OCCUPATION", "I-OCCUPATION", "B-EXPERIENCE", "I-EXPERIENCE", "B-EDUCATION", "I-EDUCATION"]
+LABEL2ID = {t: i for i, t in enumerate(TAGS)}
+ID2LABEL = {i: t for i, t in enumerate(TAGS)}
+NUM_LABELS = len(TAGS)
+
+def sent_to_ids(words, word2id, max_len=768):
+    ids = [word2id.get(w, word2id[UNK_TOKEN]) for w in words]
+    if len(ids) > max_len:
+        ids = ids[:max_len]
+    return ids
+
+class WordNERDataset(Dataset):
+    def __init__(self, sents, labels, word2id, max_len=768):
+        self.samples = []
+        for words, labs in zip(sents, labels):
+            if len(words) != len(labs) or len(words) == 0:
+                continue
+            if len(words) > max_len:
+                words, labs = words[:max_len], labs[:max_len]
+            ids = [word2id.get(w, word2id[UNK_TOKEN]) for w in words]
+            lab_ids = [LABEL2ID.get(l, 0) for l in labs]
+            self.samples.append((ids, lab_ids, len(ids)))
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, i):
+        return self.samples[i]
+
+def collate_pad(batch):
+    max_l = max(b[2] for b in batch)
+    pad_id = word2id[PAD_TOKEN]
+    pad_label = -100
+    ids = torch.tensor([b[0] + [pad_id] * (max_l - b[2]) for b in batch], dtype=torch.long)
+    labels = torch.tensor([b[1] + [pad_label] * (max_l - b[2]) for b in batch], dtype=torch.long)
+    mask = torch.tensor([[1] * b[2] + [0] * (max_l - b[2]) for b in batch], dtype=torch.long)
+    return ids, mask, labels
+
+MAX_LEN = 768
+train_ds = WordNERDataset(train_sents, train_labels, word2id, MAX_LEN)
+val_ds = WordNERDataset(val_sents, val_labels, word2id, MAX_LEN)
+rare_tags = {"B-SKILL", "I-SKILL", "B-EDUCATION", "I-EDUCATION", "B-EXPERIENCE", "I-EXPERIENCE", "B-OCCUPATION", "I-OCCUPATION"}
+train_weights = [2.5 if any(t in rare_tags for t in l) else 1.0 for w, l in zip(train_sents, train_labels) if len(w) == len(l) and len(w) > 0]
+from torch.utils.data import WeightedRandomSampler
+train_sampler = WeightedRandomSampler(weights=train_weights, num_samples=len(train_weights))
+train_loader = DataLoader(train_ds, batch_size=6, sampler=train_sampler, collate_fn=collate_pad)
+val_loader = DataLoader(val_ds, batch_size=12, collate_fn=collate_pad)
+print("Datasets ready.")
+Datasets ready.
+5. Model (BiLSTM-CRF)
+
+[ ]
+import torch.nn as nn
+from torchcrf import CRF
+
+class BiLSTMCRF(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_labels, embedding_matrix=None, dropout=0.35):
+        super().__init__()
+        self.embed = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        if embedding_matrix is not None:
+            self.embed.weight.data.copy_(torch.from_numpy(embedding_matrix))
+            self.embed.weight.requires_grad = True
+        self.lstm = nn.LSTM(embed_dim, hidden_dim // 2, num_layers=2, bidirectional=True, batch_first=True, dropout=0.2)
+        self.drop = nn.Dropout(dropout)
+        self.fc = nn.Linear(hidden_dim, num_labels)
+        self.crf = CRF(num_labels, batch_first=True)
+
+    def forward(self, input_ids, mask, labels=None):
+        x = self.embed(input_ids)
+        x = self.drop(x)
+        out, _ = self.lstm(x)
+        emissions = self.fc(self.drop(out))
+        mask_b = mask.bool()
+        if labels is not None:
+            labels = labels.clone().masked_fill(labels == -100, 0)
+            return -self.crf(emissions, labels, mask=mask_b, reduction="mean")
+        return self.crf.decode(emissions, mask=mask_b)
+
+HIDDEN_DIM = 384
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+    device = torch.device("mps")
+else:
+    device = torch.device("cpu")
+
+model = BiLSTMCRF(vocab_size, EMBED_DIM, HIDDEN_DIM, NUM_LABELS, embedding_matrix=embedding_matrix, dropout=0.35).to(device)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=5e-5)
+print(f"Model on {device}")
+Model on cuda
+6. Training
+
+[ ]
+from seqeval.metrics import f1_score
+from torch.optim.lr_scheduler import LinearLR, SequentialLR, ConstantLR
+
+def run_validation(model, val_loader, device, id2label, num_labels):
+    model.eval()
+    true_all, pred_all = [], []
+    with torch.no_grad():
+        for ids, mask, labels in val_loader:
+            ids, mask = ids.to(device), mask.to(device)
+            preds = model(ids, mask)
+            for b in range(ids.size(0)):
+                m, labs = mask[b].cpu(), labels[b].cpu()
+                pred_b = preds[b]
+                tlist, plist = [], []
+                for i in range(m.size(0)):
+                    if m[i].item() == 0:
+                        break
+                    if labs[i].item() == -100:
+                        continue
+                    tlist.append(id2label[labs[i].item()])
+                    p = id2label[pred_b[i]] if i < len(pred_b) and pred_b[i] < num_labels else "O"
+                    plist.append(p)
+                if tlist and plist:
+                    true_all.append(tlist)
+                    pred_all.append(plist)
+    f1 = f1_score(true_all, pred_all, zero_division=0) if true_all else 0.0
+    return f1
+
+EPOCHS = 120
+PATIENCE = 25
+warmup_epochs = max(2, EPOCHS // 15)
+scheduler = SequentialLR(optimizer, [
+    ConstantLR(optimizer, factor=0.1, total_iters=warmup_epochs),
+    LinearLR(optimizer, start_factor=1.0, end_factor=0.15, total_iters=EPOCHS - warmup_epochs),
+], milestones=[warmup_epochs])
+best_f1 = 0.0
+best_state = None
+epochs_no_improve = 0
+
+for epoch in range(EPOCHS):
+    model.train()
+    total = 0
+    for ids, mask, lab in train_loader:
+        ids, mask, lab = ids.to(device), mask.to(device), lab.to(device)
+        optimizer.zero_grad()
+        loss = model(ids, mask, lab)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 2.0)
+        optimizer.step()
+        total += loss.item()
+    scheduler.step()
+    val_f1 = run_validation(model, val_loader, device, ID2LABEL, NUM_LABELS)
+    if val_f1 > best_f1:
+        best_f1 = val_f1
+        best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+        epochs_no_improve = 0
+    else:
+        epochs_no_improve += 1
+    print(f"Epoch {epoch+1}/{EPOCHS} Loss: {total/len(train_loader):.4f} Val F1: {val_f1:.4f} Best: {best_f1:.4f}")
+    if epochs_no_improve >= PATIENCE:
+        print(f"Early stopping (no improvement for {PATIENCE} epochs).")
+        break
+if best_state is not None:
+    model.load_state_dict(best_state)
+    print("Restored best checkpoint.")
+Epoch 1/120 Loss: 74.4812 Val F1: 0.7418 Best: 0.7418
+Epoch 2/120 Loss: 34.9031 Val F1: 0.7912 Best: 0.7912
+Epoch 3/120 Loss: 31.8324 Val F1: 0.8057 Best: 0.8057
+Epoch 4/120 Loss: 32.3318 Val F1: 0.8089 Best: 0.8089
+Epoch 5/120 Loss: 28.1275 Val F1: 0.8207 Best: 0.8207
+Epoch 6/120 Loss: 25.1964 Val F1: 0.8200 Best: 0.8207
+Epoch 7/120 Loss: 26.2055 Val F1: 0.8220 Best: 0.8220
+Epoch 8/120 Loss: 21.9493 Val F1: 0.8283 Best: 0.8283
+Epoch 9/120 Loss: 22.3711 Val F1: 0.8283 Best: 0.8283
+Epoch 10/120 Loss: 18.3160 Val F1: 0.8427 Best: 0.8427
+Epoch 11/120 Loss: 14.8330 Val F1: 0.8424 Best: 0.8427
+Epoch 12/120 Loss: 11.4855 Val F1: 0.8534 Best: 0.8534
+Epoch 13/120 Loss: 9.4780 Val F1: 0.8562 Best: 0.8562
+Epoch 14/120 Loss: 7.7224 Val F1: 0.8544 Best: 0.8562
+Epoch 15/120 Loss: 6.7062 Val F1: 0.8531 Best: 0.8562
+Epoch 16/120 Loss: 6.6822 Val F1: 0.8566 Best: 0.8566
+Epoch 17/120 Loss: 6.0912 Val F1: 0.8583 Best: 0.8583
+Epoch 18/120 Loss: 5.1582 Val F1: 0.8555 Best: 0.8583
+Epoch 19/120 Loss: 5.5465 Val F1: 0.8580 Best: 0.8583
+Epoch 20/120 Loss: 4.5530 Val F1: 0.8525 Best: 0.8583
+Epoch 21/120 Loss: 3.8367 Val F1: 0.8497 Best: 0.8583
+Epoch 22/120 Loss: 3.4781 Val F1: 0.8536 Best: 0.8583
+Epoch 23/120 Loss: 3.7695 Val F1: 0.8530 Best: 0.8583
+Epoch 24/120 Loss: 3.3671 Val F1: 0.8548 Best: 0.8583
+Epoch 25/120 Loss: 3.2243 Val F1: 0.8493 Best: 0.8583
+Epoch 26/120 Loss: 2.7760 Val F1: 0.8564 Best: 0.8583
+Epoch 27/120 Loss: 2.8113 Val F1: 0.8600 Best: 0.8600
+Epoch 28/120 Loss: 2.6039 Val F1: 0.8508 Best: 0.8600
+Epoch 29/120 Loss: 2.4975 Val F1: 0.8559 Best: 0.8600
+Epoch 30/120 Loss: 2.3244 Val F1: 0.8559 Best: 0.8600
+Epoch 31/120 Loss: 2.2752 Val F1: 0.8522 Best: 0.8600
+Epoch 32/120 Loss: 2.0954 Val F1: 0.8511 Best: 0.8600
+Epoch 33/120 Loss: 2.1518 Val F1: 0.8512 Best: 0.8600
+Epoch 34/120 Loss: 2.1145 Val F1: 0.8548 Best: 0.8600
+Epoch 35/120 Loss: 2.1880 Val F1: 0.8601 Best: 0.8601
+Epoch 36/120 Loss: 2.6831 Val F1: 0.8539 Best: 0.8601
+Epoch 37/120 Loss: 5.8663 Val F1: 0.8556 Best: 0.8601
+Epoch 38/120 Loss: 8.7710 Val F1: 0.8494 Best: 0.8601
+Epoch 39/120 Loss: 10.5502 Val F1: 0.8605 Best: 0.8605
+Epoch 40/120 Loss: 12.4663 Val F1: 0.8579 Best: 0.8605
+Epoch 41/120 Loss: 17.1251 Val F1: 0.8547 Best: 0.8605
+Epoch 42/120 Loss: 18.5733 Val F1: 0.8485 Best: 0.8605
+Epoch 43/120 Loss: 23.3617 Val F1: 0.8498 Best: 0.8605
+Epoch 44/120 Loss: 25.2591 Val F1: 0.8519 Best: 0.8605
+Epoch 45/120 Loss: 28.3361 Val F1: 0.8514 Best: 0.8605
+Epoch 46/120 Loss: 30.6563 Val F1: 0.8471 Best: 0.8605
+Epoch 47/120 Loss: 31.4585 Val F1: 0.8469 Best: 0.8605
+Epoch 48/120 Loss: 34.3885 Val F1: 0.8510 Best: 0.8605
+Epoch 49/120 Loss: 33.0936 Val F1: 0.8493 Best: 0.8605
+Epoch 50/120 Loss: 34.6353 Val F1: 0.8497 Best: 0.8605
+Epoch 51/120 Loss: 37.9076 Val F1: 0.8473 Best: 0.8605
+Epoch 52/120 Loss: 39.9943 Val F1: 0.8468 Best: 0.8605
+Epoch 53/120 Loss: 41.9678 Val F1: 0.8459 Best: 0.8605
+Epoch 54/120 Loss: 35.1017 Val F1: 0.8447 Best: 0.8605
+Epoch 55/120 Loss: 36.3296 Val F1: 0.8426 Best: 0.8605
+Epoch 56/120 Loss: 38.0313 Val F1: 0.8443 Best: 0.8605
+Epoch 57/120 Loss: 40.7431 Val F1: 0.8300 Best: 0.8605
+Epoch 58/120 Loss: 37.6041 Val F1: 0.8376 Best: 0.8605
+Epoch 59/120 Loss: 43.1488 Val F1: 0.8398 Best: 0.8605
+Epoch 60/120 Loss: 38.1671 Val F1: 0.8370 Best: 0.8605
+Epoch 61/120 Loss: 42.6401 Val F1: 0.8348 Best: 0.8605
+Epoch 62/120 Loss: 38.6696 Val F1: 0.8337 Best: 0.8605
+Epoch 63/120 Loss: 44.5432 Val F1: 0.8320 Best: 0.8605
+Epoch 64/120 Loss: 42.8822 Val F1: 0.8257 Best: 0.8605
+Early stopping (no improvement for 25 epochs).
+Restored best checkpoint.
+7. Save model
+
+[ ]
+_drive_base = "/content/drive/MyDrive" if os.path.exists("/content/drive/MyDrive") else "/content/drive/My Drive"
+SAVE_DIR = os.environ.get("RESUME_NER_PATH2_SAVE_DIR", os.path.join(_drive_base, "resume_ner_bilstm_crf"))
+os.makedirs(SAVE_DIR, exist_ok=True)
+
+torch.save(model.state_dict(), os.path.join(SAVE_DIR, "bilstm_crf_state.pt"))
+w2v.save(os.path.join(SAVE_DIR, "word2vec.model"))
+config = {"tags": TAGS, "word2id": word2id, "embed_dim": EMBED_DIM, "num_labels": NUM_LABELS, "max_len": MAX_LEN}
+with open(os.path.join(SAVE_DIR, "ner_config.json"), "w", encoding="utf-8") as f:
+    json.dump(config, f, indent=2)
+
+print("Saved:", SAVE_DIR)
+print("  - bilstm_crf_state.pt")
+print("  - word2vec.model")
+print("  - ner_config.json")
+Saved: /content/drive/MyDrive/resume_ner_bilstm_crf
+  - bilstm_crf_state.pt
+  - word2vec.model
+  - ner_config.json
+8. Evaluation
+
+[ ]
+from seqeval.metrics import classification_report, f1_score
+
+model.eval()
+true_all, pred_all = [], []
+with torch.no_grad():
+    for ids, mask, labels in val_loader:
+        ids, mask = ids.to(device), mask.to(device)
+        preds = model(ids, mask)
+        for b in range(ids.size(0)):
+            m, labs = mask[b].cpu(), labels[b].cpu()
+
+--- Validation ---
+              precision    recall  f1-score   support
+
+   EDUCATION       0.88      0.74      0.80       870
+       EMAIL       1.00      0.93      0.97       411
+  EXPERIENCE       0.94      0.77      0.84       692
+        NAME       1.00      0.91      0.95       421
+  OCCUPATION       0.75      0.61      0.68       575
+       SKILL       0.94      0.82      0.88      4433
+
+   micro avg       0.93      0.80      0.86      7402
+   macro avg       0.92      0.80      0.85      7402
+weighted avg       0.93      0.80      0.86      7402
+
+Val F1: 0.8605358435916003
+--- Test ---
+              precision    recall  f1-score   support
+
+   EDUCATION       0.84      0.72      0.77       818
+       EMAIL       1.00      0.93      0.96       398
+  EXPERIENCE       0.89      0.67      0.77       750
+        NAME       0.99      0.93      0.96       402
+  OCCUPATION       0.73      0.58      0.65       606
+       SKILL       0.92      0.79      0.85      4662
+
+   micro avg       0.90      0.77      0.83      7636
+   macro avg       0.90      0.77      0.83      7636
+weighted avg       0.90      0.77      0.83      7636
+
+Test F1: 0.8300473464772807
+9. Inference
+
+[ ]
+def parse_resume_path2(text, word2id, model, device, id2label, max_len=768):
+    words = re.findall(r"\S+", text)[:max_len]
+    if not words:
+        return [], [], {}
+    ids = torch.tensor([[word2id.get(w, word2id["<UNK>"]) for w in words]], dtype=torch.long).to(device)
+    mask = torch.ones_like(ids, dtype=torch.long).to(device)
+    model.eval()
+    with torch.no_grad():
+        preds = model(ids, mask)
+    pred_tags = [id2label.get(preds[0][i], "O") for i in range(len(preds[0]))]
+
+10. Example texts
+
+[ ]
+EXAMPLE_TEXTS = [
+    "Kamal Perera kamal.p@company.lk Senior Software Engineer. Java, Spring, AWS. BSc Computer Science Peradeniya 2014. Experience: Virtusa, WSO2.",
+]
+
+for i, text in enumerate(EXAMPLE_TEXTS, 1):
+    words, tags, entities = parse_resume_path2(text, word2id, model, device, ID2LABEL)
+    print(f"{'='*60}\nExample {i}\n{'='*60}")
+    print("Extracted entities:")
+    for k, v in entities.items():
+        print(f"  {k}: {v}")
+    print("\nWord-level tags (first 20):", list(zip(words[:20], tags[:20])))
+    print()
+============================================================
+Example 1
+============================================================
+Extracted entities:
+  SKILL: ['Java', 'AWS']
+  EDUCATION: ['BSc Computer Science']
+  EXPERIENCE: ['Virtusa, WSO2']
+
+Word-level tags (first 20): [('Kamal', 'O'), ('Perera', 'O'), ('kamal.p@company.lk', 'O'), ('Senior', 'O'), ('Software', 'O'), ('Engineer.', 'O'), ('Java,', 'B-SKILL'), ('Spring,', 'O'), ('AWS.', 'B-SKILL'), ('BSc', 'B-EDUCATION'), ('Computer', 'I-EDUCATION'), ('Science', 'I-EDUCATION'), ('Peradeniya', 'O'), ('2014.', 'O'), ('Experience:', 'O'), ('Virtusa,', 'B-EXPERIENCE'), ('WSO2.', 'I-EXPERIENCE')]
+
+Colab paid products - Cancel contracts here

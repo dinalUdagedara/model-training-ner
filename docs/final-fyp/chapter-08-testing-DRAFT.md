@@ -56,7 +56,7 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
 
 #### 8.3.2 Résumé NER — experiments and results
 
-**Data:** **3023** annotated résumés; test set **303** documents. **Training artefacts** and hyperparameters: Chapter 07, **Table 7.1**.
+**Data:** **4738** annotated résumés; test set **475** documents. **Training artefacts** and hyperparameters: Chapter 07, **Table 7.1**.
 
 **Table 8.1 — Résumé NER: test-set performance (entity-level F1)**
 
@@ -65,16 +65,16 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
 
 | Entity            | Precision | Recall | F1       |
 | ----------------- | --------- | ------ | -------- |
-| NAME              | 0.98      | 0.90   | 0.93     |
-| EMAIL             | 1.00      | 0.92   | 0.96     |
-| SKILL             | 0.87      | 0.75   | 0.80     |
-| OCCUPATION        | 0.64      | 0.61   | 0.62     |
-| EDUCATION         | 0.64      | 0.63   | 0.64     |
-| EXPERIENCE        | 0.84      | 0.77   | 0.81     |
-| **Micro average** | 0.83      | 0.74   | **0.78** |
+| NAME              | 0.99      | 0.93   | 0.96     |
+| EMAIL             | 1.00      | 0.93   | 0.96     |
+| SKILL             | 0.92      | 0.79   | 0.85     |
+| OCCUPATION        | 0.73      | 0.58   | 0.65     |
+| EDUCATION         | 0.84      | 0.72   | 0.77     |
+| EXPERIENCE        | 0.89      | 0.67   | 0.77     |
+| **Micro average** | 0.90      | 0.77   | **0.83** |
 
 
-**Validation** (development): micro F1 **~0.80**. **Test** seqeval F1 **~0.782** (notebook log).
+**Validation** (development): micro F1 **~0.86**. **Test** seqeval F1 **~0.830** (notebook log).
 
 #### 8.3.3 Job-poster NER — experiments and results
 
@@ -117,13 +117,13 @@ CrackInt’s core ML components are **token-level NER** models with **BIO** tags
 *[Include only if you have evidence. Examples:]*
 
 - **Qualitative samples:** 2–3 **screenshots** or short JSON snippets of **good** vs **noisy** extractions (PDFs).  
-- **LLM features:** Smoke test **`POST /api/v1/sessions/{id}/chat`** (the unified turn used by the UI): after a valid prep session, send a chat turn and assert **`ChatTurnPayload.new_messages`** with expected QUESTION/FEEDBACK shapes when the provider and OpenAI credentials are configured per **Appendix A** (document **HTTP status**, response shape, redact secrets). Optionally repeat for legacy routes (`next-question`, `evaluate-answer`) if you document them.
+- **LLM features:** Smoke test `**POST /api/v1/sessions/{id}/chat`** (the unified turn used by the UI): after a valid prep session, send a chat turn and assert `**ChatTurnPayload.new_messages**` with expected QUESTION/FEEDBACK shapes when the provider and OpenAI credentials are configured per **Appendix A** (document **HTTP status**, response shape, redact secrets). Optionally repeat for legacy routes (`next-question`, `evaluate-answer`) if you document them.
 
 ---
 
 ### 8.6 Results discussion
 
-**NER:** The **résumé** model achieves **test micro F1 0.78**; **job-poster** **test micro F1 ~0.85** and **seqeval ~0.854**. Job-poster **SKILLS_REQUIRED** remains the **hardest** span type (lowest F1 per table), consistent with **long, multi-token** skill lists. **EMAIL** and **NAME** on résumés are **high** precision, supporting **rule-based** post-processing in the hybrid pipeline (Chapter 07).
+**NER: The résumé model achieves test micro F1 0.83; job-poster test micro F1 ~0.85 and seqeval ~0.854. Job-poster SKILLS_REQUIRED remains the hardest span type (lowest F1 per table), consistent with long, multi-token skill lists. EMAIL and NAME on résumés are high precision, supporting rule-based post-processing in the hybrid pipeline (Chapter 07).**
 
 **Link to requirements:** **FR04** (résumé entity extraction) and **FR07** (job analysis) are **supported** by these metrics, subject to **deployment** of the résumé and job-poster NER checkpoints and configuration described in **Appendix A** (artefact paths and environment mapping).
 

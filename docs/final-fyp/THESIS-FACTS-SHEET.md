@@ -20,14 +20,14 @@
 
 | Field                        | Value                                                 |
 | ---------------------------- | ----------------------------------------------------- |
-| Dataset / file               | `merged_1030_plus_all_llm.json` (line-delimited JSON; frozen run) |
-| Corpus size                  | **3023** résumés                                      |
-| Train / val / test counts    | **2418 / 302 / 303** (seed 42)                        |
+| Dataset / file               | `merged_1030_plus_all_llm_plus_proper.json` (line-delimited JSON; frozen run) |
+| Corpus size                  | **4738** résumés                                      |
+| Train / val / test counts    | **3790 / 473 / 475** (seed 42)                        |
 | Entity types                 | NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, EXPERIENCE |
-| Micro F1 (validation)        | **~0.80** (seqeval, frozen run)                       |
-| Micro F1 (test)              | **0.78** (P 0.83, R 0.74)                             |
+| Micro F1 (validation)        | **~0.86** (seqeval, frozen run)                       |
+| Micro F1 (test)              | **0.83** (P 0.90, R 0.77)                             |
 | Per-entity F1 (if in thesis) | see Ch 7 **Table 7.2** / notebook `classification_report` |
-| Model / pipeline             | Word2Vec + BiLSTM-CRF (résumé NER); `MAX_LEN` **256** |
+| Model / pipeline             | Word2Vec + BiLSTM-CRF (résumé NER); `MAX_LEN` **768** |
 | Training notebook (Appendix A) | exact `.ipynb` filename as submitted (see repo)     |
 
 
