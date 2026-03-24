@@ -1,0 +1,86 @@
+REFERENCES (merged — Harvard-style, Pansilu FPR–aligned: author–date, “Available from:” + DOI/URL where known)
+
+Merged bibliography (original revised list + 15 CrackInt-related additions).
+
+Total entries: 31 — Order: A–Z by first author surname.
+
+ITALIC MARKERS (for Word): Text wrapped in *single asterisks* should become italic in Word (journal / conference / book title). Article titles stay outside asterisks — roman. After formatting, delete the * characters.
+
+---
+
+Agrawal, A., Anil George, R., Ravi, S.S., Kamath, S. and Kumar, A. (2020) Leveraging multimodal behavioral analytics for automated job interview performance assessment and feedback. In: *Second Grand-Challenge and Workshop on Multimodal Language (Challenge-HML)* (pp. 46–54). Available from: https://doi.org/10.18653/v1/2020.challengehml-1.6
+
+Aithal, S.K., Santhosh, S., Shenoy, A.M. and Kumar, S.S. (2023) Machine learning based ideal job role fit and career recommendation system. In: *2023 7th International Conference on Computing Methodologies and Communication (ICCMC)* (pp. 64–67). IEEE. Available from: https://doi.org/10.1109/ICCMC56507.2023.10084315
+
+Akram, S., Buono, P. and Lanzilotti, R. (2024) Exploring the impact of conversational style in enhancing recruitment chatbot interactions. In: *Nordic Conference on Human–Computer Interaction* (pp. 1–14). Available from: https://doi.org/10.1145/3679318.3685387
+
+Apriani, E., Syafrizal, S., Inderasari, E., Pustika, R. and Sangaji, M.W.N. (2024) Impact of AI-Powered ChatBots on EFL Students' Writing Skills, Self-Efficacy, and Self-Regulation: A Mixed-Methods Study. *Cogent Education*, 11(1). Available from: https://www.tandfonline.com/journals/oaed20 (search the journal for the article title to open the article page and copy the DOI from the PDF or “Cite this article”.)
+
+Chandak, A., Jaiswal, S., Bhagat, S. and Thakare, V.M. (2024) Resume parser and job recommendation system using machine learning. *International Journal of Scientific Research in Computer Science, Engineering and Information Technology*, 10(3). Available from: https://doi.org/10.1109/esic60604.2024.10481635 (IEEE Xplore: https://ieeexplore.ieee.org/document/10481635/ — same title; IEEE metadata lists different co-authors than your reference; if your source is the journal article, use that article’s DOI/URL instead.)
+
+Daryanto, T., Ding, X., Wilhelm, L.T., Stil, S., McInnis Knutsen, K. and Rho, E.H. (2024) Conversate: Supporting reflective learning in interview practice through interactive simulation and dialogic feedback. arXiv preprint arXiv:2410.05570. Available from: https://doi.org/10.48550/arXiv.2410.05570
+
+Fulk, H.K., Dent, H.L., Kapakos, W.A. and White, B.J. (2022) Doing more with less: Using AI-based Big Interview to combine exam preparation and interview practice. *Issues in Information Systems*, 23(4), pp. 204–217. Available from: https://doi.org/10.48009/4_iis_2022_118
+
+Gadesha, V., Joshi, K.D. and Bachika, M. (2023) Streamlining resume annotation with named entity recognition. In: *2023 IEEE 20th India Council International Conference (INDICON)* (pp. 735–740). IEEE. Available from: https://doi.org/10.1109/indicon59947.2023.10440786
+
+Gnehm, A., Bühlmann, E., Buchs, H. and Clematide, S. (2022) Fine-grained extraction and classification of skill requirements in German-speaking job ads. In: *Proceedings of the Fifth Workshop on Natural Language Processing and Computational Social Science (NLP+CSS)* (pp. 14–24). Available from: https://doi.org/10.18653/v1/2022.nlpcss-1.2
+
+Harris, C.G. (2024) Combining human-in-the-loop systems and AI fairness toolkits to reduce age bias in AI job hiring algorithms. In: *2024 IEEE International Conference on Big Data and Smart Computing (BigComp)* (pp. 60–66). IEEE. Available from: https://doi.org/10.1109/bigcomp60711.2024.00019
+
+Haryan, S., Malik, R., Redij, P. and Kulkarni, S. (2024) FairHire: A fair and automated candidate screening system. In: Dehuri, S. et al. (eds.) *Machine Intelligence, Tools, and Applications (ICMITA 2024)*. Cham: Springer, pp. 372–382. Available from: https://doi.org/10.1007/978-3-031-65392-6_32
+
+Horodyski, P. (2023) Applicants' perception of artificial intelligence in the recruitment process. *Computers in Human Behavior Reports*, 11, 100303. Available from: https://doi.org/10.1016/j.chbr.2023.100303
+
+Hosseini, A. and Amirkhani, Z. (2025) Exploring AI chatbot affordances in EFL higher education: Impacts on language proficiency, usability, engagement, and perceived effectiveness. *International Journal of Multicultural and Multireligious Understanding*, 12(3), pp. 683–696. Available from: https://doi.org/10.18415/ijmmu.v12i3.6682 (article page: https://ijmmu.com/index.php/ijmmu/article/view/6682)
+
+Huang, Z., Xu, W. and Yu, K. (2015) Bidirectional LSTM-CRF models for sequence tagging. arXiv:1508.01991. Available from: https://doi.org/10.48550/arXiv.1508.01991
+
+Kavargyris, D.C., Georgiou, K., Papaioannou, E., Petrakis, K., Mittas, N. and Angelis, L. (2025) ESCOX: A tool for skill and occupation extraction using LLMs from unstructured text. *Software Impacts*, 25, 100772. Available from: https://doi.org/10.1016/j.simpa.2025.100772
+
+Lafferty, J., McCallum, A. and Pereira, F. (2001) Conditional random fields: Probabilistic models for segmenting and labelling sequence data. In: *Proceedings of the 18th International Conference on Machine Learning (ICML)*. Available from: https://dl.acm.org/doi/10.5555/645530.655813
+
+Lalitha, B., Kadiyam, S., Kalidindi, R.V., Vemparala, S.M., Yarlagadda, K. and Chekuri, S.V. (2023) Applicant screening system using NLP. In: *2023 3rd International Conference on Intelligent Data Communication Technologies and Internet of Things (ICIDCA)* (pp. 379–383). IEEE. Available from: https://doi.org/10.1109/icidca56705.2023.100929953
+
+Lample, G., Ballesteros, M., Subramanian, S., Kawakami, K. and Dyer, C. (2016) Neural architectures for named entity recognition. In: *Proceedings of NAACL-HLT 2016*. Available from: https://aclanthology.org/N16-1030/
+
+Law, J. (2025) The ethical imperative of algorithmic fairness in AI-enabled hiring: A critical analysis of bias, accountability, and justice. *AI and Ethics*, 6(1). Available from: https://doi.org/10.1007/s43681-025-00927-x
+
+Lewton, J. and Haddad, A.R. (2024) Pharmacy student perceptions of using AI-based interview software (Big Interview) for career preparation. *American Journal of Pharmaceutical Education*, 88(9), Article 101263. Available from: https://doi.org/10.1016/j.ajpe.2024.101263
+
+Li, C., Fisher, E., Thomas, R., Pittard, S., Hertzberg, V. and Choi, J.D. (2020) Competence-level prediction and resume and job description matching using context-aware transformer models. In: *Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)* (pp. 8456–8466). Available from: https://doi.org/10.18653/v1/2020.emnlp-main.679
+
+Machhale, G., Kadam, S. and Patki, V. (2024) Integration of AI based chatbot in tech interview prep app. In: *2024 2nd World Conference on Communication & Computing (WCONF)* (pp. 1–8). IEEE. Available from: https://doi.org/10.1109/WCONF61366.2024.10692194
+
+Mikolov, T., Chen, K., Corrado, G. and Dean, J. (2013) Efficient estimation of word representations in vector space. arXiv:1301.3781. Available from: https://doi.org/10.48550/arXiv.1301.3781
+
+Nithya, S. and Sukirtha, R. (2025) Intelligent job interview preparation and career advancement using AI, ML and NLP. *International Journal of Advanced Research in Science, Communication and Technology*. Available from: https://ijarsct.co.in/ (search the journal for the paper title or authors to open the article page; no Crossref DOI was found for this exact reference.)
+
+Rezaeipourfarsangi, S. and Milios, E. (2023) AI-powered resume–job matching. In: *Proceedings of the ACM Symposium on Document Engineering 2023 (DocEng ’23)* (pp. 1–4). ACM. Available from: https://doi.org/10.1145/3573128.3609347
+
+Saunders, M., Lewis, P. and Thornhill, A. (2019) *Research Methods for Business Students*, 8th edn. Harlow: Pearson Education.
+
+Skondras, P., Zervas, P. and Tzimas, G. (2025) Zero-shot resume–job matching with LLMs via structured prompting and semantic embeddings. *Electronics*, 14(24), 4960. Available from: https://doi.org/10.3390/electronics14244960
+
+Srivastava, M. and Greaney, P. (2023) Resume parsing across multiple job domains using a BERT-based NER model. In: *2023 31st Irish Conference on Artificial Intelligence and Cognitive Science (AICS)* (pp. 1–4). IEEE. Available from: https://doi.org/10.1109/aics60730.2023.10470917
+
+Yu, R., Das, S., Gurajada, S., Varshney, K., Raghavan, H. and Lastra-Anadon, C. (2021) A research framework for understanding education–occupation alignment with NLP techniques. In: *Proceedings of the 1st Workshop on NLP for Positive Impact* (pp. 100–106). Available from: https://doi.org/10.18653/v1/2021.nlp4posimpact-1.11
+
+Yu, X., Zhang, J. and Yu, Z. (2024) ConFit: Improving resume–job matching using data augmentation and contrastive learning. In: *Proceedings of the 18th ACM Conference on Recommender Systems (RecSys ’24)* (pp. 601–611). ACM. Available from: https://doi.org/10.1145/3640457.3688108
+
+Yu, X., Xu, R., Xue, C., Zhang, J., Ma, X. and Yu, Z. (2025) ConFit v2: Improving resume–job matching using hypothetical resume embedding and runner-up hard-negative mining. In: *Findings of the Association for Computational Linguistics: ACL 2025* (pp. 12775–12790). Available from: https://doi.org/10.18653/v1/2025.findings-acl.661
+
+---
+
+Notes:
+• Original thesis reference notes (Apriani, Chandak, Horodyski, Hosseini, Nithya, Saunders, [Accessed]) still apply — see below.
+• Merged block adds 15 CrackInt-related sources (résumé–job matching, NER, skills, recruitment chatbots, fairness, interview assessment). Cite in-text only where used.
+• Disambiguate in-text: Yu, R. (2021) vs Yu, X. (2024, 2025) by author initial and year.
+• Horodyski (2023): article number and DOI are 100303 / 10.1016/j.chbr.2023.100303 (not 100320).
+• Hosseini & Amirkhani: verified as IJMMU 2025 — align in-text citations if your thesis previously named a different journal.
+• Apriani: use T&F search or DOI from your PDF; GERR DOI 10.71380/gerr-08-2024-8 has a different author list unless that is your source.
+• Chandak: IEEE DOI may match a same-title conference paper with different authors — confirm against your PDF.
+• Add [Accessed: day month year] after URLs if your module requires it (see Pansilu sample).
+• Website-only citations (e.g. Huntr, VMock, Kickresume, n.d.) are not in this list — add separately if you keep those in-text citations.
+
+Theme map (optional, for literature review): résumé–job matching / transformers — Li et al. (2020), Yu et al. ConFit/ConFit v2, Rezaeipourfarsangi & Milios, Skondras et al.; NER — Gadesha et al., Srivastava & Greaney; skills — Gnehm et al., Kavargyris et al.; chatbots — Akram et al.; screening — Lalitha et al.; fairness — Law, Harris; interviews — Agrawal et al.; education–occupation — Yu, R. et al. (2021).
