@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrackInt Component Diagram (Mermaid)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .wrap {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      overflow: auto;
+    }
+    .note {
+      font-size: 13px;
+      color: #475569;
+      margin: 0 0 12px;
+    }
+  </style>
+</head>
+<body>
+  <p class="note">
+    Mermaid render of the annotated component diagram (R1-R9). Dashed links are optional dependencies.
+  </p>
+  <div class="wrap">
+    <pre class="mermaid">
+flowchart TB
+  subgraph Runtime["Runtime (online)"]
+    direction LR
+    WC["«subsystem» Web Client<br/>- Next.js app shell<br/>- Routes and server-driven panels"]
+    API["«subsystem» Application API<br/>- FastAPI REST<br/>- ORM"]
+    PM["«subsystem» Processing and ML<br/>- Text Extraction<br/>- Resume NER<br/>- Job NER<br/>- Session Agent<br/>- ORM<br/>- S3 Upload"]
+    LLM["«external» Remote LLM<br/>(optional)"]
+    MM["«IPipeline» Model Management<br/>- Checkpoint Loader/Saver<br/>- NER Weights on Disk or S3"]
+    PG[("PostgreSQL")]
+    S3[("AWS S3")]
+  end
+
+  subgraph Training["Training (offline)"]
+    direction LR
+    TE["«subsystem» Training Entry<br/>- Notebook / CLI"]
+    NT["«subsystem» NER Training<br/>- Dataset Loader<br/>- BiLSTM-CRF Trainer<br/>- Metrics<br/>- Checkpoint Export"]
+  end
+
+  WC -->|R2: HTTP/JSON| API
+  API -->|R3: «IApplicationAPI» invoke| PM
+  PM -->|R3: load checkpoint| MM
+  API -->|R4: ORM persistence| PG
+  PG -->|records| S3
+  S3 -->|R5: blobs/artefacts| PG
+  PM -.->|R6: optional call| LLM
+  PM -.->|R6: optional model IO| S3
+  TE -->|R7: run training| NT
+  NT -->|R8: export checkpoints| MM
+  NT -.->|R9: optional datasets| S3
+
+  classDef runtime fill:#f8fafc,stroke:#334155,stroke-width:1.6,color:#0f172a;
+  classDef processing fill:#ecfeff,stroke:#0f766e,stroke-width:2,color:#134e4a;
+  classDef model fill:#eef2ff,stroke:#1d4ed8,stroke-width:1.8,color:#1e3a8a;
+  classDef store fill:#f1f5f9,stroke:#475569,stroke-width:1.6,color:#111827;
+  classDef train fill:#f5f3ff,stroke:#6d28d9,stroke-width:1.8,color:#4c1d95;
+  classDef external fill:#ffffff,stroke:#6b7280,stroke-width:1.5,stroke-dasharray: 6 4,color:#111827;
+
+  class WC,API runtime;
+  class PM processing;
+  class MM model;
+  class PG,S3 store;
+  class TE,NT train;
+  class LLM external;
+    </pre>
+  </div>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "default", flowchart: { curve: "linear" } });
+  </script>
+</body>
+</html>

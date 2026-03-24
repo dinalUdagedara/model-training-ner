@@ -55,9 +55,32 @@ Label names from your JSONL are mapped to the unified set (JOB_TITLE, COMPANY, L
 | EDUCATION_REQUIRED | Required education |
 | JOB_TYPE | Full-time, part-time, contract, etc. |
 
-## 5. Files
+## 5. Generate synthetic job postings with LLM
+
+To augment training data with job postings that have **all 8 entity types** labeled (SkillSpan only has SKILLS_REQUIRED):
+
+```bash
+# Requires: pip install openai; set OPENAI_API_KEY
+python generate_job_postings_llm.py --count 100 --output llm_generated_job_postings.jsonl
+python generate_job_postings_llm.py --target 1000 --output llm_generated_job_postings.jsonl --batch-size 100 --per-call 5
+
+# Sri Lankan tech jobs (Virtusa, WSO2, Colombo, etc.)
+python generate_job_postings_llm.py --count 200 --sri-lanka --output llm_sri_lanka_jobs.jsonl
+
+# Varied formats (unstructured, bullet, compact, poster) for image/OCR robustness
+python generate_job_postings_llm.py --count 500 --format-style mix --output llm_varied_formats.jsonl
+
+# Merge with SkillSpan
+python merge_job_posters.py --existing merged_job_poster_ner.json --llm llm_generated_job_postings.jsonl --output merged_job_poster_ner_with_llm.json
+```
+
+Then point the notebook's data path to `merged_job_poster_ner_with_llm.json`.
+
+## 6. Files
 
 - **prepare_data.py** – Merge JSONL into `merged_job_poster_ner.json`.
+- **generate_job_postings_llm.py** – Generate synthetic job postings via OpenAI (same format as merged JSONL).
+- **merge_job_posters.py** – Merge SkillSpan/existing data with LLM-generated job postings.
 - **scripts/download_skillspan.py** – Download SkillSpan (GitHub) and convert to our JSONL.
 - **skillspan_job_poster.jsonl** – Converted SkillSpan data (11,543 sentences).
 - **merged_job_poster_ner.json** – Merged data used by the notebook (SkillSpan + any other JSONL you add).
@@ -67,6 +90,6 @@ Label names from your JSONL are mapped to the unified set (JOB_TITLE, COMPANY, L
 - **BERT_BiLSTM_CRF_Job_Poster_NER.ipynb** – Train and run inference (same setup as resume NER).
 - **README.md** – This file.
 
-## 6. Public datasets
+## 7. Public datasets
 
 If you use a dataset with different label names (e.g. LREC 2022 job description corpus: Skill, Qualification, Experience, Occupation, Domain), add a mapping in `prepare_data.py` (e.g. Occupation → JOB_TITLE, Skill → SKILLS_REQUIRED, Qualification → EDUCATION_REQUIRED, Experience → EXPERIENCE_REQUIRED, Domain → O).

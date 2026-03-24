@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrackInt — Use Case Diagram</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --border: #1a1a1a;
+      --muted: #444;
+      --accent: #2563eb;
+      --dash: #64748b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: #111;
+      padding: 1.5rem;
+      line-height: 1.45;
+    }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+    }
+    .meta {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      max-width: 52rem;
+    }
+    .wrap {
+      max-width: 100%;
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    svg { display: block; max-width: 100%; height: auto; }
+    .legend {
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      max-width: 52rem;
+    }
+    .legend h2 { font-size: 0.95rem; margin: 0 0 0.5rem; color: #111; }
+    .legend ul { margin: 0; padding-left: 1.2rem; }
+    .legend li { margin: 0.2rem 0; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .wrap { border: none; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <h1>CrackInt — use case diagram (primary actor + core &amp; extended goals)</h1>
+  <p class="meta">
+    Primary actor: <strong>Job seeker</strong>. System boundary: <strong>CrackInt</strong>.
+    Extended use cases <strong>UC-09</strong> (skill gap / job match) and <strong>UC-11</strong> (CV strength / feedback) match
+    <code>docs/final-fyp/use-case-diagram-guide.md</code> Flows F and E. Open this file in a browser; print to PDF or screenshot for Word.
+  </p>
+
+  <div class="wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 640" role="img" aria-label="CrackInt use case diagram">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#1a1a1a" />
+        </marker>
+      </defs>
+
+      <!-- Title -->
+      <text x="460" y="36" text-anchor="middle" font-size="15" font-weight="600" fill="#111">CrackInt System</text>
+
+      <!-- System boundary -->
+      <rect x="200" y="52" width="560" height="556" rx="10" ry="10" fill="none" stroke="#1a1a1a" stroke-width="2" />
+
+      <!-- Job seeker (stick figure) -->
+      <g transform="translate(72, 260)">
+        <circle cx="28" cy="18" r="14" fill="none" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="28" y1="32" x2="28" y2="78" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="28" y1="48" x2="8" y2="62" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="28" y1="48" x2="48" y2="62" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="28" y1="78" x2="12" y2="108" stroke="#1a1a1a" stroke-width="2" />
+        <line x1="28" y1="78" x2="44" y2="108" stroke="#1a1a1a" stroke-width="2" />
+        <text x="28" y="132" text-anchor="middle" font-size="12" font-weight="600" fill="#111">Job seeker</text>
+      </g>
+
+      <!-- Use case ellipses: cx cy rx ry -->
+      <g font-family="Segoe UI, system-ui, sans-serif" font-size="10" fill="#111">
+        <!-- UC-01 -->
+        <ellipse cx="360" cy="120" rx="118" ry="34" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" />
+        <text x="360" y="116" text-anchor="middle"><tspan font-weight="600">UC-01</tspan></text>
+        <text x="360" y="128" text-anchor="middle" font-size="9.5">Register &amp; create profile</text>
+
+        <!-- UC-02 -->
+        <ellipse cx="360" cy="208" rx="118" ry="34" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" />
+        <text x="360" y="204" text-anchor="middle"><tspan font-weight="600">UC-02</tspan></text>
+        <text x="360" y="216" text-anchor="middle" font-size="9.5">Upload &amp; parse résumé</text>
+
+        <!-- UC-03 -->
+        <ellipse cx="360" cy="296" rx="118" ry="34" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" />
+        <text x="360" y="292" text-anchor="middle"><tspan font-weight="600">UC-03</tspan></text>
+        <text x="360" y="304" text-anchor="middle" font-size="9.5">Generate role-specific questions</text>
+
+        <!-- UC-04 -->
+        <ellipse cx="360" cy="384" rx="118" ry="34" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" />
+        <text x="360" y="380" text-anchor="middle"><tspan font-weight="600">UC-04</tspan></text>
+        <text x="360" y="392" text-anchor="middle" font-size="9.5">Practice with semantic feedback</text>
+
+        <!-- UC-05 -->
+        <ellipse cx="360" cy="472" rx="118" ry="34" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" />
+        <text x="360" y="468" text-anchor="middle"><tspan font-weight="600">UC-05</tspan></text>
+        <text x="360" y="480" text-anchor="middle" font-size="9.5">View progress analytics</text>
+
+        <!-- UC-06 -->
+        <ellipse cx="360" cy="560" rx="118" ry="34" fill="#fff" stroke="#1a1a1a" stroke-width="1.5" />
+        <text x="360" y="556" text-anchor="middle"><tspan font-weight="600">UC-06</tspan></text>
+        <text x="360" y="568" text-anchor="middle" font-size="9.5">Manage account settings</text>
+
+        <!-- UC-09 Flow F -->
+        <ellipse cx="620" cy="220" rx="118" ry="38" fill="#f8fafc" stroke="#2563eb" stroke-width="1.5" />
+        <text x="620" y="212" text-anchor="middle" fill="#1e3a8a"><tspan font-weight="600">UC-09</tspan></text>
+        <text x="620" y="224" text-anchor="middle" font-size="9.5">View skill gap / job match</text>
+        <text x="620" y="236" text-anchor="middle" font-size="8.5" fill="#64748b">(résumé vs job)</text>
+
+        <!-- UC-11 Flow E -->
+        <ellipse cx="620" cy="340" rx="118" ry="38" fill="#f8fafc" stroke="#2563eb" stroke-width="1.5" />
+        <text x="620" y="332" text-anchor="middle" fill="#1e3a8a"><tspan font-weight="600">UC-11</tspan></text>
+        <text x="620" y="344" text-anchor="middle" font-size="9.5">Analyse résumé / CV feedback</text>
+        <text x="620" y="356" text-anchor="middle" font-size="8.5" fill="#64748b">(strength score)</text>
+      </g>
+
+      <!-- Lines: job seeker (hand at ~100,300) to ellipse left edges -->
+      <g stroke="#1a1a1a" stroke-width="1.5" fill="none">
+        <line x1="132" y1="300" x2="242" y2="120" />
+        <line x1="132" y1="300" x2="242" y2="208" />
+        <line x1="132" y1="300" x2="242" y2="296" />
+        <line x1="132" y1="300" x2="242" y2="384" />
+        <line x1="132" y1="300" x2="242" y2="472" />
+        <line x1="132" y1="300" x2="242" y2="560" />
+        <line x1="132" y1="300" x2="502" y2="220" />
+        <line x1="132" y1="300" x2="502" y2="340" />
+      </g>
+
+      <!-- Secondary actor: AI service (left edge ~780) -->
+      <g transform="translate(820, 292)">
+        <rect x="-40" y="-24" width="80" height="48" rx="4" fill="#fff" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" />
+        <text x="0" y="4" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">AI service</text>
+        <text x="0" y="18" text-anchor="middle" font-size="8.5" fill="#64748b">(e.g. OpenAI)</text>
+      </g>
+
+      <!-- Dashed: AI → UC-03, UC-04 (left-column use cases, attach to right side of ellipse x=478); AI → UC-11 (right column, attach x=738) -->
+      <g stroke="#64748b" stroke-width="1.25" stroke-dasharray="5 4" fill="none">
+        <line x1="780" y1="292" x2="478" y2="296" />
+        <line x1="780" y1="292" x2="478" y2="384" />
+        <line x1="780" y1="292" x2="738" y2="340" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <h2>Legend</h2>
+    <ul>
+      <li><strong>Black solid</strong> — Job seeker initiates the use case.</li>
+      <li><strong>Blue outline (UC-09, UC-11)</strong> — Extended goals from <em>use-case-diagram-guide.md</em> (Flows F and E).</li>
+      <li><strong>Grey dashed</strong> — Optional delegation to an external <strong>AI service</strong> when LLM features are enabled (UC-03, UC-04, UC-11). <strong>UC-09</strong> (skill gap) is drawn without an AI actor here because matching is primarily in-platform — add a dashed line only if your implementation calls an LLM for narrative fit.</li>
+      <li>NER parsing stays in-platform — not shown as an external actor.</li>
+      <li>Remove UC-09 / UC-11 ovals or the AI actor if you want the minimal six-use-case diagram only.</li>
+    </ul>
+  </div>
+</body>
+</html>

@@ -120,7 +120,9 @@ Technologies were chosen for alignment with SRS requirements (performance, modul
 | `/api/v1/jobs/extract` | POST | Extract from job text/PDF |
 | `/api/v1/job-postings` | GET, POST | List, create job postings |
 | `/api/v1/sessions` | GET, POST | List, create prep sessions |
-| `/api/v1/sessions/{id}/messages` | GET, POST | List, append chat messages |
+| `/api/v1/sessions/{id}/with-messages` | GET | Session with ordered messages |
+| `/api/v1/sessions/{id}/chat` | POST | **Unified chat turn** (UI): user message + agent (questions, feedback, next question) |
+| `/api/v1/sessions/{id}/messages` | GET, POST | List messages; raw append (no agent on this path) |
 | `/api/v1/health` | GET | Health check |
 
 ### 7.3.3 Frontend Implementation
@@ -138,7 +140,7 @@ Technologies were chosen for alignment with SRS requirements (performance, modul
 - `resume-uploader.service.ts` — POST extract, PATCH entities.
 - `job-extractor.service.ts` — job extraction.
 - `job-postings.service.ts` — job posting CRUD.
-- `sessions.service.ts` — prep sessions and messages.
+- `sessions.service.ts` — prep sessions, **`postChatTurn`** → `POST /sessions/{id}/chat` (main UI), plus `with-messages`, legacy helpers.
 
 #### Integration
 

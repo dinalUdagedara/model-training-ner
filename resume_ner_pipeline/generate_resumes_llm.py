@@ -23,8 +23,8 @@ Usage:
   # Merge with existing merged dataset
   cat merged_1030_plus_all_llm.jsonl llm_sri_lanka_tech.jsonl > merged_1030_plus_all_llm_plus_sri_lanka_tech.jsonl
 
-  # Fix missing EDUCATION/OCCUPATION with a second LLM call per incomplete resume (adds API cost)
-  python generate_resumes_llm.py --count 20 --fix-missing --entity-rich --output llm_fixed.jsonl
+  # Recommended: fix pass adds missing institution EDUCATION spans when the model only tagged the degree
+  python generate_resumes_llm.py --target 500 --sri-lanka-tech --entity-rich --fix-missing --output llm_proper.jsonl --batch-size 50 --per-call 5
 
   # Generate Sri Lankan tech resumes (structured: SUMMARY, EDUCATION, EXPERIENCE, PROJECTS with Tech Stack, SKILLS subsections, etc.)
   python generate_resumes_llm.py --count 50 --sri-lanka-tech --output llm_sri_lanka_tech.jsonl
@@ -91,6 +91,9 @@ ENTITY RULES (follow exactly):
 
 • EDUCATION: Tag only (1) degree or qualification names (e.g. "Bachelor of Science in Computer Science", "BSc", "MSc") and (2) educational institution names (e.g. "University of California, Berkeley", "University of Colombo"). Never tag a company or employer as EDUCATION—those are EXPERIENCE. Tag every degree and every institution in the EDUCATION section—do not skip the first (or any) entry. Do not tag dates or cities unless part of the institution name.
 
+CRITICAL – EDUCATION: institution AND degree are separate entities when both appear:
+If one line contains both (e.g. "University of Colombo, BSc Software Engineering" or "Eastern University, MSc Data Science"), you MUST output TWO separate objects in "entities": one EDUCATION with "text" exactly the institution substring, and one EDUCATION with "text" exactly the degree substring—both as they appear in "content", in left-to-right order. Do not tag only the degree and omit the university. If the institution and degree are on separate lines, tag each line as its own EDUCATION entity.
+
 • EXPERIENCE: Tag every company or employer name (e.g. "Tech Innovations Inc.", "Virtusa", "Analytics Ltd.", "WSO2"), including the first employer in each role—do not skip the first entry in the experience section. Do NOT tag job titles (those are OCCUPATION), date ranges, locations, universities, or schools. Only for employed resumes. Never tag a university or college as EXPERIENCE—those are EDUCATION.
 
 • SKILL: Tag every distinct technology, tool, and soft skill (e.g. "Python", "Java", "Problem-solving", "Communication"). Do NOT tag company or employer names as SKILL—those are EXPERIENCE (e.g. "Analytics Ltd.", "Tech Solutions" = EXPERIENCE, not SKILL). Tag each programming language, tool, and soft skill under SKILLS and in "Tech Stack:" lines. Do not tag section labels like "Programming Languages:" or "Tech Stack:".
@@ -106,7 +109,7 @@ COMPLETENESS CHECKLIST (before returning, verify):
 
 CRITICAL – Do not confuse entity types: Companies (e.g. "Virtusa", "Tech Solutions Ltd.") = EXPERIENCE only. Universities/schools (e.g. "University of Colombo") = EDUCATION only. Technologies/tools (e.g. "Python", "Java") = SKILL only.
 
-Before returning: confirm you have at least one EDUCATION entity (degree or institution) and, if the resume has work experience, one EXPERIENCE entity per role (do not skip the first company)."""
+Before returning: confirm you have at least one EDUCATION entity (degree or institution) and, if the resume has work experience, one EXPERIENCE entity per role (do not skip the first company). If the EDUCATION section names a university/school AND a degree on the same line, confirm TWO EDUCATION entities for that line."""
 
 # Most resumes will be IT; a minority will be other sectors. Weights: ~75% IT, ~25% other.
 CAREER_HINTS_IT = [
@@ -169,9 +172,11 @@ Keep total length similar to a full 1–2 page resume (plenty of skills and at l
 
 USER_PROMPT_SRI_LANKA_TECH_TEMPLATE = """Generate ONE resume in the structured Sri Lankan tech format. Career for this resume: {career}. Region: Sri Lanka only—use Sri Lankan names, institutions (e.g. Eastern University, University of Colombo, Trincomalee Campus), companies (e.g. Sri Lanka Telecom, Virtusa, WSO2), and +94 phone format.
 """ + SRI_LANKA_TECH_STRUCTURE + """
-Before returning JSON: tag every job title as OCCUPATION, every company as EXPERIENCE, every degree and institution as EDUCATION, every skill and Tech Stack tech as SKILL. Do not tag anything in REFERENCES. Return JSON with "content" and "entities" (exact substrings, in document order)."""
+Before returning JSON: tag every job title as OCCUPATION, every company as EXPERIENCE, every degree and institution as EDUCATION, every skill and Tech Stack tech as SKILL. If one EDUCATION line has both institution and degree (e.g. "University of Colombo, BSc Computer Science"), output TWO EDUCATION entities for that line. Do not tag anything in REFERENCES. Return JSON with "content" and "entities" (exact substrings, in document order)."""
 
 BATCH_USER_PROMPT_SRI_LANKA_TECH_TEMPLATE = """Generate exactly {n} different resumes. Each resume MUST follow the structured Sri Lankan tech format: ALL CAPS name; field line; email | LinkedIn | GitHub | +94 phone; SUMMARY; EDUCATION (institution, degree); EXPERIENCE (Role – Company, City, dates); PROJECTS (each with "Tech Stack: ..."); CERTIFICATIONS; SKILLS with subsections (Programming Languages, Web Technologies, Frameworks/Libraries, DevOps/Cloud, Databases, Tools & Platforms, Soft Skills); REFERENCES. Use • for bullets. Vary names, institutions (Eastern University, University of Colombo, etc.), companies (SLT, Virtusa, WSO2, etc.), and careers (Full Stack Developer, Software Engineer, Data Scientist, etc.). Tag every OCCUPATION, EXPERIENCE, EDUCATION, SKILL (including all Tech Stack items). Do not tag REFERENCES.
+
+For EDUCATION: if a line lists institution and degree together (e.g. "University of Colombo, BSc Computer Science"), include TWO EDUCATION entities in "entities"—one for the institution text, one for the degree text—exact substrings from "content", in order.
 
 Return a single JSON array of {n} objects: [{{"content": "...", "entities": [...]}}, ...]. No other text."""
 
@@ -189,7 +194,8 @@ FIX_ENTITIES_SYSTEM_PROMPT = """You are an entity-annotation fixer for resume NE
 
 Your task: output the COMPLETE list of entities in document order. Add any missing entities; keep existing correct ones. Rules:
 - NAME: exactly one (candidate's full name, first line). EMAIL: exactly one (contact line).
-- EDUCATION: tag EVERY degree (e.g. BSc, MSc, MBA) and EVERY institution (e.g. University of Colombo) that appear in the EDUCATION section. Do not tag companies as EDUCATION.
+- EDUCATION: tag EVERY degree (e.g. BSc, MSc, MBA) and EVERY institution (e.g. University of Colombo, Eastern University) that appear in the EDUCATION section. Do not tag companies as EDUCATION.
+- If a single EDUCATION line contains both an institution and a degree (e.g. "University of Moratuwa, BSc Computer Science"), you MUST include TWO EDUCATION entries: one "text" for the institution substring and one for the degree substring—exactly as in the resume text. If the model only tagged the degree, ADD the missing institution as EDUCATION.
 - EXPERIENCE: tag EVERY company/employer name. Do not tag job titles or universities as EXPERIENCE.
 - OCCUPATION: tag EVERY job title (e.g. Software Engineer, Data Scientist, Junior Developer) that appears in the EXPERIENCE section or in SUMMARY. Do not tag the field line (e.g. "Computer Science") or section headers.
 - SKILL: every technology, tool, and soft skill. Not company names.
@@ -229,15 +235,30 @@ def _extract_json_from_response(raw: str):
     if raw.startswith("```"):
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```\s*$", "", raw)
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        # Try to fix common issues: trailing comma before ] or }
-        repaired = re.sub(r",\s*([}\]])", r"\1", raw)
+    raw = raw.strip()
+    decoder = json.JSONDecoder()
+
+    def _try_load(s: str):
+        try:
+            return json.loads(s)
+        except json.JSONDecodeError:
+            pass
+        # Model sometimes appends text after valid JSON ("Extra data: line 1 column N")
+        try:
+            return decoder.raw_decode(s)[0]
+        except json.JSONDecodeError:
+            pass
+        repaired = re.sub(r",\s*([}\]])", r"\1", s)
         try:
             return json.loads(repaired)
         except json.JSONDecodeError:
-            raise
+            pass
+        try:
+            return decoder.raw_decode(repaired)[0]
+        except json.JSONDecodeError as e:
+            raise e
+
+    return _try_load(raw)
 
 
 def _find_spans_in_order(content: str, entities: list[dict]) -> list[dict]:
@@ -326,9 +347,57 @@ def _item_fails_occupation(item: dict) -> bool:
     return has_experience_section and not has_occupation_entity
 
 
+def _education_span_texts(item: dict) -> list[str]:
+    """Substring texts for all EDUCATION annotations."""
+    out = []
+    for a in item.get("annotation") or []:
+        if not isinstance(a, dict):
+            continue
+        if (a.get("label") or [None])[0] != "EDUCATION":
+            continue
+        for p in a.get("points") or []:
+            t = (p.get("text") or "").strip()
+            if t:
+                out.append(t)
+    return out
+
+
+def _item_education_spans_incomplete(item: dict) -> bool:
+    """
+    True if an EDUCATION block line looks like 'Institution, Degree' but fewer than two EDUCATION spans
+    match that line (common LLM failure: degree only).
+    """
+    content = (item.get("content") or "").strip()
+    edu_spans = _education_span_texts(item)
+    m = re.search(
+        r"\nEDUCATION\s*\n(.*?)(?=\nEXPERIENCE\s*\n|\nPROJECTS\s*\n|\nCERTIFICATIONS\s*\n|\nSKILLS\s*\n|\Z)",
+        content,
+        re.DOTALL | re.IGNORECASE,
+    )
+    if not m:
+        return False
+    block = m.group(1)
+    inst_pat = re.compile(
+        r"(University|Campus|College|Institute|School|Academy|Eastern University|University of)",
+        re.IGNORECASE,
+    )
+    for line in block.split("\n"):
+        line_st = line.strip()
+        if not line_st or len(line_st) < 12:
+            continue
+        if "," not in line_st:
+            continue
+        if not inst_pat.search(line_st):
+            continue
+        hits = sum(1 for t in edu_spans if t and t in line_st)
+        if hits < 2:
+            return True
+    return False
+
+
 def _item_needs_fix(item: dict) -> bool:
-    """True if item has missing EDUCATION or OCCUPATION and should get a fix call."""
-    return _item_fails_completeness(item) or _item_fails_occupation(item)
+    """True if item should get a fix call (missing tags or incomplete EDUCATION spans)."""
+    return _item_fails_completeness(item) or _item_fails_occupation(item) or _item_education_spans_incomplete(item)
 
 
 def fix_item_entities(client, item: dict, model: str = "gpt-4o-mini", timeout: int = 45) -> dict | None:
@@ -428,6 +497,10 @@ def generate_batch(client, n: int, model: str = "gpt-4o-mini", timeout: int = 12
                             print(f"Fix call failed (keeping original): {fix_err}", file=sys.stderr)
                     if _item_fails_completeness(item):
                         continue
+                    if _item_education_spans_incomplete(item):
+                        continue
+                    if _item_fails_occupation(item):
+                        continue
                 elif strict_completeness and _item_fails_completeness(item):
                     continue
                 out.append(item)
@@ -495,6 +568,10 @@ def generate_one(client, model: str = "gpt-4o-mini", timeout: int = 60, career_h
                     print(f"Fix call failed (keeping original): {fix_err}", file=sys.stderr)
             if _item_fails_completeness(item):
                 return None
+            if _item_education_spans_incomplete(item):
+                return None
+            if _item_fails_occupation(item):
+                return None
         elif strict_completeness and _item_fails_completeness(item):
             return None
         return item
@@ -517,7 +594,11 @@ def main():
     parser.add_argument("--timeout", type=int, default=60, help="Timeout per request in seconds")
     parser.add_argument("--entity-rich", action="store_true", help="Ask for at least 2 job titles (OCCUPATION) and 2 companies (EXPERIENCE) per employed resume for clearer training data")
     parser.add_argument("--no-strict-completeness", action="store_true", help="Do not discard items that have an EDUCATION section in content but no EDUCATION entities (default: discard such items)")
-    parser.add_argument("--fix-missing", action="store_true", help="When an item is missing EDUCATION or OCCUPATION, make a second LLM call to fill in missing entities (adds API cost)")
+    parser.add_argument(
+        "--fix-missing",
+        action="store_true",
+        help="Second LLM pass when tags are missing OR when EDUCATION has institution+degree on one line but only one EDUCATION span (adds API cost; recommended for clean data)",
+    )
     parser.add_argument("--sri-lanka-tech", action="store_true", help="Generate structured Sri Lankan tech resumes: SUMMARY, EDUCATION, EXPERIENCE, PROJECTS (with Tech Stack), CERTIFICATIONS, SKILLS subsections, REFERENCES")
     args = parser.parse_args()
     strict_completeness = not args.no_strict_completeness
@@ -568,6 +649,8 @@ def main():
     client = openai.OpenAI(api_key=api_key)
     written = 0
     remaining = to_generate
+    consecutive_empty = 0
+    max_consecutive_empty = 80
     with open(args.output, mode, encoding="utf-8") as f:
         while remaining > 0:
             want_this_call = min(per_call, remaining)
@@ -588,8 +671,23 @@ def main():
                     if attempt < 2:
                         time.sleep(2 ** attempt)
             if not items:
-                remaining -= want_this_call
+                consecutive_empty += 1
+                if consecutive_empty >= max_consecutive_empty:
+                    print(
+                        f"Stopping: {max_consecutive_empty} consecutive failed batches (network/parse). "
+                        f"Resume later with the same --target and --output to continue.",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
+                wait_s = min(90.0, 3.0 * (2 ** min(consecutive_empty - 1, 5)))
+                print(
+                    f"No items this batch (attempt will retry; waiting {wait_s:.0f}s). "
+                    f"Consecutive empty batches: {consecutive_empty}/{max_consecutive_empty}",
+                    file=sys.stderr,
+                )
+                time.sleep(wait_s)
                 continue
+            consecutive_empty = 0
             for item in items:
                 f.write(json.dumps(item, ensure_ascii=False) + "\n")
                 written += 1

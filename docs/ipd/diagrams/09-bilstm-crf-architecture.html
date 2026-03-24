@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proposed BiLSTM–CRF architecture — résumé NER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --border: #cbd5e1;
+      --panel: #f8fafc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      background: #eceff2;
+      color: var(--ink);
+      padding: 1.5rem;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+      color: var(--ink);
+    }
+    .meta {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      max-width: 56rem;
+      margin-bottom: 1rem;
+    }
+    .figure-frame {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 0;
+      max-width: 56rem;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+    .figure-frame svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: top;
+    }
+    .table-wrap {
+      max-width: 56rem;
+      margin-top: 1.25rem;
+      padding: 0 0.25rem;
+    }
+    table.data-dims {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      border: 1px solid var(--border);
+    }
+    table.data-dims caption {
+      caption-side: top;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    table.data-dims th,
+    table.data-dims td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+    table.data-dims thead th {
+      background: var(--panel);
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    table.data-dims td:first-child { font-weight: 500; color: #1e293b; }
+    table.data-dims code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.8rem;
+      background: var(--panel);
+      padding: 0.12rem 0.35rem;
+      border-radius: 3px;
+    }
+    .sr-editorial {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .figure-frame { border: 1px solid #999; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Proposed neural architecture — BiLSTM–CRF for résumé NER (Path 2)</h1>
+  <p class="meta">
+    Figure for design documentation. Hyperparameters follow the Path~2 training notebook (two-layer BiLSTM, Word2Vec embeddings, thirteen BIO labels). Alternative encoder configurations (e.g. BERT-based) may be documented in a separate figure.
+  </p>
+
+  <div class="figure-frame">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 668" role="img" aria-label="Proposed BiLSTM-CRF architecture for resume named entity recognition">
+      <title>Proposed BiLSTM-CRF architecture for résumé named entity recognition</title>
+      <defs>
+        <filter id="card" x="-2%" y="-2%" width="104%" height="104%">
+          <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0f172a" flood-opacity="0.08" />
+        </filter>
+        <marker id="arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+          <polygon points="0 0, 7 3.5, 0 7" fill="#334155" />
+        </marker>
+        <marker id="arrAux" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth">
+          <polygon points="0 0, 6 3, 0 6" fill="#64748b" />
+        </marker>
+      </defs>
+
+      <!-- Panel background -->
+      <rect x="0" y="0" width="720" height="668" fill="#fafbfc" />
+      <rect x="24" y="20" width="672" height="628" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" rx="1" filter="url(#card)" />
+
+      <!-- Title block -->
+      <text x="360" y="52" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="13.5" font-weight="600" fill="#0f172a">
+        Proposed architecture: BiLSTM–CRF for token-level résumé NER
+      </text>
+      <text x="360" y="72" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="8.8" fill="#64748b">
+        Word-level tokenisation · Word2Vec initialisation · two-layer BiLSTM · linear emissions · linear-chain CRF (Viterbi decoding)
+      </text>
+
+      <!-- Legend -->
+      <g font-family="IBM Plex Sans, sans-serif" font-size="7.8" fill="#475569">
+        <text x="40" y="98" font-weight="600" fill="#334155">Key</text>
+        <rect x="76" y="88" width="10" height="10" fill="#fff" stroke="#94a3b8" /><text x="92" y="97">Preprocessing</text>
+        <rect x="168" y="88" width="10" height="10" fill="#fffbeb" stroke="#ca8a04" /><text x="184" y="97">Embedding</text>
+        <rect x="258" y="88" width="10" height="10" fill="#ecfdf5" stroke="#0f766e" /><text x="274" y="97">Recurrent</text>
+        <rect x="348" y="88" width="10" height="10" fill="#f5f3ff" stroke="#6d28d9" /><text x="364" y="97">Classifier head</text>
+        <rect x="458" y="88" width="10" height="10" fill="#eff6ff" stroke="#2563eb" /><text x="474" y="97">CRF</text>
+        <rect x="528" y="88" width="10" height="10" fill="#f0fdf4" stroke="#15803d" /><text x="544" y="97">Prediction</text>
+        <line x1="600" y1="93" x2="614" y2="93" stroke="#64748b" stroke-width="1" stroke-dasharray="3 2" />
+        <text x="620" y="97">Auxiliary</text>
+      </g>
+
+      <!-- Main stack: x=48, w=424, centered at 260 -->
+      <g font-family="IBM Plex Sans, sans-serif">
+        <!-- Stage 0 -->
+        <rect x="48" y="118" width="4" height="46" fill="#64748b" rx="1" />
+        <rect x="56" y="118" width="416" height="46" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+        <text x="88" y="134" font-size="9.5" font-weight="600" fill="#1e293b">Input preprocessing</text>
+        <text x="88" y="150" font-size="8" fill="#64748b">Word-level tokenisation; vocabulary indices; padding and unknown-token handling</text>
+
+        <!-- (a) -->
+        <rect x="48" y="176" width="4" height="54" fill="#ca8a04" rx="1" />
+        <rect x="56" y="176" width="416" height="54" fill="#fffbeb" stroke="#fde68a" stroke-width="1" />
+        <text x="68" y="196" font-size="8.5" font-weight="700" fill="#b45309">a</text>
+        <text x="88" y="194" font-size="9.5" font-weight="600" fill="#92400e">Embedding layer</text>
+        <text x="88" y="210" font-size="8" fill="#a16207">Trainable embeddings (PyTorch <tspan font-style="italic">nn.Embedding</tspan>), initialised from Word2Vec; dimension 256; vocabulary size approximately 46k</text>
+
+        <!-- (b) layer 1 -->
+        <rect x="48" y="242" width="4" height="38" fill="#0f766e" rx="1" />
+        <rect x="56" y="242" width="416" height="38" fill="#ecfdf5" stroke="#99f6e4" stroke-width="1" />
+        <text x="64" y="260" font-size="7.5" font-weight="700" fill="#0f766e">b.i</text>
+        <text x="88" y="258" font-size="9" font-weight="600" fill="#134e4a">Bidirectional LSTM — first layer</text>
+        <text x="88" y="272" font-size="7.9" fill="#115e59">Hidden size 192 per direction; concatenated output width 384</text>
+
+        <rect x="56" y="286" width="416" height="26" fill="#f0fdfa" stroke="#5eead4" stroke-width="1" stroke-dasharray="4 3" />
+        <text x="264" y="302" text-anchor="middle" font-size="7.8" fill="#0f766e">Dropout between recurrent layers (rate 0.20)</text>
+
+        <rect x="48" y="320" width="4" height="38" fill="#0f766e" rx="1" />
+        <rect x="56" y="320" width="416" height="38" fill="#ecfdf5" stroke="#99f6e4" stroke-width="1" />
+        <text x="64" y="336" font-size="7.5" font-weight="700" fill="#0f766e">b.ii</text>
+        <text x="88" y="336" font-size="9" font-weight="600" fill="#134e4a">Bidirectional LSTM — second layer</text>
+        <text x="88" y="350" font-size="7.9" fill="#115e59">Output sequence width 384</text>
+
+        <rect x="56" y="364" width="416" height="26" fill="#f0fdfa" stroke="#5eead4" stroke-width="1" stroke-dasharray="4 3" />
+        <text x="264" y="380" text-anchor="middle" font-size="7.8" fill="#0f766e">Dropout after recurrent stack (rate 0.35)</text>
+
+        <!-- (c) -->
+        <rect x="48" y="400" width="4" height="48" fill="#6d28d9" rx="1" />
+        <rect x="56" y="400" width="416" height="48" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1" />
+        <text x="68" y="420" font-size="8.5" font-weight="700" fill="#6d28d9">c</text>
+        <text x="88" y="418" font-size="9.5" font-weight="600" fill="#5b21b6">Linear emission layer</text>
+        <text x="88" y="434" font-size="8" fill="#6d28d9">Maps 384-dimensional hidden states to K = 13 label scores per time step (emission matrix)</text>
+
+        <!-- (d) -->
+        <rect x="48" y="458" width="4" height="52" fill="#2563eb" rx="1" />
+        <rect x="56" y="458" width="416" height="52" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" />
+        <text x="68" y="478" font-size="8.5" font-weight="700" fill="#1d4ed8">d</text>
+        <text x="88" y="476" font-size="9.5" font-weight="600" fill="#1e40af">Linear-chain conditional random field</text>
+        <text x="88" y="492" font-size="8" fill="#1d4ed8">Learnable transition matrix <tspan font-style="italic">A</tspan> (order K × K); training: maximum likelihood; inference: Viterbi decoding</text>
+
+        <!-- Output -->
+        <rect x="48" y="522" width="4" height="42" fill="#15803d" rx="1" />
+        <rect x="56" y="522" width="416" height="42" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" />
+        <text x="88" y="540" font-size="9.5" font-weight="600" fill="#14532d">Tag sequence (output)</text>
+        <text x="88" y="556" font-size="8" fill="#166534">BIO-encoded labels per token (e.g. B-NAME, I-SKILL, O)</text>
+
+        <!-- Training objective -->
+        <rect x="56" y="576" width="416" height="36" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="5 3" />
+        <text x="264" y="592" text-anchor="middle" font-size="8" fill="#475569">Training objective: negative log-likelihood of the reference tag sequence; padding masked in the CRF loss</text>
+        <text x="264" y="604" text-anchor="middle" font-size="7.3" fill="#94a3b8">Forward–backward / Viterbi implemented per toolkit (e.g. PyTorch-CRF)</text>
+      </g>
+
+      <!-- Tensor annotations -->
+      <g font-family="IBM Plex Sans, sans-serif" font-size="7.5" fill="#64748b" font-style="italic">
+        <text x="472" y="208" text-anchor="end">B × L × 256</text>
+        <text x="472" y="338" text-anchor="end">B × L × 384</text>
+        <text x="472" y="428" text-anchor="end">B × L × K</text>
+      </g>
+
+      <!-- Vertical flow arrows -->
+      <g stroke="#334155" stroke-width="1.25" fill="none" stroke-linecap="round" marker-end="url(#arr)">
+        <line x1="264" y1="164" x2="264" y2="176" />
+        <line x1="264" y1="230" x2="264" y2="242" />
+        <line x1="264" y1="280" x2="264" y2="286" />
+        <line x1="264" y1="312" x2="264" y2="320" />
+        <line x1="264" y1="358" x2="264" y2="364" />
+        <line x1="264" y1="390" x2="264" y2="400" />
+        <line x1="264" y1="448" x2="264" y2="458" />
+        <line x1="264" y1="510" x2="264" y2="522" />
+      </g>
+
+      <!-- Auxiliary: mask -->
+      <g font-family="IBM Plex Sans, sans-serif">
+        <rect x="520" y="242" width="176" height="76" fill="#ffffff" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" rx="2" />
+        <text x="608" y="266" text-anchor="middle" font-size="9" font-weight="600" fill="#334155">Validity mask</text>
+        <text x="608" y="284" text-anchor="middle" font-size="7.8" fill="#64748b">Binary mask over time steps</text>
+        <text x="608" y="298" text-anchor="middle" font-size="7.8" fill="#64748b">(excludes padded positions)</text>
+        <text x="608" y="312" text-anchor="middle" font-size="7.5" fill="#94a3b8">Applied in CRF loss and decoding</text>
+      </g>
+
+      <g stroke="#64748b" stroke-width="1.1" fill="none" stroke-dasharray="5 4" stroke-linecap="round">
+        <path d="M 472 141 C 500 141 500 200 520 260" marker-end="url(#arrAux)" />
+        <path d="M 608 318 L 608 470 L 472 484" marker-end="url(#arrAux)" />
+      </g>
+
+      <!-- Caption line -->
+      <text x="360" y="648" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#94a3b8" font-style="italic">
+        B: batch size; L: sequence length; K: number of distinct labels (13)
+      </text>
+    </svg>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-dims">
+      <caption>Tensor dimensions in the proposed architecture</caption>
+      <thead>
+        <tr>
+          <th scope="col">Component</th>
+          <th scope="col">Shape</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Token indices</td>
+          <td><code>[B, L]</code></td>
+          <td>Integer tensor; padding index 0 (convention used in training)</td>
+        </tr>
+        <tr>
+          <td>Embedding output</td>
+          <td><code>[B, L, 256]</code></td>
+          <td>Floating-point embeddings</td>
+        </tr>
+        <tr>
+          <td>BiLSTM output</td>
+          <td><code>[B, L, 384]</code></td>
+          <td>192 features per direction, concatenated</td>
+        </tr>
+        <tr>
+          <td>Emission scores</td>
+          <td><code>[B, L, K]</code></td>
+          <td>Per-label scores prior to CRF normalisation</td>
+        </tr>
+        <tr>
+          <td>CRF transitions</td>
+          <td><code>[K, K]</code></td>
+          <td>Learned transition parameters</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Editorial: diagram maintenance (hidden from normal reading) -->
+  <p class="sr-editorial">To edit: adjust SVG rects and text in this file; export via print to PDF for inclusion in the thesis.</p>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrackInt — System architecture (detailed three-tier)</title>
+  <style>
+    :root { --muted: #475569; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1.25rem;
+      line-height: 1.45;
+    }
+    h1 { font-size: 1.2rem; margin: 0 0 0.35rem; font-weight: 600; }
+    .meta { font-size: 0.85rem; color: var(--muted); max-width: 80rem; margin-bottom: 1rem; }
+    .wrap {
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+    svg { display: block; min-width: 100%; max-width: 88rem; height: auto; }
+    .legend { margin-top: 1.1rem; font-size: 0.8rem; color: var(--muted); max-width: 80rem; }
+    .legend h2 { font-size: 0.95rem; color: #0f172a; margin: 0 0 0.35rem; }
+    .legend ul { margin: 0; padding-left: 1.2rem; }
+    .notation-table {
+      width: 100%;
+      max-width: 80rem;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .notation-table caption {
+      text-align: left;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+    .notation-table th, .notation-table td {
+      border: 1px solid #e2e8f0;
+      padding: 0.5rem 0.65rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    .notation-table th { background: #f8fafc; font-weight: 600; color: #334155; }
+    .notation-table code { font-size: 0.78rem; background: #f1f5f9; padding: 0.1rem 0.4rem; border-radius: 4px; }
+    @media print { body { background: #fff; } .wrap { border: none; box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <h1>CrackInt — system architecture (detailed three-tier)</h1>
+  <p class="meta">
+    <strong>Pansilus-style reading:</strong> the <strong>presentation tier</strong> is summarised as routes + server-driven panels (detail in other chapters). <strong style="color:#1d4ed8">Blue (↓)</strong> = HTTP requests; <strong style="color:#047857">Green (↑)</strong> = JSON responses — two parallel spines at the tier boundary (not every route drawn). <strong>Grey dashed</strong> = optional external LLM.
+  </p>
+
+  <div class="wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 780" role="img" aria-label="CrackInt detailed three-tier architecture">
+      <defs>
+        <!-- Down: tip at +X in marker coords → points along path toward segment end -->
+        <marker id="arrDown" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+          <polygon points="0 0, 8 4, 0 8" fill="#1d4ed8" />
+        </marker>
+        <marker id="arrUp" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+          <polygon points="0 0, 8 4, 0 8" fill="#047857" />
+        </marker>
+      </defs>
+
+      <text x="590" y="30" text-anchor="middle" font-size="16" font-weight="600" fill="#0f172a" font-family="Segoe UI, system-ui, sans-serif">CrackInt — three-tier architectural diagram</text>
+      <text x="590" y="48" text-anchor="middle" font-size="10" fill="#64748b" font-family="Segoe UI, system-ui, sans-serif">Presentation · Logic · Data — bidirectional HTTP across tier boundary</text>
+
+      <!-- Tier bands -->
+      <rect x="40" y="58" width="1100" height="268" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" opacity="0.9" />
+      <rect x="40" y="338" width="1100" height="310" rx="4" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5" opacity="0.9" />
+      <rect x="40" y="658" width="1100" height="100" rx="4" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" opacity="0.9" />
+      <line x1="40" y1="326" x2="1140" y2="326" stroke="#cbd5e1" stroke-width="1.2" />
+      <line x1="40" y1="648" x2="1140" y2="648" stroke="#cbd5e1" stroke-width="1.2" />
+
+      <!-- Tier labels -->
+      <g font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="700">
+        <text x="56" y="88" fill="#92400e">Presentation tier</text>
+        <text x="56" y="368" fill="#14532d">Logic tier</text>
+        <text x="56" y="688" fill="#1e3a8a">Data tier</text>
+      </g>
+
+      <!-- ========== PRESENTATION (compact: routes + server-driven strip) ========== -->
+      <g font-family="Segoe UI, system-ui, sans-serif">
+        <rect x="72" y="108" width="72" height="92" rx="8" fill="#fff" stroke="#2563eb" stroke-width="1.5" />
+        <text x="108" y="148" text-anchor="middle" font-size="10" font-weight="700" fill="#1e40af">Browser</text>
+        <text x="108" y="164" text-anchor="middle" font-size="7.5" fill="#64748b">HTTPS</text>
+
+        <rect x="158" y="68" width="980" height="165" rx="12" fill="#ffffff" fill-opacity="0.7" stroke="#16a34a" stroke-width="2" />
+        <text x="648" y="88" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">Next.js — app shell</text>
+
+        <g stroke="#b45309" stroke-width="1.3" fill="#fffbeb">
+          <rect x="178" y="100" width="920" height="48" rx="8" />
+          <text x="638" y="122" text-anchor="middle" font-size="9.5" font-weight="700" fill="#78350f">Routes &amp; screens</text>
+          <text x="638" y="138" text-anchor="middle" font-size="7" fill="#a16207">landing · auth · dashboard · CV &amp; jobs · interview — validation / loading in-page</text>
+        </g>
+
+        <g stroke="#0369a1" stroke-width="1.4" fill="#e0f2fe">
+          <rect x="178" y="154" width="920" height="44" rx="8" />
+          <text x="638" y="176" text-anchor="middle" font-size="9.5" font-weight="700" fill="#0c4a6e">Output &amp; server-driven panels</text>
+          <text x="638" y="190" text-anchor="middle" font-size="7" fill="#0369a1">entities · scores · feedback · next question — from API responses (↑)</text>
+        </g>
+      </g>
+
+      <!-- HTTP at tier boundary (y=326): parallel spines (x≈602 vs 606) so request/response do not stack -->
+      <g font-family="Segoe UI, system-ui, sans-serif">
+        <text x="48" y="308" font-size="8.5" font-weight="600" fill="#1d4ed8">HTTP requests ↓</text>
+        <text x="48" y="322" font-size="8.5" font-weight="600" fill="#047857">JSON / DTOs ↑</text>
+      </g>
+      <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <polyline stroke="#047857" stroke-width="2" points="610,342 610,326 602,326 602,148" marker-end="url(#arrUp)" />
+        <polyline stroke="#1d4ed8" stroke-width="2" points="606,148 606,326 598,326 598,342" marker-end="url(#arrDown)" />
+      </g>
+
+      <!-- ========== LOGIC: central API (Pansilus-style orange/black) ========== -->
+      <g font-family="Segoe UI, system-ui, sans-serif">
+        <rect x="492" y="342" width="224" height="92" rx="10" fill="#fff7ed" stroke="#c2410c" stroke-width="3" />
+        <rect x="500" y="350" width="208" height="76" rx="6" fill="#1c1917" stroke="#1c1917" />
+        <text x="604" y="378" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">FastAPI — REST API</text>
+        <text x="604" y="398" text-anchor="middle" font-size="8.5" fill="#fcd34d">/api/v1 · routers · middleware · OpenAPI</text>
+
+        <!-- Services row -->
+        <g stroke="#0f766e" stroke-width="1.3" fill="#ecfdf5">
+          <rect x="120" y="458" width="155" height="56" rx="8" />
+          <text x="197" y="482" text-anchor="middle" font-size="9" font-weight="700" fill="#134e4a">Text extraction</text>
+          <text x="197" y="498" text-anchor="middle" font-size="6.5" fill="#64748b">PyMuPDF · OCR</text>
+
+          <rect x="295" y="458" width="155" height="56" rx="8" />
+          <text x="372" y="482" text-anchor="middle" font-size="9" font-weight="700" fill="#134e4a">Résumé NER</text>
+          <text x="372" y="498" text-anchor="middle" font-size="6.5" fill="#64748b">BiLSTM-CRF</text>
+
+          <rect x="470" y="458" width="155" height="56" rx="8" />
+          <text x="547" y="482" text-anchor="middle" font-size="9" font-weight="700" fill="#134e4a">Job poster NER</text>
+          <text x="547" y="498" text-anchor="middle" font-size="6.5" fill="#64748b">skills · entities</text>
+
+          <rect x="645" y="458" width="155" height="56" rx="8" />
+          <text x="722" y="482" text-anchor="middle" font-size="9" font-weight="700" fill="#134e4a">Session agent</text>
+          <text x="722" y="498" text-anchor="middle" font-size="6.5" fill="#64748b">next Q · dialogue</text>
+
+          <rect x="820" y="458" width="155" height="56" rx="8" />
+          <text x="897" y="482" text-anchor="middle" font-size="9" font-weight="700" fill="#134e4a">Semantic feedback</text>
+          <text x="897" y="498" text-anchor="middle" font-size="6.5" fill="#64748b">evaluate answers</text>
+        </g>
+
+        <!-- API → services (orthogonal: trunk down, then horizontal service bus, then short stubs up) -->
+        <g stroke="#475569" stroke-width="1.25" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+          <line x1="604" y1="434" x2="604" y2="448" />
+          <line x1="110" y1="448" x2="990" y2="448" stroke="#94a3b8" stroke-width="1" opacity="0.7" />
+          <line x1="197" y1="448" x2="197" y2="458" />
+          <line x1="372" y1="448" x2="372" y2="458" />
+          <line x1="547" y1="448" x2="547" y2="458" />
+          <line x1="722" y1="448" x2="722" y2="458" />
+          <line x1="897" y1="448" x2="897" y2="458" />
+        </g>
+
+        <!-- Remote LLM -->
+        <g stroke="#64748b" stroke-width="1.2" stroke-dasharray="5 4" fill="#f8fafc">
+          <rect x="865" y="348" width="150" height="72" rx="8" />
+          <text x="940" y="376" text-anchor="middle" font-size="9" font-weight="600" fill="#334155">Remote LLM API</text>
+          <text x="940" y="392" text-anchor="middle" font-size="7" fill="#64748b">OpenAI-compatible</text>
+          <!-- Orthogonal to LLM box bottom (y=420); stubs from service bottoms (y=514) -->
+          <polyline points="722,514 722,530 940,530 940,420" stroke="#64748b" stroke-dasharray="5 4" fill="none" />
+          <polyline points="897,514 897,530 940,530" stroke="#64748b" stroke-dasharray="5 4" fill="none" />
+        </g>
+
+        <!-- Persistence adapters -->
+        <g stroke="#3730a3" stroke-width="1.2" fill="#eef2ff">
+          <rect x="320" y="548" width="200" height="44" rx="8" />
+          <text x="420" y="568" text-anchor="middle" font-size="9" font-weight="700" fill="#312e81">ORM / repository layer</text>
+          <text x="420" y="582" text-anchor="middle" font-size="6.5" fill="#6366f1">SQLModel · migrations</text>
+
+          <rect x="580" y="548" width="200" height="44" rx="8" />
+          <text x="680" y="568" text-anchor="middle" font-size="9" font-weight="700" fill="#312e81">S3 / object adapter</text>
+          <text x="680" y="582" text-anchor="middle" font-size="6.5" fill="#6366f1">uploads · presigned URLs</text>
+        </g>
+
+        <g stroke="#334155" stroke-width="1.2" fill="none">
+          <polyline points="604,434 604,520 420,520 420,548" />
+          <polyline points="604,434 604,520 680,520 680,548" />
+        </g>
+      </g>
+
+      <!-- Logic → Data ↓ (cylinder top cap ~y=682 at x=344 / x=704) -->
+      <g stroke="#1d4ed8" stroke-width="1.3" fill="none">
+        <polyline points="420,592 344,592 344,682" marker-end="url(#arrDown)" />
+        <polyline points="680,592 704,592 704,682" marker-end="url(#arrDown)" />
+      </g>
+      <text x="250" y="632" font-size="7.5" fill="#1d4ed8">persist / query ↓</text>
+
+      <!-- Data → Logic ↑ (from cylinder bottom ~y=724) -->
+      <g stroke="#047857" stroke-width="1.3" fill="none">
+        <polyline points="344,724 344,600 420,600 420,592" marker-end="url(#arrUp)" />
+        <polyline points="704,724 704,600 680,600 680,592" marker-end="url(#arrUp)" />
+      </g>
+      <text x="250" y="668" font-size="7.5" fill="#047857">records / objects ↑</text>
+
+      <!-- ========== DATA TIER ========== -->
+      <g stroke="#1e40af" stroke-width="1.3" fill="none" font-family="Segoe UI, system-ui, sans-serif">
+        <g transform="translate(300, 672)">
+          <ellipse cx="44" cy="10" rx="42" ry="9" fill="#bfdbfe" stroke="#1d4ed8" />
+          <line x1="2" y1="10" x2="2" y2="52" stroke="#1d4ed8" />
+          <line x1="86" y1="10" x2="86" y2="52" stroke="#1d4ed8" />
+          <ellipse cx="44" cy="52" rx="42" ry="9" fill="#dbeafe" stroke="#1d4ed8" />
+          <text x="44" y="38" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1e3a8a">PostgreSQL</text>
+        </g>
+        <text x="344" y="748" text-anchor="middle" font-size="7" fill="#475569">users · résumés · sessions · messages · postings</text>
+
+        <g transform="translate(660, 672)">
+          <ellipse cx="44" cy="10" rx="42" ry="9" fill="#bfdbfe" stroke="#1d4ed8" />
+          <line x1="2" y1="10" x2="2" y2="52" stroke="#1d4ed8" />
+          <line x1="86" y1="10" x2="86" y2="52" stroke="#1d4ed8" />
+          <ellipse cx="44" cy="52" rx="42" ry="9" fill="#dbeafe" stroke="#1d4ed8" />
+          <text x="44" y="38" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1e3a8a">AWS S3</text>
+        </g>
+        <text x="704" y="748" text-anchor="middle" font-size="7" fill="#475569">résumés · images · uploads (when configured)</text>
+      </g>
+
+    </svg>
+  </div>
+
+  <div class="legend">
+    <h2>What we borrowed from a detailed thesis-style diagram (e.g. Pansilus)</h2>
+    <ul>
+      <li><strong>Orthogonal arrows:</strong> <strong>Blue ↓</strong> and <strong>green ↑</strong> are <strong>parallel spines</strong> at the presentation–logic boundary (no horizontal buses). They use slightly offset <em>x</em> positions (~598–610) so the two directions do not coincide.</li>
+      <li><strong>Presentation tier (compact):</strong> <strong>Next.js app shell</strong> with one <strong>routes &amp; screens</strong> band (areas listed inline) and one <strong>server-driven output</strong> strip — detail screens appear in other figures / chapters.</li>
+      <li><strong>Bidirectional boundary:</strong> <strong>Blue ↓</strong> and <strong>Green ↑</strong> each use <strong>one spine</strong> through the presentation tier; same HTTP semantics as a multi-arrow diagram with less clutter.</li>
+      <li><strong>Rich logic tier:</strong> a <strong>central API</strong> hub (orange/black) and <strong>named pipelines</strong> (extraction, both NER paths, session, feedback) plus <strong>adapters</strong> before the data tier.</li>
+      <li><strong>Data tier + arrows:</strong> <strong>↓</strong> for writes/queries initiated from logic; <strong>↑</strong> for data loaded back into the app stack (mirroring loader-style diagrams).</li>
+    </ul>
+
+    <table class="notation-table">
+      <caption>Arrow legend</caption>
+      <thead>
+        <tr><th>Colour / direction</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Blue, downward</td><td>HTTP requests from UI to API; ORM/S3 writes downward into stores.</td></tr>
+        <tr><td>Green, upward</td><td>JSON responses into UI; records/objects read upward from PostgreSQL / S3 into logic.</td></tr>
+        <tr><td>Grey (in other figures)</td><td>In-app navigation between routes — not drawn here.</td></tr>
+        <tr><td>Dashed grey</td><td>Optional outbound LLM vendor calls.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

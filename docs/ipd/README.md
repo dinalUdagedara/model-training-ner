@@ -12,6 +12,7 @@ All documents for the IPD submission (6COSC023W, 15% of FYP). **Deadline:** 05 F
 | [requirements-short.md](requirements-short.md) | Short summary: deadline, what to submit, how it is marked, quick checklist. |
 | [requirements-implemented-vs-pending.md](requirements-implemented-vs-pending.md) | FR/NFR table with **Implemented / Partial / Pending** and file locations. Use for the "Formal requirements specification" slide and "Progress since PPRS". |
 | [current-state-audit.md](current-state-audit.md) | Audit of what is done vs not done (NER, prototype, IPD docs). |
+| [research-gaps-and-novelty-reference.md](research-gaps-and-novelty-reference.md) | **Research gaps, technical novelty, research novelty** — formal statements, evidence, real-world verification, defensible framing for thesis/slides. |
 | [prototype-scope.md](prototype-scope.md) | Minimum viable prototype scope for IPD (resume + job extraction). |
 | [architecture-and-schedule.md](architecture-and-schedule.md) | High-level and current prototype architecture (Mermaid), wireframes, updated Gantt and deviations. Use for "Overall system architecture" and "Updated time schedule" slides. |
 | [building-the-slides.md](presenttion/building-the-slides.md) | **Step-by-step guide to build the presentation:** slide order, content for each slide (with source doc + section), talking points, and checklist before recording. |

@@ -1,24 +1,45 @@
 %% Sequence Diagram: Session / Chat Flow
 %% Chapter 6, Section 6.4
-%% UC-04: Conduct Interactive Practice Session (structure; LLM/feedback pending)
+%% UC-04: Conduct Interactive Practice Session
+%%
+%% Validated against PROJECT/crackint-frontend (SessionChatView, HomeChatInput) + PROJECT/crackint-backend/app/api/session/route.py
+%%
+%% Primary UI flow uses ONE unified endpoint:
+%%   POST /api/v1/sessions/{session_id}/chat  (body: { content, prefer_difficulty? })
+%% It stores the user turn and runs the session QA agent in-process: first question, classify/redirect,
+%% evaluate_answer, generate_next_question, tutor replies — as applicable — then returns new_messages.
+%%
+%% Also implemented (not used by main chat UI): POST .../messages (raw append), POST .../next-question,
+%% POST .../evaluate-answer, POST .../send — see route.py for behaviour.
+%%
+%% LLM: OPENAI_API_KEY from PROJECT/crackint-backend/app/config.py
 
 sequenceDiagram
     participant User
     participant Frontend as Next.js Frontend
     participant API as FastAPI API
     participant DB as PostgreSQL
+    participant LLM as LLM (OpenAI API)
 
-    User->>Frontend: Start new session (resume + job selected)
-    Frontend->>API: POST /api/v1/sessions (resume_id, job_posting_id)
+    User->>Frontend: Start new session (résumé + job selected, or tutor mode from home)
+    Frontend->>API: POST /api/v1/sessions (resume_id, job_posting_id, mode)
     API->>DB: INSERT PrepSession
     DB-->>API: session_id
     API-->>Frontend: PrepSession
-    Frontend-->>User: Session created, chat UI shown
+    Frontend->>API: GET /api/v1/sessions/{id}/with-messages
+    API->>DB: SELECT session + messages
+    DB-->>API: PrepSessionWithMessages
+    API-->>Frontend: Session + message history
+    Frontend-->>User: Chat UI (SessionChatView)
 
-    Note over User,DB: Message flow (future: LLM QG + Semantic Feedback)
-    User->>Frontend: Submit answer
-    Frontend->>API: POST /api/v1/sessions/{id}/messages (QUESTION/ANSWER/FEEDBACK)
-    API->>DB: INSERT Message
-    DB-->>API: message
-    API-->>Frontend: Message
-    Frontend-->>User: Display message (future: display feedback)
+    Note over User,LLM: Each user message: unified chat turn (production UI)
+    User->>Frontend: Type message and send
+    Frontend->>API: POST /api/v1/sessions/{id}/chat { content, prefer_difficulty? }
+    API->>DB: INSERT Message (USER / ANSWER)
+    Note right of API: Agent: classify, tutor reply, first question, evaluate_answer, next question — calls LLM as needed
+    API->>LLM: Completions (question / feedback / redirect / title / summary)
+    LLM-->>API: Model outputs
+    API->>DB: INSERT Message(s) (QUESTION, FEEDBACK, …)
+    DB-->>API: persisted rows
+    API-->>Frontend: ChatTurnPayload { new_messages[] }
+    Frontend-->>User: Append messages in thread (scores in FEEDBACK meta when present)

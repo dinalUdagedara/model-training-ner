@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrackInt — Full use case diagram (horizontal layout)</title>
+  <style>
+    :root { --muted: #475569; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 1.25rem;
+      line-height: 1.45;
+    }
+    h1 { font-size: 1.2rem; margin: 0 0 0.35rem; font-weight: 600; }
+    .meta { font-size: 0.85rem; color: var(--muted); max-width: 72rem; margin-bottom: 1rem; }
+    .wrap {
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+    svg { display: block; min-width: 100%; height: auto; }
+    .legend { margin-top: 1.1rem; font-size: 0.8rem; color: var(--muted); max-width: 72rem; }
+    .legend h2 { font-size: 0.95rem; color: #0f172a; margin: 0 0 0.35rem; }
+    .legend ul { margin: 0; padding-left: 1.2rem; }
+    .notation-table {
+      width: 100%;
+      max-width: 72rem;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .notation-table caption {
+      text-align: left;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #0f172a;
+    }
+    .notation-table th, .notation-table td {
+      border: 1px solid #e2e8f0;
+      padding: 0.5rem 0.65rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    .notation-table th { background: #f8fafc; font-weight: 600; color: #334155; }
+    .notation-table code { font-size: 0.78rem; background: #f1f5f9; padding: 0.1rem 0.4rem; border-radius: 4px; }
+    @media print { body { background: #fff; } .wrap { border: none; box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <h1>CrackInt — full system use case diagram (horizontal swimlanes)</h1>
+  <p class="meta">
+    <strong>Where to start:</strong> the <strong>first step</strong> is <strong>Register / login</strong> at the <strong>left</strong> of the <strong>top row</strong> (User &amp; documents). Follow the <strong>blue dashed «include»</strong> arrows <strong>left → right</strong> in that row, then the <strong>second row</strong> for practice. <strong>Grey lines from Primary user</strong> are <strong>associations</strong> (who may use each use case) — not a reading order. Analytics and admin are separate bands; support is the bottom row.
+  </p>
+
+  <div class="wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2720 1040" role="img" aria-label="CrackInt full use case diagram horizontal layout">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <polygon points="0 0, 8 4, 0 8" fill="#1d4ed8" />
+        </marker>
+      </defs>
+
+      <!-- Title -->
+      <text x="1360" y="38" text-anchor="middle" font-size="18" font-weight="600" fill="#0f172a">CrackInt System</text>
+
+      <!-- Main system boundary -->
+      <rect x="260" y="72" width="2340" height="900" rx="14" fill="none" stroke="#0f172a" stroke-width="2.5" />
+
+      <!-- Horizontal swimlanes -->
+      <g opacity="0.9">
+        <rect x="280" y="92" width="2300" height="188" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+        <text x="1420" y="112" text-anchor="middle" font-size="11" font-weight="600" fill="#64748b">User &amp; documents</text>
+
+        <rect x="280" y="298" width="2300" height="228" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+        <text x="1420" y="318" text-anchor="middle" font-size="11" font-weight="600" fill="#64748b">Interview practice &amp; feedback</text>
+
+        <rect x="280" y="548" width="2300" height="158" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+        <text x="1420" y="568" text-anchor="middle" font-size="11" font-weight="600" fill="#64748b">Analytics &amp; reports</text>
+
+        <rect x="280" y="728" width="2300" height="158" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.2" />
+        <text x="1420" y="748" text-anchor="middle" font-size="11" font-weight="600" fill="#475569">Administration</text>
+
+        <rect x="280" y="908" width="2300" height="108" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.2" />
+        <text x="1420" y="928" text-anchor="middle" font-size="11" font-weight="600" fill="#92400e">Support</text>
+      </g>
+
+      <!-- START / practice hints -->
+      <g font-family="Segoe UI, system-ui, sans-serif">
+        <rect x="288" y="128" width="100" height="36" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="2" />
+        <text x="338" y="150" text-anchor="middle" font-size="11" font-weight="800" fill="#047857">START</text>
+        <line x1="338" y1="164" x2="400" y2="164" stroke="#059669" stroke-width="2" />
+        <polygon points="400,164 392,160 392,168" fill="#059669" />
+        <rect x="288" y="338" width="140" height="36" rx="6" fill="#fff7ed" stroke="#ea580c" stroke-width="1.8" />
+        <text x="358" y="360" text-anchor="middle" font-size="10" font-weight="700" fill="#c2410c">Then practice →</text>
+      </g>
+
+      <!-- Child actors -->
+      <g fill="#0f172a" font-size="10" font-weight="600">
+        <g transform="translate(48, 200)">
+          <circle cx="22" cy="12" r="10" fill="none" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="22" x2="22" y2="50" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="32" x2="10" y2="40" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="32" x2="34" y2="40" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="50" x2="12" y2="68" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="50" x2="32" y2="68" stroke="#0f172a" stroke-width="2" />
+          <text x="22" y="88" text-anchor="middle">Job seeker</text>
+        </g>
+        <g transform="translate(48, 340)">
+          <circle cx="22" cy="12" r="10" fill="none" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="22" x2="22" y2="50" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="32" x2="10" y2="40" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="32" x2="34" y2="40" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="50" x2="12" y2="68" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="50" x2="32" y2="68" stroke="#0f172a" stroke-width="2" />
+          <text x="22" y="88" text-anchor="middle">Student</text>
+        </g>
+        <g transform="translate(48, 480)">
+          <circle cx="22" cy="12" r="10" fill="none" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="22" x2="22" y2="50" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="32" x2="10" y2="40" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="32" x2="34" y2="40" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="50" x2="12" y2="68" stroke="#0f172a" stroke-width="2" />
+          <line x1="22" y1="50" x2="32" y2="68" stroke="#0f172a" stroke-width="2" />
+          <text x="22" y="88" text-anchor="middle">Early career</text>
+        </g>
+      </g>
+
+      <!-- Primary user -->
+      <g transform="translate(100, 560)">
+        <circle cx="28" cy="14" r="12" fill="none" stroke="#0f172a" stroke-width="2" />
+        <line x1="28" y1="26" x2="28" y2="64" stroke="#0f172a" stroke-width="2" />
+        <line x1="28" y1="40" x2="10" y2="52" stroke="#0f172a" stroke-width="2" />
+        <line x1="28" y1="40" x2="46" y2="52" stroke="#0f172a" stroke-width="2" />
+        <line x1="28" y1="64" x2="14" y2="94" stroke="#0f172a" stroke-width="2" />
+        <line x1="28" y1="64" x2="42" y2="94" stroke="#0f172a" stroke-width="2" />
+        <text x="28" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Primary user</text>
+      </g>
+
+      <!-- Generalisation to Primary user -->
+      <g fill="none" stroke="#0f172a" stroke-width="1.4">
+        <line x1="70" y1="268" x2="122" y2="560" />
+        <polygon points="122,560 112,548 112,572" fill="#fff" stroke="#0f172a" stroke-width="1.4" />
+        <line x1="70" y1="408" x2="128" y2="568" />
+        <polygon points="128,568 118,556 118,580" fill="#fff" stroke="#0f172a" stroke-width="1.4" />
+        <line x1="70" y1="548" x2="128" y2="576" />
+        <polygon points="128,576 118,564 118,588" fill="#fff" stroke="#0f172a" stroke-width="1.4" />
+      </g>
+
+      <!-- Career service -->
+      <g transform="translate(56, 960)">
+        <circle cx="24" cy="14" r="12" fill="none" stroke="#0f172a" stroke-width="2" />
+        <line x1="24" y1="26" x2="24" y2="62" stroke="#0f172a" stroke-width="2" />
+        <line x1="24" y1="40" x2="8" y2="50" stroke="#0f172a" stroke-width="2" />
+        <line x1="24" y1="40" x2="40" y2="50" stroke="#0f172a" stroke-width="2" />
+        <line x1="24" y1="62" x2="12" y2="88" stroke="#0f172a" stroke-width="2" />
+        <line x1="24" y1="62" x2="36" y2="88" stroke="#0f172a" stroke-width="2" />
+        <text x="24" y="108" text-anchor="middle" font-size="10" font-weight="600">Career service</text>
+        <text x="24" y="122" text-anchor="middle" font-size="10" font-weight="600">professional</text>
+      </g>
+
+      <!-- System administrator -->
+      <g transform="translate(2520, 760)">
+        <circle cx="26" cy="14" r="12" fill="none" stroke="#0f172a" stroke-width="2" />
+        <line x1="26" y1="26" x2="26" y2="64" stroke="#0f172a" stroke-width="2" />
+        <line x1="26" y1="42" x2="8" y2="54" stroke="#0f172a" stroke-width="2" />
+        <line x1="26" y1="42" x2="44" y2="54" stroke="#0f172a" stroke-width="2" />
+        <line x1="26" y1="64" x2="12" y2="92" stroke="#0f172a" stroke-width="2" />
+        <line x1="26" y1="64" x2="40" y2="92" stroke="#0f172a" stroke-width="2" />
+        <text x="26" y="112" text-anchor="middle" font-size="10" font-weight="600">System</text>
+        <text x="26" y="126" text-anchor="middle" font-size="10" font-weight="600">administrator</text>
+      </g>
+
+      <!-- External systems -->
+      <g transform="translate(2580, 108)">
+        <rect x="-52" y="-22" width="104" height="48" rx="6" fill="#fff" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 4" />
+        <text x="0" y="0" text-anchor="middle" font-size="10" font-weight="600" fill="#334155">AI service</text>
+        <text x="0" y="16" text-anchor="middle" font-size="8" fill="#64748b">(e.g. OpenAI)</text>
+      </g>
+      <g transform="translate(2580, 988)">
+        <rect x="-58" y="-22" width="116" height="48" rx="6" fill="#fff" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 4" />
+        <text x="0" y="0" text-anchor="middle" font-size="10" font-weight="600" fill="#334155">Cloud storage</text>
+        <text x="0" y="16" text-anchor="middle" font-size="8" fill="#64748b">(e.g. AWS S3)</text>
+      </g>
+
+      <!--
+        Horizontal layout: rx=110 ry=30
+        Row1 cy=200: docs x 400,640,880,1120,1360
+        Row2 cy=410: practice x 400,640,880,1120,1360,1600,1840
+        Row3 cy=620: analytics x 400,640,880,1120,1360
+        Row4 cy=800: admin x 400,640,880,1120
+        Row5 cy=960: support x 1000,1300
+      -->
+      <g font-family="Segoe UI, system-ui, sans-serif" font-size="9.5" fill="#0f172a">
+        <!-- Row 1: documents -->
+        <ellipse cx="400" cy="200" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="400" y="198" text-anchor="middle" font-weight="700">Register / login</text>
+        <ellipse cx="640" cy="200" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="640" y="198" text-anchor="middle" font-weight="700">Manage profile &amp; preferences</text>
+        <ellipse cx="880" cy="200" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="880" y="198" text-anchor="middle" font-weight="700">Upload résumé (PDF/DOCX)</text>
+        <ellipse cx="1120" cy="200" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1120" y="198" text-anchor="middle" font-weight="700">Parse résumé (entities)</text>
+        <ellipse cx="1360" cy="200" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1360" y="198" text-anchor="middle" font-weight="700">Upload job poster (PDF/img)</text>
+
+        <!-- Row 2: practice -->
+        <ellipse cx="400" cy="410" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="400" y="408" text-anchor="middle" font-weight="700">Start interview practice</text>
+        <ellipse cx="640" cy="410" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="640" y="408" text-anchor="middle" font-weight="700">Adjust question difficulty</text>
+        <ellipse cx="880" cy="410" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="880" y="406" text-anchor="middle" font-weight="700">Generate role-specific questions</text>
+        <ellipse cx="1120" cy="410" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1120" y="408" text-anchor="middle" font-weight="700">Practice with generated questions</text>
+        <ellipse cx="1360" cy="410" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1360" y="408" text-anchor="middle" font-weight="700">Evaluate answer depth &amp; clarity</text>
+        <ellipse cx="1600" cy="410" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1600" y="408" text-anchor="middle" font-weight="700">Semantic feedback (real-time)</text>
+        <ellipse cx="1840" cy="410" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1840" y="408" text-anchor="middle" font-weight="700">Actionable improvement tips</text>
+
+        <!-- Row 3: analytics -->
+        <ellipse cx="400" cy="620" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="400" y="618" text-anchor="middle" font-weight="700">Track progress over time</text>
+        <ellipse cx="640" cy="620" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="640" y="618" text-anchor="middle" font-weight="700">View performance analytics</text>
+        <ellipse cx="880" cy="620" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="880" y="618" text-anchor="middle" font-weight="700">View session history</text>
+        <ellipse cx="1120" cy="620" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1120" y="618" text-anchor="middle" font-weight="700">Compare performance</text>
+        <ellipse cx="1360" cy="620" rx="110" ry="30" fill="#fff" stroke="#0f172a" stroke-width="1.5" />
+        <text x="1360" y="618" text-anchor="middle" font-weight="700">Generate progress reports</text>
+
+        <!-- Row 4: admin -->
+        <ellipse cx="400" cy="800" rx="105" ry="30" fill="#fff" stroke="#334155" stroke-width="1.5" />
+        <text x="400" y="798" text-anchor="middle" font-weight="700">Configure AI parameters</text>
+        <ellipse cx="640" cy="800" rx="105" ry="30" fill="#fff" stroke="#334155" stroke-width="1.5" />
+        <text x="640" y="798" text-anchor="middle" font-weight="700">Monitor system performance</text>
+        <ellipse cx="880" cy="800" rx="105" ry="30" fill="#fff" stroke="#334155" stroke-width="1.5" />
+        <text x="880" y="798" text-anchor="middle" font-weight="700">Manage user accounts</text>
+        <ellipse cx="1120" cy="800" rx="105" ry="30" fill="#fff" stroke="#334155" stroke-width="1.5" />
+        <text x="1120" y="798" text-anchor="middle" font-weight="700">View system analytics</text>
+
+        <!-- Row 5: support -->
+        <ellipse cx="1000" cy="960" rx="110" ry="28" fill="#fff" stroke="#b45309" stroke-width="1.5" />
+        <text x="1000" y="958" text-anchor="middle" font-weight="700" fill="#78350f">Get help &amp; technical support</text>
+        <ellipse cx="1300" cy="960" rx="110" ry="28" fill="#fff" stroke="#b45309" stroke-width="1.5" />
+        <text x="1300" y="958" text-anchor="middle" font-weight="700" fill="#78350f">Provide system feedback</text>
+      </g>
+
+      <!-- Primary user → use cases (anchor ~176,678) -->
+      <g stroke="#94a3b8" stroke-width="1.35" fill="none" opacity="0.95">
+        <!-- Row1 left x=290 -->
+        <line x1="176" y1="678" x2="290" y2="200" />
+        <line x1="176" y1="678" x2="530" y2="200" />
+        <line x1="176" y1="678" x2="770" y2="200" />
+        <line x1="176" y1="678" x2="1010" y2="200" />
+        <line x1="176" y1="678" x2="1250" y2="200" />
+        <!-- Row2 -->
+        <line x1="176" y1="678" x2="290" y2="410" />
+        <line x1="176" y1="678" x2="530" y2="410" />
+        <line x1="176" y1="678" x2="770" y2="410" />
+        <line x1="176" y1="678" x2="1010" y2="410" />
+        <line x1="176" y1="678" x2="1250" y2="410" />
+        <line x1="176" y1="678" x2="1490" y2="410" />
+        <line x1="176" y1="678" x2="1730" y2="410" />
+        <!-- Row3 -->
+        <line x1="176" y1="678" x2="290" y2="620" />
+        <line x1="176" y1="678" x2="530" y2="620" />
+        <line x1="176" y1="678" x2="770" y2="620" />
+        <line x1="176" y1="678" x2="1010" y2="620" />
+        <line x1="176" y1="678" x2="1250" y2="620" />
+        <!-- Support -->
+        <line x1="176" y1="678" x2="176" y2="920" />
+        <line x1="176" y1="920" x2="890" y2="960" />
+        <line x1="176" y1="920" x2="1190" y2="960" />
+      </g>
+
+      <!-- <<include>> left → right (rows 1–2) -->
+      <g stroke="#1d4ed8" stroke-width="2.4" stroke-dasharray="6 4" fill="none" font-family="Segoe UI, system-ui, sans-serif">
+        <!-- Row1: 400→640→880→1120→1360 -->
+        <line x1="510" y1="200" x2="530" y2="200" marker-end="url(#arr)" />
+        <text x="540" y="192" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="750" y1="200" x2="770" y2="200" marker-end="url(#arr)" />
+        <text x="780" y="192" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="990" y1="200" x2="1010" y2="200" marker-end="url(#arr)" />
+        <text x="1020" y="192" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="1230" y1="200" x2="1250" y2="200" marker-end="url(#arr)" />
+        <text x="1260" y="192" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <!-- Row2 -->
+        <line x1="510" y1="410" x2="530" y2="410" marker-end="url(#arr)" />
+        <text x="540" y="402" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="750" y1="410" x2="770" y2="410" marker-end="url(#arr)" />
+        <text x="780" y="402" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="990" y1="410" x2="1010" y2="410" marker-end="url(#arr)" />
+        <text x="1020" y="402" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="1230" y1="410" x2="1250" y2="410" marker-end="url(#arr)" />
+        <text x="1260" y="402" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="1470" y1="410" x2="1490" y2="410" marker-end="url(#arr)" />
+        <text x="1500" y="402" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+        <line x1="1710" y1="410" x2="1730" y2="410" marker-end="url(#arr)" />
+        <text x="1740" y="402" font-size="8" font-weight="600" fill="#1d4ed8">&lt;&lt;include&gt;&gt;</text>
+      </g>
+
+      <!-- System administrator → admin (left edges of ovals: 295, 535, 775, 1015) -->
+      <g stroke="#334155" stroke-width="1.35" fill="none">
+        <line x1="2505" y1="830" x2="1015" y2="800" />
+        <line x1="2505" y1="830" x2="775" y2="800" />
+        <line x1="2505" y1="830" x2="535" y2="800" />
+        <line x1="2505" y1="830" x2="295" y2="800" />
+      </g>
+
+      <!-- Career service → support + reports (reports: left edge 1250) -->
+      <g stroke="#94a3b8" stroke-width="1.35" fill="none">
+        <line x1="80" y1="1000" x2="890" y2="960" />
+        <line x1="80" y1="1000" x2="1190" y2="960" />
+        <line x1="80" y1="980" x2="1250" y2="620" />
+      </g>
+
+      <!-- External: AI -->
+      <g stroke="#64748b" stroke-width="1.25" stroke-dasharray="6 4" fill="none">
+        <line x1="2528" y1="132" x2="295" y2="800" />
+        <line x1="2528" y1="132" x2="770" y2="410" />
+        <line x1="2528" y1="132" x2="1250" y2="410" />
+        <line x1="2528" y1="132" x2="1490" y2="410" />
+      </g>
+      <!-- External: S3 (upload / parse / history / reports left edges) -->
+      <g stroke="#64748b" stroke-width="1.25" stroke-dasharray="6 4" fill="none">
+        <line x1="2522" y1="966" x2="770" y2="200" />
+        <line x1="2522" y1="966" x2="1010" y2="200" />
+        <line x1="2522" y1="966" x2="1010" y2="620" />
+        <line x1="2522" y1="966" x2="1250" y2="620" />
+      </g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <h2>If you feel lost</h2>
+    <ul>
+      <li><strong>Start:</strong> <strong>left</strong> end of the <strong>top</strong> swimlane — <strong>Register / login</strong> (green “START” badge).</li>
+      <li><strong>Order:</strong> follow <strong>blue dashed «include»</strong> arrows <strong>left → right</strong> in the <strong>User &amp; documents</strong> row, then the same in <strong>Interview practice &amp; feedback</strong>.</li>
+      <li><strong>Primary user (grey lines):</strong> each line means that actor <strong>may participate</strong> in that use case — <strong>not</strong> a path to read in order. Sequence is only the <strong>blue «include»</strong> chains.</li>
+      <li><strong>Analytics / admin bands:</strong> no horizontal include chain — separate goals or staff-only actions.</li>
+    </ul>
+    <h2>Layout notes</h2>
+    <ul>
+      <li>This figure uses <strong>horizontal swimlanes</strong> (rows) so document and practice flows read like a <strong>pipeline</strong> left to right.</li>
+      <li><strong>Primary user</strong> has one association line per use case; crossing lines do not imply order.</li>
+      <li><strong>Administrator</strong> links only to admin use cases.</li>
+      <li>Edit dashed <strong>AI</strong> / <strong>S3</strong> lines if your thesis states NER is fully in-platform.</li>
+    </ul>
+
+    <table class="notation-table" aria-describedby="notation-caption">
+      <caption id="notation-caption">Figure notation — UML use case diagram (CrackInt)</caption>
+      <thead>
+        <tr>
+          <th>Symbol / line</th>
+          <th>UML meaning</th>
+          <th>In this diagram</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Large rectangle (thick border)</td>
+          <td><strong>System boundary</strong> — everything inside is the system under design.</td>
+          <td>Labelled <strong>CrackInt System</strong>.</td>
+        </tr>
+        <tr>
+          <td>Rounded rectangles (grey / yellow / blue tint)</td>
+          <td>Informal <strong>grouping</strong> (packages / swimlanes). Not standard UML; helps readability.</td>
+          <td><strong>User &amp; documents</strong>, <strong>Interview practice</strong>, <strong>Analytics</strong>, <strong>Administration</strong>, <strong>Support</strong> — here as <strong>horizontal bands</strong>.</td>
+        </tr>
+        <tr>
+          <td>Stick figure</td>
+          <td><strong>Actor</strong> — human or external role interacting with the system.</td>
+          <td>Job seeker, Student, Early career, Primary user, Career service professional, System administrator.</td>
+        </tr>
+        <tr>
+          <td>Rectangle with dashed border</td>
+          <td>Often used for <strong>external system</strong> / secondary actor (not a person).</td>
+          <td><strong>AI service</strong> (e.g. OpenAI), <strong>Cloud storage</strong> (e.g. AWS S3).</td>
+        </tr>
+        <tr>
+          <td>Ellipse</td>
+          <td><strong>Use case</strong> — a goal the system supports for an actor.</td>
+          <td>Named actions (e.g. Register / login, Parse résumé). Admin use cases use a darker stroke in this file.</td>
+        </tr>
+        <tr>
+          <td>Solid line, no arrowhead (actor ↔ use case)</td>
+          <td><strong>Association</strong> — “participates in” / “uses”. No direction required in UML for simple associations.</td>
+          <td>Links from <strong>Primary user</strong> (one line per use case) to user-facing ovals; <strong>Career service</strong> to support/reports; <strong>Administrator</strong> to admin ovals.</td>
+        </tr>
+        <tr>
+          <td>Solid line + hollow triangle on the <em>parent</em> side</td>
+          <td><strong>Generalisation</strong> (between actors) — specialised role → more general role.</td>
+          <td>From <strong>Job seeker</strong>, <strong>Student</strong>, <strong>Early career</strong> toward <strong>Primary user</strong>.</td>
+        </tr>
+        <tr>
+          <td><strong>Blue</strong> dashed line + arrow + <code>&lt;&lt;include&gt;&gt;</code> (this file)</td>
+          <td><strong>Include</strong> — mandatory sub-steps: in this export read <strong>left → right</strong> in the <strong>documents</strong> and <strong>practice</strong> rows.</td>
+          <td>Rows 1–2 only. Drawn <strong>on top</strong> of grey associations.</td>
+        </tr>
+        <tr>
+          <td><strong>Grey</strong> solid lines (Primary user → each oval)</td>
+          <td><strong>Association</strong> — Primary user <em>may</em> participate in that use case. <strong>One line = one link</strong>; crossing lines do <strong>not</strong> mean sequence.</td>
+          <td>Read <strong>order of work</strong> only from <strong>blue «include»</strong> (start at <strong>Register / login</strong>).</td>
+        </tr>
+        <tr>
+          <td>Dashed line + open arrow + stereotype <code>&lt;&lt;include&gt;&gt;</code> (standard UML)</td>
+          <td>Same as include; colour is optional — some diagrams use black.</td>
+          <td>In this HTML export, includes are <strong>blue</strong> for clarity.</td>
+        </tr>
+        <tr>
+          <td>«include» (guillemets)</td>
+          <td><strong>Stereotype</strong> — name of the relationship type in UML.</td>
+          <td>Means “mandatory sub-behaviour” in the flow; not optional.</td>
+        </tr>
+        <tr>
+          <td><em>Not drawn here:</em> <code>&lt;&lt;extend&gt;&gt;</code></td>
+          <td><strong>Extend</strong> — optional extra behaviour under a condition (optional branch).</td>
+          <td>Add only if you model optional paths (e.g. “get hint” only sometimes).</td>
+        </tr>
+        <tr>
+          <td>Dashed line (grey) to external box</td>
+          <td>Common convention: <strong>dependency</strong> / <strong>communication</strong> with an external system (not a human actor).</td>
+          <td><strong>AI service</strong> and <strong>Cloud storage</strong> links to use cases that call APIs or store files. Your <strong>trained NER model</strong> is <em>inside</em> CrackInt — it is not this actor; it realises <strong>Parse résumé</strong>.</td>
+        </tr>
+        <tr>
+          <td>Support stub (grey)</td>
+          <td>Same <strong>association</strong>; short vertical + branches to the two support ovals.</td>
+          <td>From Primary user to <strong>Get help</strong> / <strong>Provide feedback</strong>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
