@@ -28,7 +28,7 @@
 | Micro F1 (test)              | **0.83** (P 0.90, R 0.77)                             |
 | Per-entity F1 (if in thesis) | see Ch 7 **Table 7.2** / notebook `classification_report` |
 | Model / pipeline             | Word2Vec + BiLSTM-CRF (résumé NER); `MAX_LEN` **768** |
-| Training notebook (Appendix A) | exact `.ipynb` filename as submitted (see repo)     |
+| Training notebook (Appendix G) | exact `.ipynb` filename as submitted (see repo)     |
 
 
 ---
@@ -39,13 +39,13 @@
 | Field                     | Value                                 |
 | ------------------------- | ------------------------------------- |
 | Approach                  | Word2Vec + BiLSTM + CRF (same recipe as résumé NER; `MAX_LEN` **512**) |
-| Dataset / file (frozen)   | e.g. `merged_job_poster_ner_full_varied.json` — **Appendix A** |
+| Dataset / file (frozen)   | e.g. `merged_job_poster_ner_full_varied.json` — **Appendix G** |
 | Corpus size               | **6327** postings                     |
 | Train / val / test        | **5061 / 632 / 634** (seed 42)       |
 | Micro F1 (validation)     | **~0.89**                             |
 | Micro F1 (test)           | **~0.85** (seqeval **~0.854**)       |
 | Per-entity F1             | see Ch 7 **Table 7.4**               |
-| Notebook (Appendix A)     | job-poster training `.ipynb` as submitted |
+| Notebook (Appendix G)     | job-poster training `.ipynb` as submitted |
 | Fallback behaviour in app | résumé NER if job model not loaded    |
 
 

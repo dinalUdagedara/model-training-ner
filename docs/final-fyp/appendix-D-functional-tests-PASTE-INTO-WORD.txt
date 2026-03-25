@@ -1,0 +1,123 @@
+APPENDIX D: FUNCTIONAL TEST CASES AND EXECUTION RESULTS
+(Word: apply your Appendix heading style to the line above. Delete this note line.)
+
+HOW TO PASTE TABLES IN WORD
+1. Copy TABLE D.1 START through TABLE D.1 END (FT-01 to FT-17; five columns).
+2. Paste into Word. Insert > Table > Convert Text to Table > Separate at Tabs.
+3. Paste TABLE D.1b for Actual observations (one row per test).
+4. Optional: TABLE D.2 for edge tests FT-18 to FT-20 (Google, file size, S3).
+5. If a row wraps too much: reduce font to 9 pt or shorten Scenario text in Word.
+
+Replace [brackets] and blank cells after you run tests. Align FR IDs with Chapter 04 (SRS) and pass rates with Chapter 08 Section 8.7.
+
+
+D.1 Introduction
+
+This appendix documents black-box functional tests derived from the Software Requirements Specification (Chapter 04), executed against the CrackInt prototype (FastAPI backend, Next.js frontend). Tests verify integration between the browser, REST API, database, NER checkpoints (Appendix G), and optional LLM features.
+
+Testing was performed manually in the same environment used for demonstration (local or deployment URL, version and date: [e.g. 2025-03-20]). Where an external provider is required (OpenAI for session question generation and answer evaluation), outcomes are recorded as Pass, Partial (degraded but documented behaviour, for example HTTP 503 when the key is missing), or Fail. The overall pass rate for the listed core tests is [X] out of [Y] = [Z] percent, calculated on the Pass rows in Table D.1 (exclude Partial from the numerator if you report a strict pass rate, or define both strict and inclusive rates in a footnote; be consistent with Chapter 08 Section 8.7).
+
+
+D.2 Traceability and method
+
+Each test maps to one or more functional requirement (FR) identifiers from the SRS. Preconditions state what must be true before the test (for example registered user, valid JWT). Steps summarise UI or API actions; expected states the acceptance criterion; actual records what was observed (HTTP code, key JSON fields, or UI state). Evidence (Swagger responses, screenshots) may be placed in Section D.3 if the module requires it.
+
+
+Table D.1 — Functional test summary (FT-01 to FT-17). FT-01 to FT-09 are core (Chapter 08 Table 8.3). FT-10 to FT-17 are extended API tests.
+
+TABLE D.1 START
+Test ID	FR(s)	Scenario (preconditions and main steps)	Expected outcome	Pass / Partial / Fail
+FT-01	FR01	Register: submit valid email and password (no prior account).	User created; success or redirect to login.	
+FT-02	FR02	Login; protected GET without JWT then with Bearer (user from FT-01).	Denied without token; success with valid JWT.	
+FT-03	FR04	Logged in; NER per Appendix G. POST résumé extract (PDF or text).	HTTP 200; JSON includes NAME EMAIL SKILL etc.	
+FT-04	FR05	Saved résumé. PATCH entities; GET same resource.	Updates persisted.	
+FT-05	FR06 to FR07	Logged in if required. POST job extract (text or PDF).	HTTP 200; job entities or fallback.	
+FT-06	FR08 to FR11	Logged in; optional OPENAI_API_KEY. Session; chat/message; evaluate if LLM on.	Messages stored; feedback when LLM on. Partial OK if 503 without key.	
+FT-07	FR14	At least one session. GET sessions; refresh UI.	List matches DB; survives refresh.	
+FT-08	(skill-gap)	Résumé and job IDs. POST skill-gap or match (your route).	JSON skill-gap structure.	
+FT-09	FR15	Logged in. GET readiness or home-summary.	Non-error dashboard payload.	
+FT-10	NFR13	No auth. GET /api/v1/health or /health per deployment.	HTTP 200; service up.	
+FT-11	FR18	Logged in. GET current user profile (e.g. /api/v1/auth/me).	HTTP 200; user payload matches account.	
+FT-12	FR18	Logged in. GET list of résumés for user.	HTTP 200; list structure (may be empty).	
+FT-13	FR06 to FR07	Logged in. Create job posting POST then GET by id or list.	Created record persisted; retrieval matches.	
+FT-14	FR15	Logged in. GET readiness trend (e.g. /users/me/readiness/trend).	HTTP 200; trend payload or empty state.	
+FT-15	(extra)	Logged in; CV_SCORING_ENABLED and key if testing. POST CV score route.	Score payload or 403/503. Partial without LLM.	
+FT-16	(extra)	Logged in; cover letter enabled. GET or POST cover letter per API.	Documented response or 403/503. Partial without LLM.	
+FT-17	NFR13	Browser: open /api/v1/docs Swagger.	OpenAPI UI loads; routes listed.	
+TABLE D.1 END
+
+Table D.1b — Actual observations (one row per test)
+
+TABLE D.1b START
+Test ID	Actual observed (HTTP, key JSON, or UI)	Notes
+FT-01		
+FT-02		
+FT-03		
+FT-04		
+FT-05		
+FT-06		
+FT-07		
+FT-08		
+FT-09		
+FT-10		
+FT-11		
+FT-12		
+FT-13		
+FT-14		
+FT-15		
+FT-16		
+FT-17		
+TABLE D.1b END
+
+Pass rate after execution (use one denominator consistently in Chapter 08):
+
+Core only FT-01 to FT-09: Strict _____ out of 9 = _____ percent. Inclusive _____ out of 9 = _____ percent.
+
+Extended FT-10 to FT-17: _____ out of 8 = _____ percent.
+
+All FT-01 to FT-17 combined: _____ out of 17 = _____ percent.
+
+Use the same figures in Chapter 08 Section 8.7.
+
+
+Table D.2 — Optional edge or environment tests (add only if you document them)
+
+TABLE D.2 START
+Test ID	FR(s)	Scenario	Expected outcome	Pass / Partial / Fail
+FT-18	FR03	Upload résumé at or near MAX_UPLOAD_SIZE_MB boundary.	Handled per config (200 or clear 4xx).	
+FT-19	Google OAuth	POST Google auth only if GOOGLE_CLIENT_ID set.	Token exchange or documented N/A.	
+FT-20	(extra)	S3 image upload only if AWS bucket configured.	200 or documented 503 when off.	
+TABLE D.2 END
+
+
+D.3 Evidence (optional)
+
+If the module asks for screenshots or raw JSON:
+
+D.3.1  Swagger UI: successful FT-03 response (redact tokens).
+
+D.3.2  Session chat: FT-06 message list after two turns (redact personal data).
+
+D.3.3  Error handling: HTTP 401 without JWT for FT-02.
+
+Label each figure Figure D.1, Figure D.2, and so on. Reference them from Table D.1 in an Evidence column or footnote if preferred.
+
+
+D.4 Environment and limitations
+
+Record here so Appendix D matches Chapter 08.
+
+Backend URL: [e.g. http://localhost:8000]
+
+Frontend URL: [e.g. http://localhost:3000]
+
+Database: PostgreSQL [version]
+
+NER: RESUME_NER_LOAD_DIR and JOB_POSTER_NER_LOAD_DIR set — [Yes or No]
+
+LLM: OPENAI_API_KEY set — [Yes or No]; model name [e.g. gpt-4o-mini]
+
+Known limitations: LLM-dependent tests (FT-06) may be Partial without provider credentials; this does not imply failure of non-LLM functional requirements.
+
+
+Final check: Table D.1 matches Chapter 08 Table 8.3; pass rate matches Section 8.7.

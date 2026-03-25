@@ -1,0 +1,97 @@
+Appendix H: Supplementary code listings — COMPLETE OUTLINE FOR WORD
+====================================================================
+Paste headings and intro paragraphs below into your thesis in order. Full code blocks and Word caption steps: appendix-H-EXACT-CODE-AND-WORD-STEPS.txt (same folder).
+
+NUMBERING (read once)
+---------------------
+• Subsection headings in this appendix: H.1, H.2, H.3, … (Introduction, then each major topic).
+• Individual code blocks: use Insert Caption → Label “Listing” → titles **Listing H.1** through **Listing H.11** (sequence of listings inside Appendix H; not the same number as subsection H.2).
+• So: subsection **H.2** contains **Listing H.1**, **Listing H.2**, **Listing H.3**, **Listing H.4** — that is normal.
+
+--------------------------------------------------------------------------------
+Appendix H: Supplementary code listings
+--------------------------------------------------------------------------------
+
+H.1 Introduction
+
+This appendix provides supplementary code excerpts supporting Chapter 7. Listings are formatted in a monospaced font; line breaks follow the submission snapshot. Full source files are included in the project submission archive. Third-party or tutorial-derived fragments are cited in Chapter 7 and in the References section. Chapter 7 keeps short “Listing 7.x” snippets; this appendix carries longer excerpts for examiners who want implementation detail without cluttering the main chapter.
+
+--------------------------------------------------------------------------------
+
+H.2 Résumé NER — Word2Vec + BiLSTM + CRF (training notebook)
+
+The following listings are taken from the submitted résumé NER training notebook (exact filename in Appendix G), implementing the frozen run described in Chapter 7 (Tables 7.1–7.2). They show the neural architecture, training loop with early stopping, seqeval-based evaluation, and word-level inference used before hybrid rules are applied in the backend.
+
+Under this subsection, paste four captioned code blocks in order:
+
+  Listing H.1 — BiLSTMCRF model class (embeddings, BiLSTM, CRF loss and decode)
+  Listing H.2 — Training loop (gradient clipping, LR scheduler, validation F1, early stopping)
+  Listing H.3 — Entity-level evaluation (seqeval classification_report and F1)
+  Listing H.4 — Inference — parse_resume_path2 (word-level tags and entity spans)
+
+Source file: fyp/BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb (align with Appendix G).
+
+--------------------------------------------------------------------------------
+
+H.3 Job-poster NER — Word2Vec + BiLSTM + CRF (training notebook)
+
+This subsection shows the parallel job-posting pipeline (Chapter 7 §7.3.2, Tables 7.3–7.4). The BiLSTM-CRF class matches résumé NER; the excerpt below highlights job-specific training setup (weighted sampling over job-entity BIO tags).
+
+Under this subsection, paste:
+
+  Listing H.5 — WeightedRandomSampler (job entity BIO tags; batch sizes)
+
+Source file: fyp/job-poster-ner/BiLSTM_CRF_Job_Poster_NER_Path2_FYP.ipynb (align with Appendix G).
+
+--------------------------------------------------------------------------------
+
+H.4 Data preparation — label harmonisation and corpus merge
+
+Offline scripts consolidate heterogeneous résumé sources into a unified six-type schema and merge JSONL corpora used in the training notebook.
+
+Under this subsection, paste:
+
+  Listing H.6 — Label harmonisation — Dotin-to-unified mapping table (prepare_data.py)
+  Listing H.7 — Corpus merge — JSONL concatenation (merge_resumes.py)
+
+Source files: resume_ner_pipeline/prepare_data.py, resume_ner_pipeline/merge_resumes.py.
+
+--------------------------------------------------------------------------------
+
+H.5 Backend — CrackInt (FastAPI)
+
+The following excerpts illustrate hybrid résumé extraction, JWT authentication, and the LLM session call pattern described in Chapter 7 (§7.3.3–7.3.5). Paste from your submitted CrackInt repository so line breaks match the archive; names must match your actual modules.
+
+Under this subsection, paste:
+
+  Listing H.8 — Hybrid résumé extraction — parse_resume_hybrid (rules + neural NER)
+  Listing H.9 — Authentication — get_current_user (Bearer JWT dependency)
+  Listing H.10 — LLM session — chat.completions pattern (session agent)
+
+Typical paths: app/ml/resume_ner.py, app/…/deps.py, app/agents/… (your layout).
+
+--------------------------------------------------------------------------------
+
+H.6 Frontend — optional
+
+If required, include one short excerpt showing how the Next.js client sends a Bearer token to a protected API (Chapter 7 §7.3.6 / §7.4.2).
+
+Under this subsection, paste:
+
+  Listing H.11 — API client — authenticated GET (TypeScript fetch pattern)
+
+Source: your submitted frontend (e.g. lib/api or a dashboard page).
+
+--------------------------------------------------------------------------------
+
+Checklist before submission
+---------------------------
+[ ] Subsections H.1–H.6 in order; Introduction first.
+[ ] Under H.2: Listings H.1–H.4 — pasted monospaced code OR sharp screenshots (see PART 1B in appendix-H-EXACT-CODE-AND-WORD-STEPS.txt).
+[ ] Under H.3: Listing H.5 (omit H.3 subsection only if faculty allows).
+[ ] Under H.4: Listings H.6–H.7.
+[ ] Under H.5: Listings H.8–H.10 from CrackInt.
+[ ] Under H.6: Listing H.11 if included.
+[ ] No secrets in code or screenshots; variable names only for keys in Appendix G.
+[ ] Print/PDF preview: every image readable at final size.
+[ ] Update Table of Contents after inserting all headings.

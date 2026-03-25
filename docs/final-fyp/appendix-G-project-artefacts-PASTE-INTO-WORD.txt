@@ -1,0 +1,33 @@
+Appendix G: Project artefacts, datasets, and environment
+
+[G.1 Introduction — paste:]
+
+This appendix lists the frozen dataset filenames, training notebooks, and exported model artefacts associated with the submitted CrackInt project. It avoids internal development machine paths; filenames match the submission archive.
+
+G.1 Résumé NER (frozen run)
+
+• Dataset (line-delimited JSON): merged_1030_plus_all_llm_plus_proper.json
+• Corpus size: 4738 résumés; train / validation / test: 3790 / 473 / 475 (seed 42)
+• Entity types: NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, EXPERIENCE
+• Training notebook (submitted .ipynb): [INSERT EXACT FILENAME AS ON USB/SUBMISSION]
+• Exported artefacts (typical): word2vec.model, bilstm_crf_state.pt, ner_config.json
+• MAX_LEN (word tokens): 768 [align with ner_config.json and deployment]
+
+G.2 Job-poster NER (frozen run)
+
+• Merged dataset file: merged_job_poster_ner_full_varied.json [or exact submitted name]
+• Corpus size: 6327 postings; train / validation / test: 5061 / 632 / 634 (seed 42)
+• Training notebook (submitted .ipynb): [INSERT EXACT FILENAME]
+• Exported artefacts: as per résumé NER pattern; MAX_LEN: 512
+
+G.3 Application submission
+
+• Full source: [repository URL or zip name as submitted to IIT]
+• API documentation: OpenAPI/Swagger at /docs when running the backend locally [if required by module]
+
+G.4 Environment variables (names only — do not print secret values)
+
+• OPENAI_API_KEY — LLM session features
+• DATABASE_URL — PostgreSQL
+• RESUME_NER_LOAD_DIR / JOB_POSTER_NER_LOAD_DIR — NER checkpoint directories
+• [Add others your README uses; never paste real keys]

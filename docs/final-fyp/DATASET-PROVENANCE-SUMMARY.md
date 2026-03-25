@@ -1,6 +1,6 @@
 # Dataset provenance summary (public + generated)
 
-Use this as the source when writing dataset provenance in Chapters 2, 7, 8, and Appendix A.
+Use this as the source when writing dataset provenance in Chapters 2, 7, 8, and Appendix G (project artefacts).
 
 ---
 
@@ -67,4 +67,4 @@ Use this as the source when writing dataset provenance in Chapters 2, 7, 8, and 
   - **Public datasets** (external sources),
   - **Project-generated synthetic data** (LLM-generated),
   - **Merged curated training corpus** (final run file and counts).
-- In Appendix A, list exact frozen filenames used for the final run.
+- In Appendix G, list exact frozen filenames used for the final run.
