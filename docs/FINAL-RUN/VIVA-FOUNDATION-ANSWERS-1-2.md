@@ -91,24 +91,54 @@ These are common examiner-style pressure questions related to novelty, different
 ## Q1) "How is this different from just using ChatGPT?"
 
 **Answer:**  
-ChatGPT is a general-purpose conversational model, while my system is a **structured, domain-specific platform** designed for interview preparation workflows.  
-The difference is not only model usage, but **system integration and workflow orchestration**:
+The key difference is that ChatGPT is a **general conversational endpoint**, while CrackInt is an **engineered interview-preparation system** with explicit workflow, state, and evaluation logic.
 
-- resume and job extraction pipelines are integrated into the platform workflow,
-- user/session context is persisted and reused,
-- skill-gap and readiness logic are tied to platform data structures,
-- chat interactions are session-aware and linked to measurable progression,
-- feature controls and fallbacks are engineered for application reliability.
+If a user only uses ChatGPT directly, they still need to manually:
 
-So the contribution is not "a prompt wrapper"; it is a full-stack, workflow-driven system with measurable and testable components.
+- parse and structure resume/job data,
+- maintain session history and progression context,
+- calculate skill gaps and readiness consistently,
+- enforce validations, ownership, and persistence behavior,
+- handle reliability/fallback behavior when optional AI features fail.
+
+In my project, those are implemented as platform capabilities, not manual user effort.  
+The LLM is one component inside a larger architecture; it is not the product itself.
+
+So the contribution is:
+
+- **system design** (frontend-backend-data-model integration),
+- **workflow orchestration** (extract -> analyze -> practice -> evaluate),
+- **traceable state** (user/session/job/resume linked data),
+- **testable behavior** (API contracts, validations, deterministic service logic),
+- **controlled AI usage** (feature flags, optional fallbacks, scoped failure impact).
+
+In short: ChatGPT provides model intelligence; CrackInt provides **application intelligence plus domain workflow** around that model.
+
+**If examiner pushes ("but still you're using OpenAI, right?"):**  
+Yes, OpenAI-backed components are used for core intelligent flows in this system, including interview question generation, answer analysis/feedback, and CV analysis features. The project value is how these AI capabilities are engineered into a full backend workflow with validation, persistence, session context, and measurable end-to-end behavior.
 
 ## Q2) "Are you sure there are no similar applications in the world?"
 
 **Answer:**  
-I do not claim that no similar tools exist globally. That would be too absolute.  
-My claim is more precise: based on my reviewed literature and platform analysis, I identified a **specific integration gap** in the solutions I evaluated, especially around unified resume-aware + job-aware + session-linked feedback flow within my defined scope.
+I do **not** make an absolute claim that no similar application exists worldwide.  
+That claim would be academically unsafe and impossible to prove completely.
 
-So the novelty claim is **contextual and evidence-bounded**, not a universal claim that no one has ever built anything similar.
+My novelty statement is deliberately bounded:
+
+- within my reviewed literature and evaluated platforms,
+- within my defined project scope and evaluation criteria,
+- I identified a practical integration gap: unified resume-aware + job-aware + session-linked preparation and feedback workflow.
+
+So I frame originality as **evidence-bounded integration novelty**, not "global first-ever invention."
+
+What I can defend confidently is:
+
+- I implemented a complete, working integration of these components in one system,
+- I evaluated it with measurable model/system evidence,
+- and I critically documented limitations and future improvements.
+
+**If examiner pushes ("so this is not unique then?"):**  
+I would say: in an FYP, originality does not mean proving no one in the world has done something similar. My originality is in how I combined the system design, built it in detail, and tested/evaluated it properly within my project scope.
 
 ## Q3) "If similar apps exist, what exactly is novel in your work?"
 
