@@ -1,0 +1,427 @@
+================================================================================
+APPENDIX H — WORD STEPS, LISTING VS SCREENSHOT, AND EXACT CODE TO PASTE
+================================================================================
+Companion outline (subsection titles H.1–H.6 + intro text to paste): appendix-H-code-listings-PASTE-INTO-WORD.txt
+Source files: fyp/BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb, fyp/job-poster-ner/BiLSTM_CRF_Job_Poster_NER_Path2_FYP.ipynb, resume_ner_pipeline/*.py.
+Backend excerpts match chapter-07-implementation-DRAFT.md — paste from YOUR CrackInt repo if line numbers differ.
+
+--------------------------------------------------------------------------------
+COMPLETE STRUCTURE — SUBSECTION HEADINGS vs LISTING CAPTIONS
+--------------------------------------------------------------------------------
+Use these subsection headings (Heading 2 under “Appendix H”) in Word, in this order:
+
+  H.1  Introduction
+  H.2  Résumé NER — Word2Vec + BiLSTM + CRF (training notebook)
+  H.3  Job-poster NER — Word2Vec + BiLSTM + CRF (training notebook)
+  H.4  Data preparation — label harmonisation and corpus merge
+  H.5  Backend — CrackInt (FastAPI)
+  H.6  Frontend — optional
+
+Under each subsection, insert the code blocks whose captions are listed here (Insert Caption → Listing):
+
+  H.1  Introduction only — no code; use the paragraph from appendix-H-code-listings-PASTE-INTO-WORD.txt
+  H.2  →  Listing H.1, Listing H.2, Listing H.3, Listing H.4
+  H.3  →  Listing H.5
+  H.4  →  Listing H.6, Listing H.7
+  H.5  →  Listing H.8, Listing H.9, Listing H.10
+  H.6  →  Listing H.11 (optional)
+
+Note: “H.2” is a section heading; “Listing H.2” is the second code listing (training loop). The numbers mean different things.
+
+--------------------------------------------------------------------------------
+INDEX — USE THESE AS WORD CAPTIONS (Listing H.1 … Listing H.11)
+--------------------------------------------------------------------------------
+Paste the caption text after “Listing H.x —” exactly as below (adjust only if your faculty uses “Figure” or drops “H.”).
+
+Résumé NER (training notebook — BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb)
+  Listing H.1 — BiLSTMCRF model class (embeddings, BiLSTM, CRF loss and decode)
+  Listing H.2 — Training loop (gradient clipping, LR scheduler, validation F1, early stopping)
+  Listing H.3 — Entity-level evaluation (seqeval classification_report and F1)
+  Listing H.4 — Inference — parse_resume_path2 (word-level tags and entity spans)
+
+Job-poster NER (training notebook — BiLSTM_CRF_Job_Poster_NER_Path2_FYP.ipynb)
+  Listing H.5 — WeightedRandomSampler (job entity BIO tags; batch sizes)
+
+Data preparation (offline scripts)
+  Listing H.6 — Label harmonisation — Dotin-to-unified mapping table (prepare_data.py)
+  Listing H.7 — Corpus merge — JSONL concatenation (merge_resumes.py)
+
+Backend — CrackInt (paste from your submitted app; match chapter-07)
+  Listing H.8 — Hybrid résumé extraction — parse_resume_hybrid (rules + neural NER)
+  Listing H.9 — Authentication — get_current_user (Bearer JWT dependency)
+  Listing H.10 — LLM session — chat.completions pattern (session agent)
+
+Frontend — optional
+  Listing H.11 — API client — authenticated GET (TypeScript fetch pattern)
+
+--------------------------------------------------------------------------------
+PART 1 — CODE AS TEXT vs SCREENSHOT
+--------------------------------------------------------------------------------
+
+PASTED TEXT (monospaced) — pros: searchable, accessible, sharp when printed. Use PART 3 below if you paste.
+
+SCREENSHOTS — acceptable for Appendix H if you follow PART 1B so printed PDFs stay readable. Many students use IDE/Colab captures; examiners care that the snippet is legible and labelled, not whether it was typed in Word.
+
+OPTIONAL HYBRID:
+  • Screenshot of the code + one line in the caption: “Source: BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb, cells §5–6.”
+  • Chapter 7 / tables remain the authority for metrics.
+
+--------------------------------------------------------------------------------
+PART 1B — CHECKLIST: SCREENSHOTS AS “LISTINGS” IN WORD
+--------------------------------------------------------------------------------
+
+Before capture:
+  • Increase editor or browser zoom (e.g. 125–150%) so 10–11 pt code reads clearly after Word scales the image.
+  • Use a light theme or high-contrast theme; avoid dark IDE on grey paper unless your template is dark.
+  • Crop tightly: only the relevant function/cell; remove file tree, minimap, and unrelated tabs.
+  • Redact paths, API keys, emails — blur or replace with [REDACTED].
+
+Image technical:
+  • Prefer PNG over highly compressed JPEG (avoids fuzzy text).
+  • Width: after Insert Picture in Word, set width to ~14–15 cm (or “full text width”); check Print Preview — if text is fuzzy, recapture at higher zoom.
+
+In Word:
+  • Insert → Pictures → place under the correct subsection (H.2, H.5, etc.).
+  • Still use Insert Caption: either Label “Listing” (Listing H.1 — …) OR your faculty’s “Figure” for image-based evidence — be consistent for all H.x.
+  • Optional: thin border (Format Picture → Line) so the crop edge is clean on white pages.
+
+Last step:
+  • Print or export PDF and read every screenshot on paper or at 100% zoom; if any line is hard to read, redo that capture.
+
+--------------------------------------------------------------------------------
+PART 2 — HOW TO CREATE A “LISTING” IN MICROSOFT WORD
+--------------------------------------------------------------------------------
+
+(A) Create a custom caption label “Listing” (once per document)
+  1. Put your cursor where the first code block will go (or after a heading “Listing H.1 — …”).
+  2. References tab → Insert Caption.
+  3. Label: if you only see “Figure”, “Table”, “Equation” → click “New Label…” → type: Listing → OK.
+  4. Position: usually “Above selected item” for listings (like tables) OR “Below” — pick one and use it for all H.x.
+  5. Numbering: 1, 2, 3… (Word may show “Listing 1”; you can type “H.” manually in the caption text if your school wants “Listing H.1” — see (D).)
+
+(B) Paste code in a readable way (if not using screenshots)
+  1. Paste from VS Code / notebook as plain text (Right-click → Keep Text Only in Word if formatting looks wrong).
+  2. Select the code block → Home → font Consolas (or Courier New), size 9 or 10 pt.
+  3. Optional: single-cell table (Insert → Table → 1×1), paste code inside, turn off auto spellcheck for that paragraph (Review → Language → Do not check).
+
+(B2) Insert a screenshot instead of pasted code
+  1. Insert → Pictures → This Device (your PNG).
+  2. Resize so the code is readable at print size (see PART 1B).
+  3. Caption the image the same way as (C): “Listing H.1 — BiLSTMCRF model class …” (or Figure, per faculty rules).
+
+(C) Attach the caption to the block
+  1. Click the image or the code paragraph or select the table.
+  2. References → Insert Caption → Label: Listing → OK.
+  3. Edit caption text to read e.g. “Listing H.1 — BiLSTMCRF model class (résumé NER notebook)”.
+
+(D) If your template requires “H.1” not “Listing 1”
+  • Use multilevel numbering linked to Appendix H, OR type captions manually: “Listing H.1 — …” and turn off auto caption for that entry, OR use Insert Caption and edit the field to add “H.” prefix per department rules.
+
+(E) Continued listings
+  • If code spans two pages: end first page normally; on the next page start with “Listing H.3 (continued)” as plain text, then more code — or use one caption for the whole block if it fits department rules.
+
+--------------------------------------------------------------------------------
+PART 3 — EXACT CODE TO PASTE (copy from below into Word)
+--------------------------------------------------------------------------------
+
+--- Listing H.1 — BiLSTMCRF model class (embeddings, BiLSTM, CRF loss and decode)
+Source: fyp/BiLSTM_CRF_Resume_NER_Path2_FYP.ipynb — section “## 5. Model (BiLSTM-CRF)”
+
+import torch.nn as nn
+from torchcrf import CRF
+
+class BiLSTMCRF(nn.Module):
+    def __init__(self, vocab_size, embed_dim, hidden_dim, num_labels, embedding_matrix=None, dropout=0.35):
+        super().__init__()
+        self.embed = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
+        if embedding_matrix is not None:
+            self.embed.weight.data.copy_(torch.from_numpy(embedding_matrix))
+            self.embed.weight.requires_grad = True
+        self.lstm = nn.LSTM(embed_dim, hidden_dim // 2, num_layers=2, bidirectional=True, batch_first=True, dropout=0.2)
+        self.drop = nn.Dropout(dropout)
+        self.fc = nn.Linear(hidden_dim, num_labels)
+        self.crf = CRF(num_labels, batch_first=True)
+
+    def forward(self, input_ids, mask, labels=None):
+        x = self.embed(input_ids)
+        x = self.drop(x)
+        out, _ = self.lstm(x)
+        emissions = self.fc(self.drop(out))
+        mask_b = mask.bool()
+        if labels is not None:
+            labels = labels.clone().masked_fill(labels == -100, 0)
+            return -self.crf(emissions, labels, mask=mask_b, reduction="mean")
+        return self.crf.decode(emissions, mask=mask_b)
+
+
+--- Listing H.2 — Training loop (gradient clipping, LR scheduler, validation F1, early stopping)
+Source: same notebook — section “## 6. Training”
+(You may shorten the run_validation body in Word if your page limit is tight; keep the for-epoch loop and early stopping.)
+
+from seqeval.metrics import f1_score
+from torch.optim.lr_scheduler import LinearLR, SequentialLR, ConstantLR
+
+# … run_validation() as in notebook …
+
+EPOCHS = 120
+PATIENCE = 25
+warmup_epochs = max(2, EPOCHS // 15)
+scheduler = SequentialLR(optimizer, [
+    ConstantLR(optimizer, factor=0.1, total_iters=warmup_epochs),
+    LinearLR(optimizer, start_factor=1.0, end_factor=0.15, total_iters=EPOCHS - warmup_epochs),
+], milestones=[warmup_epochs])
+best_f1 = 0.0
+best_state = None
+epochs_no_improve = 0
+
+for epoch in range(EPOCHS):
+    model.train()
+    total = 0
+    for ids, mask, lab in train_loader:
+        ids, mask, lab = ids.to(device), mask.to(device), lab.to(device)
+        optimizer.zero_grad()
+        loss = model(ids, mask, lab)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 2.0)
+        optimizer.step()
+        total += loss.item()
+    scheduler.step()
+    val_f1 = run_validation(model, val_loader, device, ID2LABEL, NUM_LABELS)
+    if val_f1 > best_f1:
+        best_f1 = val_f1
+        best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+        epochs_no_improve = 0
+    else:
+        epochs_no_improve += 1
+    print(f"Epoch {epoch+1}/{EPOCHS} Loss: {total/len(train_loader):.4f} Val F1: {val_f1:.4f} Best: {best_f1:.4f}")
+    if epochs_no_improve >= PATIENCE:
+        print(f"Early stopping (no improvement for {PATIENCE} epochs).")
+        break
+if best_state is not None:
+    model.load_state_dict(best_state)
+    print("Restored best checkpoint.")
+
+
+--- Listing H.3 — Entity-level evaluation (seqeval classification_report and F1)
+Source: same notebook — section “## 8. Evaluation”
+
+from seqeval.metrics import classification_report, f1_score
+
+model.eval()
+true_all, pred_all = [], []
+with torch.no_grad():
+    for ids, mask, labels in val_loader:
+        ids, mask = ids.to(device), mask.to(device)
+        preds = model(ids, mask)
+        for b in range(ids.size(0)):
+            m, labs = mask[b].cpu(), labels[b].cpu()
+            pred_b = preds[b]
+            tlist, plist = [], []
+            for i in range(m.size(0)):
+                if m[i].item() == 0:
+                    break
+                if labs[i].item() == -100:
+                    continue
+                tlist.append(ID2LABEL[labs[i].item()])
+                p = ID2LABEL[pred_b[i]] if i < len(pred_b) and pred_b[i] < NUM_LABELS else "O"
+                plist.append(p)
+            if tlist and plist:
+                true_all.append(tlist)
+                pred_all.append(plist)
+
+print("--- Validation ---")
+print(classification_report(true_all, pred_all, zero_division=0))
+print("Val F1:", f1_score(true_all, pred_all, zero_division=0))
+
+# Test loader loop follows similarly in notebook (test_sents / test_loader) — paste that block if you need test-set listing.
+
+
+--- Listing H.4 — Inference — parse_resume_path2 (word-level tags and entity spans)
+Source: same notebook — section “## 9. Inference”
+
+def parse_resume_path2(text, word2id, model, device, id2label, max_len=768):
+    words = re.findall(r"\S+", text)[:max_len]
+    if not words:
+        return [], [], {}
+    ids = torch.tensor([[word2id.get(w, word2id["<UNK>"]) for w in words]], dtype=torch.long).to(device)
+    mask = torch.ones_like(ids, dtype=torch.long).to(device)
+    model.eval()
+    with torch.no_grad():
+        preds = model(ids, mask)
+    pred_tags = [id2label.get(preds[0][i], "O") for i in range(len(preds[0]))]
+    entities = {}
+    i = 0
+    while i < len(words):
+        tag = pred_tags[i] if i < len(pred_tags) else "O"
+        if tag.startswith("B-"):
+            entity_type = tag[2:]
+            phrase = [words[i]]
+            i += 1
+            while i < len(words) and i < len(pred_tags) and pred_tags[i] == f"I-{entity_type}":
+                phrase.append(words[i])
+                i += 1
+            raw = " ".join(phrase)
+            cleaned = raw.rstrip(".,;:")
+            entities.setdefault(entity_type, []).append(cleaned)
+        else:
+            i += 1
+    return words, pred_tags, entities
+
+
+--- Listing H.5 — WeightedRandomSampler (job entity BIO tags; batch sizes)
+Source: fyp/job-poster-ner/BiLSTM_CRF_Job_Poster_NER_Path2_FYP.ipynb — dataset / loader cell
+(Use this instead of duplicating BiLSTMCRF if H.1 already shows the same class.)
+
+MAX_LEN = 512
+train_ds = WordNERDataset(train_sents, train_labels, word2id, MAX_LEN)
+val_ds = WordNERDataset(val_sents, val_labels, word2id, MAX_LEN)
+
+entity_tags = {"B-SALARY", "I-SALARY", "B-EDUCATION_REQUIRED", "I-EDUCATION_REQUIRED", "B-JOB_TYPE", "I-JOB_TYPE",
+               "B-EXPERIENCE_REQUIRED", "I-EXPERIENCE_REQUIRED", "B-COMPANY", "I-COMPANY", "B-LOCATION", "I-LOCATION",
+               "B-JOB_TITLE", "I-JOB_TITLE", "B-SKILLS_REQUIRED", "I-SKILLS_REQUIRED"}
+train_weights = [3.5 if any(t in entity_tags for t in l) else 1.0 for w, l in zip(train_sents, train_labels) if len(w) == len(l) and len(w) > 0]
+from torch.utils.data import WeightedRandomSampler
+train_sampler = WeightedRandomSampler(weights=train_weights, num_samples=len(train_weights))
+train_loader = DataLoader(train_ds, batch_size=8, sampler=train_sampler, collate_fn=collate_pad)
+val_loader = DataLoader(val_ds, batch_size=12, collate_fn=collate_pad)
+
+
+--- Listing H.6 — Label harmonisation — Dotin-to-unified mapping table (prepare_data.py)
+Source: resume_ner_pipeline/prepare_data.py
+
+DOTIN_TO_UNIFIED = {
+    "Name": "NAME",
+    "Email Address": "EMAIL",
+    "Designation": "OCCUPATION",
+    "Degree": "EDUCATION",
+    "College Name": "EDUCATION",
+    "Graduation Year": "EDUCATION",
+    "Company": "EXPERIENCE",
+    "Companies worked at": "EXPERIENCE",
+    "Years of Experience": "EXPERIENCE",
+    "Job Specific Skill": "SKILL",
+    "Job Specific Skills": "SKILL",
+    "Soft Skills": "SKILL",
+    "Tech Tools": "SKILL",
+    "Skills": "SKILL",
+    "Location": "O",
+    "UNKNOWN": "O",
+}
+
+
+--- Listing H.7 — Corpus merge — JSONL concatenation (merge_resumes.py)
+Source: resume_ner_pipeline/merge_resumes.py
+
+with open(args.existing, "r", encoding="utf-8") as f_ex, open(args.llm, "r", encoding="utf-8") as f_llm, open(
+    args.output, "w", encoding="utf-8"
+) as f_out:
+    for line in f_ex:
+        if line.strip():
+            f_out.write(line.rstrip("\n") + "\n")
+    for line in f_llm:
+        if line.strip():
+            f_out.write(line.rstrip("\n") + "\n")
+
+
+--- Listing H.8 — Hybrid résumé extraction — parse_resume_hybrid (rules + neural NER)
+Source: chapter-07 + your CrackInt app/ml/resume_ner.py — verify line-for-line in your repo
+
+def parse_resume_hybrid(text: str) -> Dict[str, List[str]]:
+    """
+    Extract entities from resume text: rules for NAME/EMAIL, model for SKILL, EXPERIENCE, EDUCATION, OCCUPATION.
+    Returns a dict with keys NAME, EMAIL, SKILL, OCCUPATION, EDUCATION, EXPERIENCE (lists of strings).
+    """
+    text = text.strip()
+    if not text:
+        return _empty_entities()
+
+    if not is_model_loaded():
+        return _normalize_entities(_stub_entities(text))
+
+    rn = _extract_name_heuristic(text)
+    re_list = _extract_email_rules(text)
+    _, _, entities = _parse_resume(text)
+    if rn:
+        entities["NAME"] = rn
+    if re_list:
+        entities["EMAIL"] = re_list
+
+    base = _empty_entities()
+    for k in base:
+        base[k] = entities.get(k, [])
+    return _normalize_entities(base)
+
+
+--- Listing H.9 — Authentication — get_current_user (Bearer JWT dependency)
+Source: chapter-07 + your CrackInt deps module
+
+async def get_current_user(
+    request: Request,
+    session: AsyncSession = Depends(get_db),
+) -> User:
+    """Require a valid Bearer JWT and return the corresponding User. Raises 401 if missing or invalid."""
+    auth = request.headers.get("Authorization")
+    if not auth or not auth.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    token = auth[7:].strip()
+    payload = decode_token(token)
+    sub = payload.get("sub")
+    if not sub:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        user_id = uuid.UUID(sub)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    result = await session.execute(select(User).where(User.id == user_id))
+    user = result.scalars().one_or_none()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+
+--- Listing H.10 — LLM session — chat.completions pattern (session agent)
+Source: chapter-07-implementation-DRAFT.md — align names with your session agent module
+
+response = await client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        *[{"role": m.role, "content": m.content} for m in recent_messages],
+    ],
+    temperature=0.4,
+)
+assistant_text = response.choices[0].message.content
+
+
+--- Listing H.11 — API client — authenticated GET (TypeScript fetch pattern)
+Replace URL and paths with your project; use as illustration only.
+
+const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/sessions`, {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${accessToken}`,
+  },
+});
+if (!res.ok) throw new Error(await res.text());
+const data = await res.json();
+
+================================================================================
+END — Follow subsection order H.1–H.6 in appendix-H-code-listings-PASTE-INTO-WORD.txt; paste code from PART 3 above under the matching subsection.
+================================================================================

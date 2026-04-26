@@ -28,7 +28,7 @@ Use this when fixing your **`.docx`** export (e.g. content like *Untitled-1*) so
 1. **TOC** lists `CHAPTER 08: TIME SCHEDULE` — that matches an **older** layout, not 2025/26.
 2. **Body** has **`CHAPTER 08: TESTING`** *and then* **`CHAPTER 08: TIME SCHEDULE`** → **duplicate Chapter 8** (invalid).
 3. **Testing chapter** is incomplete vs template: missing **§8.5** (optional), **§8.8 Non-functional testing** (text references it in summary but body may be missing), **§8.9** (optional).
-4. **Internal filenames** in running text (e.g. `THESIS-FACTS-SHEET.md`) — replace with neutral wording for examiners (“project fact sheet” / “frozen evaluation run”) or **Appendix A** references only.
+4. **Internal filenames** in running text (e.g. `THESIS-FACTS-SHEET.md`) — replace with neutral wording for examiners (“project fact sheet” / “frozen evaluation run”) or **Appendix G** (artefacts) only.
 
 ---
 

@@ -5,7 +5,7 @@
 
 **How to use:** Copy sections into your final thesis `.docx`. Apply template styles (Chapter heading ALL CAPS 16pt, etc.). Replace `[Figure X]` with your exported diagrams/screenshots. Align figure numbers with your List of Figures.
 
-**Thesis wording:** In the main chapters, describe **what** was built (e.g. “résumé NER training notebook”, “data merge scripts”). Put **exact filenames, USB/CD contents, or repository links** in **Appendix A** (or your department’s *Project Artefacts* / *Submission Checklist*)—do **not** paste internal machine paths like `model-traning-1:30/...` in the thesis body.
+**Thesis wording:** In the main chapters, describe **what** was built (e.g. “résumé NER training notebook”, “data merge scripts”). Put **exact filenames, USB/CD contents, or repository links** in **Appendix G** (or your department’s *Project Artefacts* / *Submission Checklist*)—do **not** paste internal machine paths like `model-traning-1:30/...` in the thesis body.
 
 **Sample thesis alignment:** The structure follows the same pattern as a strong FPR (e.g. Pansilu Wijesiri, *AMGAN*): **overview → technology selection (stack, languages, frameworks, libraries, IDE, summary) → core implementation (layered by subsystem) → UI implementation → challenges → summary**. Your project adds **authentication**, **LLM agents**, and **REST + optional WebSocket** components—reflect that in 7.3.
 
@@ -15,7 +15,7 @@
 
 ### 7.1 Chapter overview
 
-This chapter describes how the CrackInt system was implemented: how design decisions were turned into a working **full-stack** application. It begins with **technology selection**—frontend, backend, database, NLP inference, and optional cloud integrations—justified against the Software Requirements Specification (SRS). The **core implementation** covers **résumé NER** including **data preparation, model training** (Jupyter training notebook—Appendix A; hyperparameters and split sizes in Table 7.1; indicative test metrics in Table 7.2; Word2Vec + BiLSTM + CRF loop), **deployment artefacts**, and **inference**; **job-poster NER** using the **same overall methodology** as résumé NER (Word2Vec + BiLSTM + CRF; **Tables 7.3–7.4**, §7.3.2) plus text extraction; REST APIs under `/api/v1`; **JWT-based authentication**; **prep sessions** with message history; **LLM-backed** session question generation and answer evaluation (when enabled); **skill-gap analysis**; **readiness** aggregation; and optional **cover letter generation**, **CV scoring**, **speech-related** services, and **image uploads**. The **user interface** implementation summarises the Next.js App Router structure, dashboard modules, and integration with the backend. **Challenges** encountered during integration and deployment are discussed with mitigations. Detailed **quantitative evaluation** of models and functional tests is reserved for Chapter 08.
+This chapter describes how the CrackInt system was implemented: how design decisions were turned into a working **full-stack** application. It begins with **technology selection**—frontend, backend, database, NLP inference, and optional cloud integrations—justified against the Software Requirements Specification (SRS). The **core implementation** covers **résumé NER** including **data preparation, model training** (Jupyter training notebook—Appendix G; hyperparameters and split sizes in Table 7.1; indicative test metrics in Table 7.2; Word2Vec + BiLSTM + CRF loop), **deployment artefacts**, and **inference**; **job-poster NER** using the **same overall methodology** as résumé NER (Word2Vec + BiLSTM + CRF; **Tables 7.3–7.4**, §7.3.2) plus text extraction; REST APIs under `/api/v1`; **JWT-based authentication**; **prep sessions** with message history; **LLM-backed** session question generation and answer evaluation (when enabled); **skill-gap analysis**; **readiness** aggregation; and optional **cover letter generation**, **CV scoring**, **speech-related** services, and **image uploads**. The **user interface** implementation summarises the Next.js App Router structure, dashboard modules, and integration with the backend. **Challenges** encountered during integration and deployment are discussed with mitigations. Detailed **quantitative evaluation** of models and functional tests is reserved for Chapter 08.
 
 *[Optional: Insert Figure — high-level implemented architecture: Browser → Next.js → FastAPI → PostgreSQL / NER / LLM agents.]*
 
@@ -71,9 +71,9 @@ The résumé NER component uses a **merged annotated corpus** built during **dat
 
 The deployed model is **Word2Vec + BiLSTM + CRF** only. The backend loads weights from `ner_config.json` and checkpoint files under `RESUME_NER_LOAD_DIR` (e.g. local path or bundled artefacts). Hybrid **rule-based** extraction supplements **NAME** and **EMAIL** for robustness.
 
-**Training workflow (not inference only):** This section documents both **training** and **deployment** so examiners can follow the full lifecycle from data to inference. The steps below match the **résumé NER training notebook** (Jupyter) developed for this FYP (exact filename listed in **Appendix A: Project artefacts**).
+**Training workflow (not inference only):** This section documents both **training** and **deployment** so examiners can follow the full lifecycle from data to inference. The steps below match the **résumé NER training notebook** (Jupyter) developed for this FYP (exact filename listed in **Appendix G: Project artefacts**).
 
-**Step 1 — Data consolidation and labels.** Multiple public and project-specific sources (e.g. Dotin-style XML, Label Studio exports, merged JSONL) are **normalised** to the six entity types above. **Python scripts** written for data merging map heterogeneous labels onto a **unified schema**, build **word-level** token sequences, and assign **BIO** tags using character-span annotations (tokenisation and span alignment are implemented in that training notebook). The merged dataset for the **frozen submitted run** comprised **4738** annotated résumés (line-delimited JSON, file: `merged_1030_plus_all_llm_plus_proper.json` in the training workflow); the exact filename can also be listed in **Appendix A**. If you merge additional data later, update this count everywhere it appears (abstract, Ch 7, Ch 8).
+**Step 1 — Data consolidation and labels.** Multiple public and project-specific sources (e.g. Dotin-style XML, Label Studio exports, merged JSONL) are **normalised** to the six entity types above. **Python scripts** written for data merging map heterogeneous labels onto a **unified schema**, build **word-level** token sequences, and assign **BIO** tags using character-span annotations (tokenisation and span alignment are implemented in that training notebook). The merged dataset for the **frozen submitted run** comprised **4738** annotated résumés (line-delimited JSON, file: `merged_1030_plus_all_llm_plus_proper.json` in the training workflow); the exact filename can also be listed in **Appendix G**. If you merge additional data later, update this count everywhere it appears (abstract, Ch 7, Ch 8).
 
 **Step 2 — Train / validation / test split.** The merged corpus is split **80% / 10% / 10%** (train / validation / test) with **random seed 42** after shuffling. For the frozen run: **3790** train, **473** validation, **475** test—**use the same figures** in Chapter 08 with your metrics tables.
 
@@ -93,9 +93,9 @@ Deployed `**max_len**` and embedding/hidden sizes must match `**ner_config.json*
 
 ##### Detailed résumé NER training (notebook)
 
-The **authoritative training procedure** for the final résumé model is the **résumé NER training notebook** (Jupyter) submitted with this project (see **Appendix A** for the filename and any version note). The notebook:
+The **authoritative training procedure** for the final résumé model is the **résumé NER training notebook** (Jupyter) submitted with this project (see **Appendix G** for the filename and any version note). The notebook:
 
-- Loads the **merged** line-delimited JSON file used for training (see **Appendix A** for the exact filename used in the frozen run).  
+- Loads the **merged** line-delimited JSON file used for training (see **Appendix G** for the exact filename used in the frozen run).  
 - Applies a **label-mapping** table so all annotations use the unified entity types, then builds word-level sentences and **BIO** tags using **tokenisation with character positions** and **fixed BIO assignment** from spans.  
 - Runs the pipeline described in the steps and Table 7.1 below.
 
@@ -160,7 +160,7 @@ for ids, mask, lab in train_loader:
 # then: scheduler.step(); validation F1; early stopping on best checkpoint
 ```
 
-**Table 7.1 — Résumé NER (Word2Vec + BiLSTM + CRF): hyperparameters (frozen Colab run; training notebook—Appendix A)**
+**Table 7.1 — Résumé NER (Word2Vec + BiLSTM + CRF): hyperparameters (frozen Colab run; training notebook—Appendix G)**
 
 
 | Category                 | Setting                                                                                                                                                                     |
@@ -209,19 +209,19 @@ for ids, mask, lab in train_loader:
 
 **Parallel methodology to résumé NER (§7.3.1).** Job-poster NER was implemented using the **same engineering pattern**, adapted to job text:
 
-1. **Data** — Job postings are collected or merged into a **line-delimited JSON** corpus (content + span annotations), with preparation scripts under the **job-poster data pipeline** (see **Appendix A** for merge filename and provenance).
+1. **Data** — Job postings are collected or merged into a **line-delimited JSON** corpus (content + span annotations), with preparation scripts under the **job-poster data pipeline** (see **Appendix G** for merge filename and provenance).
 2. **Labels** — Annotations are mapped to a **job-specific BIO tagset** (distinct from résumé entities): **JOB_TITLE**, **COMPANY**, **LOCATION**, **SALARY**, **SKILLS_REQUIRED**, **EXPERIENCE_REQUIRED**, **EDUCATION_REQUIRED**, **JOB_TYPE**.
-3. **Model** — **Word2Vec** (Gensim) + **BiLSTM** + **CRF** (`BiLSTMCRF`), trained in the **job-poster NER training notebook** (Appendix A), evaluated with **seqeval**, exported to `**word2vec.model`**, `**bilstm_crf_state.pt**`, `**ner_config.json**` (same artefact pattern as résumé NER). The frozen run used a **two-layer** BiLSTM in the notebook class definition and `**MAX_LEN = 512`** word tokens—**align** `ner_config.json` with deployment.
+3. **Model** — **Word2Vec** (Gensim) + **BiLSTM** + **CRF** (`BiLSTMCRF`), trained in the **job-poster NER training notebook** (Appendix G), evaluated with **seqeval**, exported to `**word2vec.model`**, `**bilstm_crf_state.pt**`, `**ner_config.json**` (same artefact pattern as résumé NER). The frozen run used a **two-layer** BiLSTM in the notebook class definition and `**MAX_LEN = 512`** word tokens—**align** `ner_config.json` with deployment.
 4. **Inference** — The API loads checkpoints from `**JOB_POSTER_NER_LOAD_DIR`** when set. The notebook also demonstrates **hybrid** parsing (e.g. combining rules with the model for robust **SALARY** / entity extraction); mirror the behaviour implemented in `**job_poster_ner.py`**.
 
 **Tables 7.3 and 7.4** summarise the **frozen Colab run** for job-poster NER (same role as **Tables 7.1–7.2** for résumés). Repeat or cross-reference these figures in **Chapter 08** if that chapter is the primary results discussion.
 
-**Table 7.3 — Job-poster NER (Word2Vec + BiLSTM + CRF): hyperparameters (frozen Colab run; training notebook—Appendix A)**
+**Table 7.3 — Job-poster NER (Word2Vec + BiLSTM + CRF): hyperparameters (frozen Colab run; training notebook—Appendix G)**
 
 
 | Category                 | Setting                                                                                                                                                                           |
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Corpus**               | **6327** job postings (merged file; e.g. `merged_job_poster_ner_full_varied.json` in the frozen run—**Appendix A**); split **5061 / 632 / 634** (train / val / test), seed **42** |
+| **Corpus**               | **6327** job postings (merged file; e.g. `merged_job_poster_ner_full_varied.json` in the frozen run—**Appendix G**); split **5061 / 632 / 634** (train / val / test), seed **42** |
 | **Sequence length**      | `MAX_LEN = 512` (truncate/pad word sequences)                                                                                                                                     |
 | **Word2Vec**             | `vector_size = 256`, `window = 6`, `min_count = 1`, `epochs = 35`, `workers = 4`                                                                                                  |
 | **Vocabulary**           | **~10.1k** word types (incl. `<PAD>`, `<UNK>`) in the frozen run                                                                                                                  |
@@ -276,7 +276,7 @@ The backend is organised under `app/`:
 | **Persistence**    | `app/models.py`, Alembic     | Users, résumés, job postings, prep sessions, messages, etc.                                                                                        |
 
 
-**Representative endpoints** (full list in the project’s **OpenAPI** documentation and/or **Appendix A**):
+**Representative endpoints** (full list in the project’s **OpenAPI** documentation and/or **Appendix G**):
 
 - Résumé: extract, list, get, patch entities, optional CV **score**.
 - Jobs: extract.
@@ -296,7 +296,7 @@ The marking scheme (and strong FYP reports such as the sample *AMGAN* dissertati
 
 | Component                                             | Classification               | Notes / source                                                                                                       |
 | ----------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **Word2Vec + BiLSTM + CRF** (résumé + job-poster)     | **Novel** (project-specific) | Two trained stacks (entity schemas differ); PyTorch modules and training notebooks (Appendix A); **Tables 7.1–7.4**. |
+| **Word2Vec + BiLSTM + CRF** (résumé + job-poster)     | **Novel** (project-specific) | Two trained stacks (entity schemas differ); PyTorch modules and training notebooks (Appendix G); **Tables 7.1–7.4**. |
 | `**parse_resume_hybrid()` and rule-based NAME/EMAIL** | **Novel**                    | Heuristic merge of model output with regex/heuristics for robustness.                                                |
 | **REST API routers, agents, DB models**               | **Novel**                    | Application logic for CrackInt (FastAPI routes, session flow, skill-gap, readiness).                                 |
 | **CRF decoding**                                      | **Third-party**              | `pytorch-crf` / `torchcrf` (cite library in references).                                                             |
@@ -456,7 +456,7 @@ Semantic HTML, keyboard-focusable controls, and contrast-aware styling are appli
 
 ### 7.6 Chapter summary
 
-This chapter presented the **implementation** of CrackInt: technology choices (Next.js, FastAPI, PostgreSQL, PyTorch NER, optional OpenAI agents), **dataset preparation and NER training** (Jupyter notebooks—Appendix A; **Tables 7.1–7.2** résumé, **7.3–7.4** job-poster; **Listings 7.1–7.3** for split, BIO tagging, and training steps; export to `ner_config`/checkpoints), **dataset and NER metrics** (test F1 in Tables **7.2** and **7.4**; full discussion may also appear in Chapter 08), **backend** modular routers and agents, **classification of novel vs adapted vs third-party** components, **illustrative code** (**Listings 7.4–7.6**: hybrid NER, JWT, LLM session pattern), **frontend** dashboard and integration patterns, and **challenges** faced during build-out. The system delivers an integrated pipeline from **résumé and job understanding** (including **parallel NER pipelines** for résumé and job-poster text where configured) through **authenticated** practice sessions and **analytics-oriented** readiness APIs, with optional **LLM**-enhanced features controlled by configuration.
+This chapter presented the **implementation** of CrackInt: technology choices (Next.js, FastAPI, PostgreSQL, PyTorch NER, optional OpenAI agents), **dataset preparation and NER training** (Jupyter notebooks—Appendix G; **Tables 7.1–7.2** résumé, **7.3–7.4** job-poster; **Listings 7.1–7.3** for split, BIO tagging, and training steps; export to `ner_config`/checkpoints), **dataset and NER metrics** (test F1 in Tables **7.2** and **7.4**; full discussion may also appear in Chapter 08), **backend** modular routers and agents, **classification of novel vs adapted vs third-party** components, **illustrative code** (**Listings 7.4–7.6**: hybrid NER, JWT, LLM session pattern), **frontend** dashboard and integration patterns, and **challenges** faced during build-out. The system delivers an integrated pipeline from **résumé and job understanding** (including **parallel NER pipelines** for résumé and job-poster text where configured) through **authenticated** practice sessions and **analytics-oriented** readiness APIs, with optional **LLM**-enhanced features controlled by configuration.
 
 ---
 
@@ -475,7 +475,7 @@ This chapter presented the **implementation** of CrackInt: technology choices (N
 
 **Gap closed vs first draft:** The sample thesis includes **short code listings** and **novel vs adopted** discussion; this chapter adds **Listings 7.1–7.3** (training), **7.4–7.6** (hybrid NER, JWT, LLM session pattern), plus Table 7.Y (provenance).
 
-**Appendix A (put in the real thesis Word file):** One page listing **project artefacts**—e.g. résumé NER training notebook **filename** (`.ipynb`), merged dataset **filename**, backend/frontend zip or repo URL, **Swagger/OpenAPI** export if required. Chapter 7 references “Appendix A” instead of disk paths.
+**Appendix G (put in the real thesis Word file):** One page listing **project artefacts**—e.g. résumé NER training notebook **filename** (`.ipynb`), merged dataset **filename**, backend/frontend zip or repo URL, **Swagger/OpenAPI** export if required. Chapter 7 references “Appendix G” instead of disk paths.
 
 ---
 

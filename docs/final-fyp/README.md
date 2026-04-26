@@ -119,7 +119,7 @@ From **`docs/final-fyp/`**, same as: `../../resume_ner_pipeline/`, `../../job_po
 | **[THESIS-FACTS-SHEET.md](./THESIS-FACTS-SHEET.md)** | Fill in: frozen metrics, key endpoints, env flags (your single fact sheet) |
 | **[SUGGESTIONS-BEFORE-FINAL-RUN.md](./SUGGESTIONS-BEFORE-FINAL-RUN.md)** | Checklist: backups, integrity, examiner view |
 | **[IMPLEMENTED-VS-PENDING-FINAL.md](./IMPLEMENTED-VS-PENDING-FINAL.md)** | **FR/NFR vs backend API** — use for SRS + evaluation chapters |
-| **[DATASET-PROVENANCE-SUMMARY.md](./DATASET-PROVENANCE-SUMMARY.md)** | **Public vs generated dataset provenance** — use for Chapters 2/7/8 + Appendix A |
+| **[DATASET-PROVENANCE-SUMMARY.md](./DATASET-PROVENANCE-SUMMARY.md)** | **Public vs generated dataset provenance** — use for Chapters 2/7/8 + Appendix G |
 | **[chapter-07-implementation-DRAFT.md](./chapter-07-implementation-DRAFT.md)** | **Chapter 7 (Implementation) — thesis draft** — paste into Word; includes sample-FPR structure notes |
 | **[chapter-08-testing-PLAN.md](./chapter-08-testing-PLAN.md)** | **Chapter 8 (Testing) — IIT §8.1–8.11 mapped to CrackInt** |
 | **[chapter-08-testing-DRAFT.md](./chapter-08-testing-DRAFT.md)** | **Chapter 8 (Testing) — thesis draft** — NER tables, functional/NFR outline, placeholders for pass rate |

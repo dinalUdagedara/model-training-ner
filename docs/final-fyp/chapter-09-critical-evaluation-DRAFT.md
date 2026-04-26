@@ -5,7 +5,7 @@
 
 **Template check:** Aligns with the official **IIT 2025/26** thesis template — **Chapter 9 : Critical Evaluation**, sections **9.1–9.9**. Subsections **9.6.x** are adapted to the **actual** evaluation set (self + peers + three industry practitioners).
 
-**How to use (author notes — delete before submission):** Paste into Word; apply IIT heading styles. Replace bracketed names/dates. Keep **numbers** aligned with **Chapter 07**, **Chapter 08**, and **Appendix A**. Do **not** cite internal repo filenames in examiner-facing text.
+**How to use (author notes — delete before submission):** Paste into Word; apply IIT heading styles. Replace bracketed names/dates. Keep **numbers** aligned with **Chapter 07**, **Chapter 08**, and **Appendix G**. Do **not** cite internal repo filenames in examiner-facing text.
 
 ---
 
