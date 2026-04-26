@@ -160,19 +160,53 @@ It makes each part testable and replaceable, and it reduces coupling between UI,
 ## Q6) "Where is AI in your architecture?"
 
 **Answer:**  
-AI is in the logic tier:
+AI is mainly in the **logic tier (backend services)**, not in the UI layer and not directly in the database layer.
 
-- NER model inference modules,
-- session question/feedback agents,
-- CV analysis and fit-related AI services.
+In my architecture, AI appears in three practical places:
 
-But AI is integrated within backend workflows, not used as an isolated standalone script.
+1. **NER inference modules**  
+   These modules process resume and job text and extract structured entities used by the rest of the platform.
+
+2. **Session intelligence agents**  
+   These handle interview question generation, answer evaluation, and feedback flow during session chat.
+
+3. **CV/job analysis services**  
+   These provide higher-level analysis features like CV scoring and fit-related guidance.
+
+Important point: AI is not a separate isolated script in my project.  
+AI outputs are consumed by backend APIs, validated, then connected to user/session/domain data and persisted where needed.  
+So AI is a component inside a controlled system workflow, not the whole system by itself.
+
+**If examiner asks for architecture boundary:**  
+Frontend sends requests -> backend orchestrates AI/non-AI logic -> results are stored in DB and returned through API contracts.
 
 ## Q7) "What if AI services fail?"
 
 **Answer:**  
-The architecture includes reliability controls and fallback behavior.  
-Some advanced AI features may degrade, but core platform flows and persisted data remain intact.
+I designed this as a graceful-degradation architecture, not an all-or-nothing architecture.
+
+If AI services fail, the impact is mostly on AI-heavy features such as:
+
+- generated interview questions/feedback,
+- advanced scoring/analysis responses.
+
+But the system still keeps core platform behavior:
+
+- authentication and authorization,
+- API routing and validation,
+- session/user/resume/job data persistence,
+- non-AI UI and data retrieval flows.
+
+So the failure mode is controlled:
+
+- core data and workflow continuity remain,
+- affected AI responses return errors/fallback paths instead of crashing the full app,
+- users can continue using non-AI parts and previously saved data.
+
+In short, AI failure reduces intelligence features, but it does not automatically break the whole platform lifecycle.
+
+**If examiner asks "Is that proven in design?"**  
+Yes, this is reflected in my layered design and service separation, where AI calls are backend components integrated with validation and persistence boundaries.
 
 ---
 
